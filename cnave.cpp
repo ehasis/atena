@@ -22,7 +22,7 @@ CNave::CNave()
 	y = 380;
 	l = 50;
 	a = 90;
-	v = 12;
+	vi = 12;
 	vx = 0;
 	vy = 0;
 
@@ -57,6 +57,7 @@ void CNave::Desenhar(BITMAP *bmp)
 		status = eNaveNormal;
 
 	case eNaveNormal:
+		draw_trans_sprite(bmp, (BITMAP *)data[SOMBRA].dat, x+50, y+70);
 		draw_sprite(bmp, (BITMAP *)data[NORMAL].dat, x, y);
 		break;
 	
@@ -81,12 +82,12 @@ void CNave::Atualizar(TEntrada &valor)
 	{
 		
 		/* com incercia */
-		if(valor.y >  0) vy =  v;
-		if(valor.y <  0) vy = -v;
+		if(valor.y >  0) vy =  vi;
+		if(valor.y <  0) vy = -vi;
 		if(valor.y == 0) vy /= 2;
 		
-		if(valor.x >  0) vx =  v;
-		if(valor.x <  0) vx = -v;
+		if(valor.x >  0) vx =  vi;
+		if(valor.x <  0) vx = -vi;
 		if(valor.x == 0) vx /= 2;
 
 		y += vy;
@@ -114,7 +115,7 @@ void CNave::Atualizar(TEntrada &valor)
 		/* se o tempo explodindo esgotou */
 		if (tempo <= 0)
 		{
-			v = 12;
+			vi = 12;
 			status = eNaveRenacer;
 			energia = 100;
 		}
@@ -139,7 +140,11 @@ void CNave::DecEnergia(int valor)
 {
 	if (energia < valor)
 	{
-		casco -=  valor - energia;
+		if (casco < (valor - energia))
+			casco = 0;
+		else
+			casco -= (valor - energia);
+
 		energia = 0;
 	}
 	else
@@ -192,6 +197,7 @@ void CAlien::Atualizar()
 	if (status == eAlienNormal || status == eAlienEscudo)
 	{
 		if (x < -l) status = eAlienInativo;
+		y += vi;
 	}
 	
 	if (status == eAlienExplosao)

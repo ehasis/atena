@@ -23,7 +23,7 @@ class CObjeto
 public:
 	int x, y;
 	int a, l;
-	int v;
+	int vi, vx, vy;
 	int Colisao(TRect &rect);
 	TRect ret;
 	TRect Rect();

@@ -9,6 +9,7 @@
 *
 *------------------------------------------------------------*/
 
+#include <math.h>
 #include <allegro.h>
 #include "nucleo.h"
 #include "objgraf.h"
@@ -127,25 +128,25 @@ void AtirarAlien(int x, int y)
 {
 	//static int atirar = 0;
 
-	int nx = nave1.x;
+	double a, b, c;
+
+	// para calcular as velocidade
+	c = (nave1.y+45) - (y+25);
+	b = (nave1.x+20) - (x+25);
+	a = sqrt((b*b) + (c*c));
 
 	if(num_balasalien == 29)
 		num_balasalien = 0;
-
 
 	balaalien[num_balasalien].x = x + 20;
 	balaalien[num_balasalien].y = y + 23;
 	balaalien[num_balasalien].a = 20;
 	balaalien[num_balasalien].l = 20;
 	
-	if (nx > x + 10)
-		balaalien[num_balasalien].vx = 7;
-	if (nx <= x + 10 && nx >= x - 10)
-		balaalien[num_balasalien].vx = 0;
-	if (nx < x - 10)
-		balaalien[num_balasalien].vx = -7;
+	// separacao das velocidades em x e y
+	balaalien[num_balasalien].vx = 15*(b/a);
+	balaalien[num_balasalien].vy = 15*(c/a);
 
-	balaalien[num_balasalien].vy = 10;
 	balaalien[num_balasalien].ativa = 1;
 	num_balasalien++;
 	
@@ -173,6 +174,7 @@ void CriarAlien(int tipo)
 	alien[alien_atual].a = 50;
 	alien[alien_atual].tipo = tipo;
 	alien[alien_atual].energia = 5 * tipo;
+	alien[alien_atual].vi = 2 + (rand()%2);
 
 	alien_atual++;
 }
@@ -285,8 +287,14 @@ void AtualizarObjetos()
 		if (bala[j].ativa)
 			masked_blit((BITMAP *)data[TIRO].dat,buffer,0,0,bala[j].x,bala[j].y,20,20);
 
-		if (balaalien[j].y > 480)
+		if ((balaalien[j].ativa)
+		&& ((balaalien[j].x < -5)
+		||  (balaalien[j].x > SCREEN_W)
+		||  (balaalien[j].y < -5)
+		||  (balaalien[j].y > SCREEN_H)))
+		{
 			balaalien[j].ativa = 0;
+		}
 
 		if (balaalien[j].ativa)
 			masked_blit((BITMAP *)data[TIROALIEN].dat,buffer,0,0,balaalien[j].x,balaalien[j].y,10,10);
@@ -322,7 +330,6 @@ void AtualizarObjetos()
 			{
 				if (nave1.pontos >  50) alien[j].y += 2;
 				if (nave1.pontos > 100) alien[j].y += 2;
-				alien[j].y += 3;
 			}
 			else
 				num_aliens--;

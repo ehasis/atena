@@ -21,6 +21,7 @@ static void Iniciar()
 	install_keyboard();
 	install_timer();
 	install_sound(DIGI_AUTODETECT, MIDI_AUTODETECT, NULL);
+	set_config_file("atena.ini");
 }
 
 /* Execucao das rotinas do jogo */

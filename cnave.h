@@ -12,7 +12,14 @@
 #define cnave_h_incluido
 
 #include "centrada.h"
+#include "cobjeto.h"
 
+enum EStatusAlien
+{
+	eAlienNormal,
+	eAlienEscudo,
+	eAlienExplosao,
+};
 
 enum EStatusNave
 {
@@ -20,14 +27,6 @@ enum EStatusNave
 	eNaveEscudo,
 	eNaveExplosao,
 	eNaveRenacer
-};
-
-
-/* Estrutura de um retangulo */
-struct TRect
-{
-	int e, t;
-	int d, b;
 };
 
 struct TPowerUp
@@ -65,6 +64,51 @@ struct TBala
 	}
 };
 
+class CNave: public CObjeto
+{
+public:
+	CNave();
+	//Casco
+	int  getCasco()            { return casco;     }
+	void somCasco(int valor)   { casco  += valor;  }
+	void setCasco(int valor)   { casco  =  valor;  }
+
+	//Tempo
+	int  getTempo()            { return tempo;     }
+	void setTempo(int valor)   { tempo  = valor;   }
+	
+	//Pontos
+	int  getPontos()           { return pontos;    }
+	void somPontos(int valor)  { pontos += valor;  }
+	void setPontos(int valor)  { pontos =  valor;  }
+	
+	//Energia
+	int  getEnergia()          { return energia;   }
+	void somEnergia(int valor) { energia += valor; }
+	void setEnergia(int valor) { energia =  valor; }
+
+	//Status
+	EStatusNave getStatus() { return status; }
+	void setStatus(EStatusNave valor) { status = valor; }
+
+	//Diversos
+	int Atirar() { return atirar; }
+	void setDataFile(DATAFILE *arquivo);
+	void Atualizar(TEntrada &valor);
+	void Desenhar(BITMAP *bmp);
+	void Desligar();
+		
+private:
+	DATAFILE *data;
+	EStatusNave status;
+	int energia;
+	int tempo;
+	int pontos;
+	int casco;
+	int atirar;
+	int vx, vy;
+};
+
 struct TAlien
 {
 	int x, y;
@@ -85,93 +129,4 @@ struct TAlien
 	}
 };
 
-
-/* Classe base dos demais objetos */
-class CObjeto  
-{
-public:
-	int getX() { return x; }
-	int getY() { return y; }
-	int getA() { return a; }
-	int getL() { return l; }
-	int getV() { return v; }
-	void setX(int valor) { x = valor; }
-	void setY(int valor) { y = valor; }
-	void setA(int valor) { a = valor; }
-	void setL(int valor) { l = valor; }
-	
-	void incV(int valor) { v += valor;}
-	void setV(int valor) { v = valor; }
-	
-	int Colisao(TRect &rect);
-	TRect Rect();
-
-protected:
-	int x, y;
-	int a, l;
-	int v;
-	TRect ret;
-};
-
-class CNave: public CObjeto
-{
-public:
-	CNave();
-	void Desenhar(BITMAP *bmp);
-	void Atualizar(TEntrada &valor);
-	int Atirar() { return atirar; }
-
-	int getPontos()  { return pontos;  }
-	int getTempo()   { return tempo;   }
-	int getEnergia() { return energia; }
-	int getCasco()   { return casco;   }
-
-	void setTempo(int valor)   { tempo   = valor; }
-	void decCasco(int valor)   { casco  -= valor; }
-	void setCasco(int valor)   { casco   = valor; }
-	void incPontos(int valor)  { pontos += valor; }
-	void setPontos(int valor)  { pontos  = valor; }
-	void incEnergia(int valor) { energia += valor;}
-	void decEnergia(int valor) { energia -= valor;}
-	void setEnergia(int valor) { energia = valor; }
-
-	void setDataFile(DATAFILE *arquivo);
-	void Desligar();
-	
-	EStatusNave getStatus() { return status; }
-	void setStatus(EStatusNave valor) { status = valor; }
-
-private:
-	DATAFILE *data;
-	EStatusNave status;
-	int energia;
-	int tempo;
-	int pontos;
-	int casco;
-	int atirar;
-	int vx, vy;
-};
-
-
-/*
-class CAlien: public CObjeto
-{
-public:
-	//Energia
-	int getEnergia() { return energia; }
-	void incEnergia(int valor) { energia += valor;}
-	void decEnergia(int valor) { energia -= valor;}
-	void setEnergia(int valor) { energia = valor; }
-	
-	void setTempo(int valor)   { tempo   = valor; }
-	void setDataFile(DATAFILE *arquivo);
-	void Desligar();
-
-private:
-	int energia;
-	int tempo;
-	int atirar;
-};
-
-*/
 #endif

@@ -19,9 +19,17 @@ BITMAP *bmp_buffer;
 /* Inicializacao do motor grafico */
 void IniciarGraficos()
 {
-	if (set_gfx_mode(GFX_AUTODETECT, 640, 480, 0, 0) < 0)
-	//if (set_gfx_mode(GFX_DIRECTX_WIN, 640, 480, 0, 0) < 0)
-		Erro("Nao foi possivel definir o modo grafico", allegro_error);	
+	int modo_tela;
+
+	if (get_config_int("video", "modo", 1) == 1)
+		modo_tela = GFX_AUTODETECT;
+	else
+		modo_tela = GFX_DIRECTX_WIN;
+
+	set_color_depth(16);
+	
+	if (set_gfx_mode(modo_tela, 640, 480, 0, 0) < 0)
+		Erro("Nao foi possivel definir o modo grafico", allegro_error);
 
 	bmp_buffer = create_bitmap(640, 480);
 	clear(screen);

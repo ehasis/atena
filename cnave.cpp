@@ -14,35 +14,6 @@
 #include "centrada.h"
 
 //------------------------------------------------------------
-// retorna se ha colisao com o objeto passado como parametro
-int CObjeto::Colisao(TRect &rect)
-{
-	if ((x + l < rect.e)
-	||  (y + a < rect.t)
-	||  (x     > rect.d)
-	||  (y     > rect.b))
-	{		
-		return 0;
-	}
-	else
-	{
-		return 1;
-	}
-}
-
-//------------------------------------------------------------
-// retorna os vertices do retangulo do objeto
-TRect CObjeto::Rect()
-{
-	ret.e = x;
-	ret.t = y;
-	ret.d = x + l;
-	ret.b = y + a;
-
-	return ret;
-}
-
-//------------------------------------------------------------
 // constructor
 CNave::CNave()
 {
@@ -59,6 +30,7 @@ CNave::CNave()
 	energia = 100;
 	casco	= 100;
 	status	= eNaveNormal;
+	tempo	= 0;
 }
 
 
@@ -100,6 +72,7 @@ void CNave::Desenhar(BITMAP *bmp)
 void CNave::Atualizar(TEntrada &valor)
 {
 	atirar = 0;
+
 	if (status == eNaveRenacer) status = eNaveNormal;
 	
 	/* se estiver normal */
@@ -149,4 +122,63 @@ void CNave::Atualizar(TEntrada &valor)
 			tempo--;
 		}
 	}
+
+	tempo++;
+	if (tempo == 15)
+	{
+		tempo = 0;
+		
+		if (energia < 100)
+			energia++;
+	}
 }
+
+
+class CAlien: public CObjeto
+{
+public:
+	//Energia
+	int  getEnergia()          { return energia;   }
+	void somEnergia(int valor) { energia += valor; }
+	void setEnergia(int valor) { energia =  valor; }
+	void setTempo(int valor)   { tempo   =  valor; }
+	
+	//Status
+	EStatusAlien getStatus() { return status; }
+	void setStatus(EStatusAlien valor) { status = valor; }
+	
+	//Diversos
+	void setDataFile(DATAFILE *arquivo);
+	void Desenhar(BITMAP *bmp);
+	void Atualizar();
+	void Desligar();
+
+private:
+	EStatusAlien status;
+	DATAFILE *data;
+	int energia;
+	int tempo;
+	int atirar;
+	int tipo;
+};
+
+/*
+void CAlien::Desenhar(BITMAP *bmp)
+{
+
+	switch(status)
+	{
+	case eAlienEscudo:
+		draw_sprite(bmp, (BITMAP *)data[ALIEN_ESCUDO].dat, x, y);	
+	
+	case eAlienNormal:
+		draw_sprite(bmp, (BITMAP *)data[ALIEN_NORMAL].dat, x, y);
+		status = eAlienNormal;
+		break;
+	
+	case eAlienExplosao:
+		masked_blit((BITMAP *)data[EXPLOSAO1].dat, bmp, 250-(((tempo * 2) - ((tempo * 2)%10)) * 5), 0, x, y, 50, 50);
+		break;
+	}
+}
+*/

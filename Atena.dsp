@@ -70,6 +70,7 @@ LINK32=link.exe
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /GZ /c
 # ADD CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /GZ /c
+# SUBTRACT CPP /WX
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x416 /d "_DEBUG"
@@ -93,6 +94,10 @@ LINK32=link.exe
 # Begin Source File
 
 SOURCE=.\cnave.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\cobjeto.cpp
 # End Source File
 # Begin Source File
 
@@ -140,6 +145,10 @@ SOURCE=.\cnave.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\cobjeto.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\datnave.h
 # End Source File
 # Begin Source File
@@ -179,5 +188,9 @@ SOURCE=.\vglobal.h
 
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
 # End Group
+# Begin Source File
+
+SOURCE=.\atena.ini
+# End Source File
 # End Target
 # End Project

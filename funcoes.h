@@ -12,5 +12,6 @@
 #define funcoes_h_incluido
 
 void barra_progresso(BITMAP *bmp, int x, int y, int l, int percent);
+void escrever(BITMAP *bmp, const char *str, int x, int y, int cor);
 
 #endif

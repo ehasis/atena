@@ -13,12 +13,78 @@
 
 #include "centrada.h"
 
+
+enum EStatusNave
+{
+	eNaveNormal,
+	eNaveEscudo,
+	eNaveExplosao,
+	eNaveRenacer
+};
+
+
 /* Estrutura de um retangulo */
 struct TRect
 {
 	int e, t;
 	int d, b;
 };
+
+struct TPowerUp
+{
+	int x, y;
+	int a, l;
+	int status;
+	TRect Rect()
+	{
+		TRect ret;
+		ret.e = x;
+		ret.t = y;
+		ret.d = x + l;
+		ret.b = y + a;
+
+		return ret;
+	}
+};
+
+struct TBala
+{
+	int x, y;
+	int a, l;
+	float vx, vy;
+	int active;
+	TRect Rect()
+	{
+		TRect ret;
+		ret.e = x;
+		ret.t = y;
+		ret.d = x + l;
+		ret.b = y + a;
+
+		return ret;
+	}
+};
+
+struct TAlien
+{
+	int x, y;
+	int a, l;
+	int status;
+	int type;
+	int hit_points;
+	int time;
+	TRect Rect()
+	{
+		TRect ret;
+		ret.e = x;
+		ret.t = y;
+		ret.d = x + l;
+		ret.b = y + a;
+
+		return ret;
+	}
+};
+
 
 /* Classe base dos demais objetos */
 class CObjeto  
@@ -37,10 +103,6 @@ public:
 	void incV(int valor) { v += valor;}
 	void setV(int valor) { v = valor; }
 	
-	
-	int getStatus() { return status; }
-	void setStatus(int valor) { status = valor; }
-
 	int Colisao(TRect &rect);
 	TRect Rect();
 
@@ -48,7 +110,6 @@ protected:
 	int x, y;
 	int a, l;
 	int v;
-	int status;
 	TRect ret;
 };
 
@@ -60,28 +121,33 @@ public:
 	void Atualizar(TEntrada &valor);
 	int Atirar() { return atirar; }
 
-	int getVidas()   { return vidas;   }
 	int getPontos()  { return pontos;  }
 	int getTempo()   { return tempo;   }
 	int getEnergia() { return energia; }
+	int getCasco()   { return casco;   }
 
+	void setTempo(int valor)   { tempo   = valor; }
+	void decCasco(int valor)   { casco  -= valor; }
+	void setCasco(int valor)   { casco   = valor; }
 	void incPontos(int valor)  { pontos += valor; }
 	void setPontos(int valor)  { pontos  = valor; }
-	void setTempo(int valor)   { tempo   = valor; }
-	
 	void incEnergia(int valor) { energia += valor;}
 	void decEnergia(int valor) { energia -= valor;}
 	void setEnergia(int valor) { energia = valor; }
 
 	void setDataFile(DATAFILE *arquivo);
 	void Desligar();
+	
+	EStatusNave getStatus() { return status; }
+	void setStatus(EStatusNave valor) { status = valor; }
 
 private:
 	DATAFILE *data;
+	EStatusNave status;
 	int energia;
 	int tempo;
 	int pontos;
-	int vidas;
+	int casco;
 	int atirar;
 	int vx, vy;
 };

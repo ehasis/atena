@@ -42,25 +42,23 @@ TRect CObjeto::Rect()
 	return ret;
 }
 
-/*************************************************************/
 //------------------------------------------------------------
 // constructor
 CNave::CNave()
 {
 	x = 300;
 	y = 380;
-	l = 64;
-	a = 100;
+	l = 50;
+	a = 90;
 	v = 12;
 	vx = 0;
 	vy = 0;
 
-	
+	atirar	= 0;
 	pontos	= 0;
 	energia = 100;
-	status	= 1;
-	vidas	= 3;
-	atirar	= 0;
+	casco	= 100;
+	status	= eNaveNormal;
 }
 
 
@@ -81,11 +79,17 @@ void CNave::Desenhar(BITMAP *bmp)
 {
 	switch(status)
 	{
-	case 1: //normal
+	case eNaveEscudo:
+		draw_sprite(bmp, (BITMAP *)data[ESCUDO].dat, x, y);
+	
+	case eNaveNormal:
 		draw_sprite(bmp, (BITMAP *)data[NORMAL].dat, x, y);
+		status = eNaveNormal;
 		break;
-	case 2: //esplosao
-	case 3: //renacer
+	
+	case eNaveExplosao:
+	
+	case eNaveRenacer:
 		draw_sprite(bmp, (BITMAP *)data[EXPLOSAO].dat, x, y);
 		break;
 	}
@@ -96,55 +100,48 @@ void CNave::Desenhar(BITMAP *bmp)
 void CNave::Atualizar(TEntrada &valor)
 {
 	atirar = 0;
-	if (status == 3) status = 1;
+	if (status == eNaveRenacer) status = eNaveNormal;
+	
 	/* se estiver normal */
-	if (status == 1)
+	if (status == eNaveNormal)
 	{
 		
-		/* se tiver energia */
-		if (energia > 0)
+		/* com incercia */
+		if(valor.y >  0) vy =  v;
+		if(valor.y <  0) vy = -v;
+		if(valor.y == 0) vy /= 2;
+		
+		if(valor.x >  0) vx =  v;
+		if(valor.x <  0) vx = -v;
+		if(valor.x == 0) vx /= 2;
+
+		y += vy;
+		x += vx;
+
+		if (y < 0) y = 0;
+		if (y + a > 479) y = 478 - a;
+
+		if (x < 0) x = 0;
+		if (x + l > 639) x = 639 - l;
+
+		atirar = valor.a;
+		
+		if (casco <= 0)
 		{
-			/* com incercia */
-
-			if(valor.y >  0) vy =  v;
-			if(valor.y <  0) vy = -v;
-			if(valor.y == 0) vy /= 2;
-			
-			if(valor.x >  0) vx =  v;
-			if(valor.x <  0) vx = -v;
-			if(valor.x == 0) vx /= 2;
-
-			y += vy;
-			x += vx;
-			
-
-			/* sem inercia 
-			
-			if(valor.y >  0) y += v;
-			if(valor.y <  0) y -= v;
-			
-			if(valor.x >  0) x += v;
-			if(valor.x <  0) x -= v;
-			*/
-			
-			atirar = valor.a;
-		}
-		else
-		{
-			status = 2;
-			vidas--;
+			status = eNaveExplosao;
 			tempo = 70;
 			energia = 0;
 		}
 	}
 
 	/* se estiver explodindo */
-	if (status == 2)
+	if (status == eNaveExplosao)
 	{
 		/* se o tempo explodindo esgotou */
 		if (tempo <= 0)
 		{
-			status = 3;
+			v = 12;
+			status = eNaveRenacer;
 			energia = 100;
 		}
 		else

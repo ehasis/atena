@@ -104,6 +104,10 @@ SOURCE=.\erro.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\funcoes.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\graficos.cpp
 # End Source File
 # Begin Source File
@@ -145,6 +149,10 @@ SOURCE=.\entrada.h
 # Begin Source File
 
 SOURCE=.\erro.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\funcoes.h
 # End Source File
 # Begin Source File
 

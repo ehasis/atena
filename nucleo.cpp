@@ -54,7 +54,7 @@ void MostrarPerdeu()
 	char str[40];
 	clear(screen);
 	textout_centre(screen, font, "Voce morreu!", 320, 200, makecol(255,255,0));
-	sprintf(str,"Sua Pontuacao: %d",nave1.GetPontos());
+	sprintf(str,"Sua Pontuacao: %d",nave1.pontos);
 	textout_centre(screen, font, str, 320, 220, makecol(255,255,0));
 	rest(700);
 	clear_keybuf();
@@ -65,73 +65,36 @@ void MostrarPerdeu()
 //------------------------------------------------------------
 void ChecarImpacto()
 {
-	register int j;
-	int hit=0, hit_bala = 0, hit_powerup=0;
-
-	//Verifica impacto com alien
-	for (j = 0; j < 30; j++)
+	//Verifica impacto com alien ou bala do alien
+	for (register int j = 0; j < 30; j++)
 	{
-		if(alien[j].GetStatus() == eAlienNormal
-		&& nave1.GetStatus() == eNaveNormal
+		if(alien[j].status == eAlienNormal
+		&& nave1.status == eNaveNormal
 		&& nave1.Colisao(alien[j].Rect()))
 		{
-			alien[j].SetStatus(eAlienInativo);
-			hit = 1;
+			alien[j].status = eAlienInativo;
+			num_aliens--;
+			nave1.DecEnergia(50);
+			nave1.status = eNaveEscudo;
+			nave1.pontos++;
 		}
 
 		if (balaalien[j].ativa
-		&& nave1.GetStatus() == eNaveNormal
+		&& nave1.status == eNaveNormal
 		&& nave1.Colisao(balaalien[j].Rect()))
 		{
 			balaalien[j].ativa = 0;
-			hit_bala = 1;
+			nave1.DecEnergia(25);
 		}
 	}
 
 	//Verifica impacto com powerup
 	if (powerup.status
-	&& nave1.GetStatus() == eNaveNormal
+	&& nave1.status == eNaveNormal
 	&& nave1.Colisao(powerup.Rect()))
 	{
 		powerup.status = 0;
-		hit_powerup = 1;
-	}
-	
-
-	if(hit)
-	{
-		if (nave1.GetEnergia() < 50)
-		{
-			nave1.IncCasco(nave1.GetEnergia() - 50);
-			nave1.SetEnergia(0);
-		}
-		else
-			nave1.IncEnergia(-50);
-		
-		nave1.IncPontos(1);
-		nave1.SetStatus(eNaveEscudo);
-		num_aliens--;
-	}
-	
-	if (hit_bala)
-	{
-		if (nave1.GetEnergia() < 25)
-		{
-			nave1.IncCasco(nave1.GetEnergia() - 25);
-			nave1.SetEnergia(0);
-		}
-		else
-			nave1.IncEnergia(-25);
-
-		nave1.SetStatus(eNaveEscudo);
-	}
-
-	if(hit_powerup)
-	{
-		if (nave1.GetEnergia() > 50)
-			nave1.SetEnergia(100);
-		else
-			nave1.IncEnergia(50);
+		nave1.IncEnergia(50);
 	}
 }
 
@@ -164,7 +127,7 @@ void AtirarAlien(int x, int y)
 {
 	//static int atirar = 0;
 
-	int nx = nave1.GetX();
+	int nx = nave1.x;
 
 	if(num_balasalien == 29)
 		num_balasalien = 0;
@@ -203,13 +166,13 @@ void CriarAlien(int tipo)
 	
 	if(alien_atual == 29) alien_atual = 0;
 
-	alien[alien_atual].SetStatus(eAlienNormal);
-	alien[alien_atual].SetX(rand()%600);
-	alien[alien_atual].SetY(rand()%420 - 480);
-	alien[alien_atual].SetL(50);
-	alien[alien_atual].SetA(50);
-	alien[alien_atual].SetTipo(tipo);
-	alien[alien_atual].SetEnergia(5 * tipo);
+	alien[alien_atual].status = eAlienNormal;
+	alien[alien_atual].x = rand()%600;
+	alien[alien_atual].y = rand()%420 - 480;
+	alien[alien_atual].l = 50;
+	alien[alien_atual].a = 50;
+	alien[alien_atual].tipo = tipo;
+	alien[alien_atual].energia = 5 * tipo;
 
 	alien_atual++;
 }
@@ -255,7 +218,7 @@ void IniciarObjetos()
 	for (int i = 0; i < 30; i++)
 	{
 		alien[i].SetArquivoDat(load_datafile("alien.dat"));
-		alien[i].SetStatus(eAlienInativo);
+		alien[i].status = eAlienInativo;
 	}
 }
 
@@ -265,19 +228,21 @@ void AtualizarStatus(BITMAP *bmp)
 {
 	masked_blit((BITMAP *)data[PAINEL].dat, bmp, 0, 0, 0, 0, 200, 50);
 
-	sprintf(str,"Mortes : %d     ", nave1.GetPontos());
+	sprintf(str,"Mortes : %d     ", nave1.pontos);
 
 	escrever(bmp, str,        5,  5, makecol(255,255,255));
 	escrever(bmp, "Casco  :", 5, 15, makecol(255,255,255));
 	escrever(bmp, "Energia:", 5, 25, makecol(255,255,255));
 
-	barra_progresso(bmp, 70, 25, 100, nave1.GetEnergia());
-	barra_progresso(bmp, 70, 15, 100, nave1.GetCasco());
+	barra_progresso(bmp, 70, 25, 100, nave1.energia);
+	barra_progresso(bmp, 70, 15, 100, nave1.casco);
 }
 
 //------------------------------------------------------------
 void AtualizarObjetos()
 {
+	register int i;
+
 	if(num_aliens < max_aliens)
 		CriarAlien(1);
 	
@@ -289,24 +254,24 @@ void AtualizarObjetos()
 	nave1.Atualizar(entrada1);
 	
 	//verifica se pode atirar
-	if (nave1.Atirar() && tempo_prox_tiro >= 2)
+	if (nave1.atirar && tempo_prox_tiro >= 2)
 	{
-		Atirar(nave1.GetX() + (nave1.GetL() / 2), nave1.GetY());
+		Atirar(nave1.x + (nave1.l / 2), nave1.y);
 		tempo_prox_tiro = 0;
 	}
 	tempo_prox_tiro++;
 
 	//verifica se o casco foi destruido
-	if (nave1.GetCasco() <= 0) MostrarPerdeu();
+	if (nave1.casco <= 0) MostrarPerdeu();
 
 	for (j = 0; j < 30; j++)
 	{
 		
-		if (alien[j].GetStatus() == eAlienNormal
-		&&  alien[j].GetY() >= 60
-		&&  alien[j].GetY() <  63)
+		if (alien[j].status == eAlienNormal
+		&&  alien[j].y >= 60
+		&&  alien[j].y <  63)
 		{
-			AtirarAlien(alien[j].GetX(), alien[j].GetY());
+			AtirarAlien(alien[j].x, alien[j].y);
 		}
 
 		//Bala
@@ -329,21 +294,20 @@ void AtualizarObjetos()
 		//Impacto e morte com o Alien
 		if (bala[j].ativa)
 		{
-			for (register int i = 0; i < 30; i++)
+			for (i = 0; i < 30; i++)
 			{
 				if (bala[j].ativa
-				&& alien[i].GetStatus() == eAlienNormal
+				&& alien[i].status == eAlienNormal
 				&& alien[i].Colisao(bala[j].Rect()))
 				{
 					bala[j].ativa = 0;
-					alien[i].IncEnergia(-1);
-					//alien[i].SetStatus(eAlienEscudo);
-					if (alien[i].GetEnergia() <= 0)
+					alien[i].energia--;
+					if (alien[i].energia <= 0)
 					{
 						play_sample((SAMPLE *)data[WAV_EXPLOSAO1].dat, 255, 128, 1000, 0);
-						alien[i].SetStatus(eAlienExplosao);
-						alien[i].SetTempo(25);
-						nave1.IncPontos(1);
+						alien[i].status = eAlienExplosao;
+						alien[i].tempo = 25;
+						nave1.pontos++;
 					}
 					break;
 				}
@@ -351,14 +315,14 @@ void AtualizarObjetos()
 		}
 	
 		//Alien		
-		if (alien[j].GetStatus() != eAlienInativo)
+		if (alien[j].status != eAlienInativo)
 		{
 			alien[j].Atualizar();
-			if (alien[j].GetStatus() != eAlienInativo)
+			if (alien[j].status != eAlienInativo)
 			{
-				if (nave1.GetPontos() >  50) alien[j].IncY(2);
-				if (nave1.GetPontos() > 100) alien[j].IncY(2);
-				alien[j].IncY(3);
+				if (nave1.pontos >  50) alien[j].y += 2;
+				if (nave1.pontos > 100) alien[j].y += 2;
+				alien[j].y += 3;
 			}
 			else
 				num_aliens--;
@@ -380,7 +344,7 @@ void AtualizarObjetos()
 		masked_blit((BITMAP *)data[HEAL].dat,buffer,0,0,powerup.x,powerup.y,50,50);
 
 	tempo_prox_alien++;
-	if (nave1.GetPontos() > 100) tempo_prox_alien +=2;
+	if (nave1.pontos > 100) tempo_prox_alien +=2;
 	
 	if (tempo_prox_alien >= 100)
 	{

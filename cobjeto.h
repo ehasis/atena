@@ -21,32 +21,12 @@ struct TRect
 class CObjeto  
 {
 public:
-	int GetX() { return x; }
-	int GetY() { return y; }
-	int GetA() { return a; }
-	int GetL() { return l; }
-	int GetV() { return v; }
-	
-	void SetX(int valor) { x  = valor; }
-	void SetY(int valor) { y  = valor; }
-	void SetA(int valor) { a  = valor; }
-	void SetL(int valor) { l  = valor; }
-	void SetV(int valor) { v  = valor; }
-	
-	void IncX(int valor) { x += valor; }
-	void IncY(int valor) { y += valor; }
-	void IncA(int valor) { a += valor; }
-	void IncL(int valor) { l += valor; }
-	void IncV(int valor) { v += valor; }
-	
-	int Colisao(TRect &rect);
-	TRect Rect();
-
-protected:
 	int x, y;
 	int a, l;
 	int v;
+	int Colisao(TRect &rect);
 	TRect ret;
+	TRect Rect();
 };
 
 #endif

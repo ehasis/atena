@@ -134,6 +134,26 @@ void CNave::Atualizar(TEntrada &valor)
 	}
 }
 
+//------------------------------------------------------------
+void CNave::DecEnergia(int valor)
+{
+	if (energia < valor)
+	{
+		casco -=  valor - energia;
+		energia = 0;
+	}
+	else
+		energia -= valor;
+}
+
+//------------------------------------------------------------
+void CNave::IncEnergia(int valor)
+{
+	if (energia > valor)
+		energia = 100;
+	else
+		energia += valor;
+}
 
 //------------------------------------------------------------
 void CAlien::SetArquivoDat(DATAFILE *arquivo)

@@ -141,6 +141,10 @@ SOURCE=.\centrada.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\cfundo.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\cnave.h
 # End Source File
 # Begin Source File

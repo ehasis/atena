@@ -1,5 +1,5 @@
  /*------------------------------------------------------------*
- *  cnave.h - 
+ *  cnave.h - Definicao das classes de Naves
 *------------------------------------------------------------*
 *  Nome: Edison Henrique Andreassy
 *  Data: quarta-feira, 19 de setembro de 2001
@@ -19,6 +19,7 @@ enum EStatusAlien
 	eAlienNormal,
 	eAlienEscudo,
 	eAlienExplosao,
+	eAlienInativo
 };
 
 enum EStatusNave
@@ -51,7 +52,7 @@ struct TBala
 	int x, y;
 	int a, l;
 	float vx, vy;
-	int active;
+	int ativa;
 	TRect Rect()
 	{
 		TRect ret;
@@ -69,31 +70,31 @@ class CNave: public CObjeto
 public:
 	CNave();
 	//Casco
-	int  getCasco()            { return casco;     }
-	void somCasco(int valor)   { casco  += valor;  }
-	void setCasco(int valor)   { casco  =  valor;  }
+	int  GetCasco()            { return casco;     }
+	void IncCasco(int valor)   { casco  += valor;  }
+	void SetCasco(int valor)   { casco  =  valor;  }
 
 	//Tempo
-	int  getTempo()            { return tempo;     }
-	void setTempo(int valor)   { tempo  = valor;   }
+	int  GetTempo()            { return tempo;     }
+	void SetTempo(int valor)   { tempo  = valor;   }
 	
 	//Pontos
-	int  getPontos()           { return pontos;    }
-	void somPontos(int valor)  { pontos += valor;  }
-	void setPontos(int valor)  { pontos =  valor;  }
+	int  GetPontos()           { return pontos;    }
+	void IncPontos(int valor)  { pontos += valor;  }
+	void SetPontos(int valor)  { pontos =  valor;  }
 	
 	//Energia
-	int  getEnergia()          { return energia;   }
-	void somEnergia(int valor) { energia += valor; }
-	void setEnergia(int valor) { energia =  valor; }
+	int  GetEnergia()          { return energia;   }
+	void IncEnergia(int valor) { energia += valor; }
+	void SetEnergia(int valor) { energia =  valor; }
 
 	//Status
-	EStatusNave getStatus() { return status; }
-	void setStatus(EStatusNave valor) { status = valor; }
+	EStatusNave GetStatus() { return status; }
+	void SetStatus(EStatusNave valor) { status = valor; }
 
 	//Diversos
 	int Atirar() { return atirar; }
-	void setDataFile(DATAFILE *arquivo);
+	void SetArquivoDat(DATAFILE *arquivo);
 	void Atualizar(TEntrada &valor);
 	void Desenhar(BITMAP *bmp);
 	void Desligar();
@@ -109,24 +110,41 @@ private:
 	int vx, vy;
 };
 
-struct TAlien
+//------------------------------------------------------------
+class CAlien: public CObjeto
 {
-	int x, y;
-	int a, l;
-	int status;
-	int type;
-	int hit_points;
-	int time;
-	TRect Rect()
-	{
-		TRect ret;
-		ret.e = x;
-		ret.t = y;
-		ret.d = x + l;
-		ret.b = y + a;
+public:
+	//Energia
+	int  GetEnergia()          { return energia;   }
+	void IncEnergia(int valor) { energia += valor; }
+	void SetEnergia(int valor) { energia =  valor; }
+	
+	//Tempo
+	int  GetTempo()            { return tempo;     }
+	void IncTempo(int valor)   { tempo  += valor;  }
+	void SetTempo(int valor)   { tempo   =  valor; }
+	
+	//Status
+	EStatusAlien GetStatus() { return status; }
+	void SetStatus(EStatusAlien valor) { status = valor; }
 
-		return ret;
-	}
+	//Tipo
+	int  GetTipo() { return tipo; }
+	void SetTipo(int valor) { tipo = valor; }
+
+	//Diversos
+	void SetArquivoDat(DATAFILE *arquivo);
+	void Desenhar(BITMAP *bmp);
+	void Atualizar();
+	void Desligar();
+
+private:
+	EStatusAlien status;
+	DATAFILE *data;
+	int energia;
+	int tempo;
+	int atirar;
+	int tipo;
 };
 
 #endif

@@ -12,9 +12,6 @@
 #ifndef objgraf_h_incluido
 #define objgraf_h_incluido
 
-#include <allegro.h>
-#include <winalleg.h>
-
 void DesenharObjetos(BITMAP *bmp);
 
 #endif

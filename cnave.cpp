@@ -10,6 +10,7 @@
 
 #include <allegro.h>
 #include "datnave.h"
+#include "datalien.h"
 #include "cnave.h"
 #include "centrada.h"
 
@@ -35,7 +36,7 @@ CNave::CNave()
 
 
 //------------------------------------------------------------
-void CNave::setDataFile(DATAFILE *arquivo)
+void CNave::SetArquivoDat(DATAFILE *arquivo)
 {
 	data = arquivo;
 }
@@ -53,14 +54,14 @@ void CNave::Desenhar(BITMAP *bmp)
 	{
 	case eNaveEscudo:
 		draw_sprite(bmp, (BITMAP *)data[ESCUDO].dat, x, y);
-	
+		status = eNaveNormal;
+
 	case eNaveNormal:
 		draw_sprite(bmp, (BITMAP *)data[NORMAL].dat, x, y);
-		status = eNaveNormal;
 		break;
 	
 	case eNaveExplosao:
-	
+
 	case eNaveRenacer:
 		draw_sprite(bmp, (BITMAP *)data[EXPLOSAO].dat, x, y);
 		break;
@@ -134,51 +135,51 @@ void CNave::Atualizar(TEntrada &valor)
 }
 
 
-class CAlien: public CObjeto
+//------------------------------------------------------------
+void CAlien::SetArquivoDat(DATAFILE *arquivo)
 {
-public:
-	//Energia
-	int  getEnergia()          { return energia;   }
-	void somEnergia(int valor) { energia += valor; }
-	void setEnergia(int valor) { energia =  valor; }
-	void setTempo(int valor)   { tempo   =  valor; }
-	
-	//Status
-	EStatusAlien getStatus() { return status; }
-	void setStatus(EStatusAlien valor) { status = valor; }
-	
-	//Diversos
-	void setDataFile(DATAFILE *arquivo);
-	void Desenhar(BITMAP *bmp);
-	void Atualizar();
-	void Desligar();
+	data = arquivo;
+}
 
-private:
-	EStatusAlien status;
-	DATAFILE *data;
-	int energia;
-	int tempo;
-	int atirar;
-	int tipo;
-};
+//------------------------------------------------------------
+void CAlien::Desligar()
+{
+	unload_datafile(data);
+}
 
-/*
+//------------------------------------------------------------
 void CAlien::Desenhar(BITMAP *bmp)
 {
 
 	switch(status)
 	{
-	case eAlienEscudo:
-		draw_sprite(bmp, (BITMAP *)data[ALIEN_ESCUDO].dat, x, y);	
-	
+	//case eAlienEscudo:
+		//draw_sprite(bmp, (BITMAP *)data[ALIEN_ESCUDO].dat, x, y);	
+		//status = eAlienNormal;
 	case eAlienNormal:
 		draw_sprite(bmp, (BITMAP *)data[ALIEN_NORMAL].dat, x, y);
-		status = eAlienNormal;
 		break;
 	
 	case eAlienExplosao:
-		masked_blit((BITMAP *)data[EXPLOSAO1].dat, bmp, 250-(((tempo * 2) - ((tempo * 2)%10)) * 5), 0, x, y, 50, 50);
+		masked_blit((BITMAP *)data[ALIEN_EXPLOSAO].dat, bmp, 250-(((tempo * 2) - ((tempo * 2)%10)) * 5), 0, x, y, 50, 50);
 		break;
 	}
 }
-*/
+
+//------------------------------------------------------------
+void CAlien::Atualizar()
+{
+	if (status == eAlienNormal || status == eAlienEscudo)
+	{
+		if (x < -l) status = eAlienInativo;
+	}
+	
+	if (status == eAlienExplosao)
+	{
+		tempo--;
+		if (tempo <= 0)
+		{
+			status = eAlienInativo;
+		}
+	}
+}

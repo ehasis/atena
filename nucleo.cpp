@@ -19,12 +19,11 @@
 #include "atena.h"
 #include "string.h"
 #include "cnave.h"
+#include "cfundo.h"
 #include "funcoes.h"
 
 /* Variaveis */
 int j;
-int scroll_y = 0;
-int scroll_y2 = 0;
 int tempo_prox_tiro = 0;
 int tempo_prox_alien = 0;
 int tempo_prox_powerup = 700;
@@ -40,17 +39,22 @@ DATAFILE	*data;
 
 /* Objetos */
 CNave		nave1;
+CAlien		alien[30];
+CFundo		fundo;
+
 TPowerUp	powerup;
-TBala		bala[30], balaalien[30];
-TAlien		myalien[30];
+TBala		bala[30];
+TBala		balaalien[30];
 
 
+//------------------------------------------------------------
+// Finalizacao do jogo (preliminar)
 void MostrarPerdeu()
 {
 	char str[40];
 	clear(screen);
 	textout_centre(screen, font, "Voce morreu!", 320, 200, makecol(255,255,0));
-	sprintf(str,"Sua Pontuacao: %d",nave1.getPontos());
+	sprintf(str,"Sua Pontuacao: %d",nave1.GetPontos());
 	textout_centre(screen, font, str, 320, 220, makecol(255,255,0));
 	rest(700);
 	clear_keybuf();
@@ -58,123 +62,80 @@ void MostrarPerdeu()
 	final_jogo = 1;
 }
 
-int ChecarColisao(TRect &recta, TRect &rectb)
-{
-	if (recta.d < rectb.e) return 0;
-	if (recta.b < rectb.t) return 0;
-	if (recta.e > rectb.d) return 0;
-	if (recta.t > rectb.b) return 0;
-
-	return 1;
-}
-
+//------------------------------------------------------------
 void ChecarImpacto()
 {
 	register int j;
 	int hit=0, hit_bala = 0, hit_powerup=0;
 
 	//Verifica impacto com alien
-	for(j=0;j<30;j++)
+	for (j = 0; j < 30; j++)
 	{
-		if(myalien[j].status == 1
-		&& nave1.getStatus() == eNaveNormal
-		&& nave1.Colisao(myalien[j].Rect()))
+		if(alien[j].GetStatus() == eAlienNormal
+		&& nave1.GetStatus() == eNaveNormal
+		&& nave1.Colisao(alien[j].Rect()))
 		{
-			myalien[j].status=0;
-			hit=1;
+			alien[j].SetStatus(eAlienInativo);
+			hit = 1;
 		}
-		
-		if (balaalien[j].active
-		&& nave1.getStatus() == eNaveNormal
+
+		if (balaalien[j].ativa
+		&& nave1.GetStatus() == eNaveNormal
 		&& nave1.Colisao(balaalien[j].Rect()))
 		{
-			balaalien[j].active = 0;
+			balaalien[j].ativa = 0;
 			hit_bala = 1;
 		}
 	}
 
 	//Verifica impacto com powerup
-	if(powerup.status
-	&& nave1.getStatus() == eNaveNormal
+	if (powerup.status
+	&& nave1.GetStatus() == eNaveNormal
 	&& nave1.Colisao(powerup.Rect()))
 	{
+		powerup.status = 0;
 		hit_powerup = 1;
 	}
 	
 
 	if(hit)
 	{
-		if (nave1.getEnergia() <= 0)
-			nave1.somCasco(-50);
+		if (nave1.GetEnergia() < 50)
+		{
+			nave1.IncCasco(nave1.GetEnergia() - 50);
+			nave1.SetEnergia(0);
+		}
 		else
-			if (nave1.getEnergia() < 50)
-			{
-				nave1.somCasco(nave1.getEnergia() - 50);
-				nave1.setEnergia(0);
-			}
-			else
-				nave1.somEnergia(-50);
-
+			nave1.IncEnergia(-50);
 		
-		nave1.somPontos(1);
-		nave1.setStatus(eNaveEscudo);
+		nave1.IncPontos(1);
+		nave1.SetStatus(eNaveEscudo);
 		num_aliens--;
 	}
+	
 	if (hit_bala)
 	{
-		if (nave1.getEnergia() <= 0)
-			nave1.somCasco(-25);
+		if (nave1.GetEnergia() < 25)
+		{
+			nave1.IncCasco(nave1.GetEnergia() - 25);
+			nave1.SetEnergia(0);
+		}
 		else
-			if (nave1.getEnergia() < 25)
-			{
-				nave1.somCasco(nave1.getEnergia() - 25);
-				nave1.setEnergia(0);
-			}
-			else
-				nave1.somEnergia(-25);
-		nave1.setStatus(eNaveEscudo);
+			nave1.IncEnergia(-25);
+
+		nave1.SetStatus(eNaveEscudo);
 	}
 
 	if(hit_powerup)
 	{
-		if(powerup.status==1)
-		{
-			//nave1.incV(4);
-			if (nave1.getEnergia() > 50)
-				nave1.setEnergia(100);
-			else
-				nave1.somEnergia(50);
-		}
-		powerup.status=0;
+		if (nave1.GetEnergia() > 50)
+			nave1.SetEnergia(100);
+		else
+			nave1.IncEnergia(50);
 	}
 }
 
-void ChecarMorteAlien()
-{
-	register int i,j;
-	
-	for(i = 0; i < 30; i++)
-	{
-		for(j = 0; j < 30; j++)
-		{
-			if (bala[i].active
-			&& myalien[j].status == 1
-			&& ChecarColisao(bala[i].Rect(), myalien[j].Rect()))
-			{
-				bala[i].active = 0;
-				myalien[j].hit_points--;
-				if (myalien[j].hit_points <= 0)
-				{
-					play_sample((SAMPLE *)data[WAV_EXPLOSAO1].dat, 255, 128, 1000, 0);
-					myalien[j].status = 2;
-					myalien[j].time = 25;
-					nave1.somPontos(1);
-				}
-			}
-		}
-	}
-}
-
+//------------------------------------------------------------
 void Atirar(int x, int y)
 {
 	static int atirar = 0;
@@ -186,73 +147,74 @@ void Atirar(int x, int y)
 	bala[num_balas].y = y + 10;
 	bala[num_balas].a = 20;
 	bala[num_balas].l = 20;
-	bala[num_balas].active = 1;
+	bala[num_balas].ativa = 1;
 	num_balas++;
 	
 	atirar++;
 	if (atirar >= 3)
 	{
 		atirar = 0;
+		stop_sample((SAMPLE *)data[WAV_TIRO1].dat);
 		play_sample((SAMPLE *)data[WAV_TIRO1].dat, 160, 128, 1000, 0);
 	}
 }
 
+//------------------------------------------------------------
 void AtirarAlien(int x, int y)
 {
 	//static int atirar = 0;
 
-	int nx = nave1.getX();
-
+	int nx = nave1.GetX();
 
 	if(num_balasalien == 29)
 		num_balasalien = 0;
 
 
-	balaalien[num_balas].x = x + 20;
-	balaalien[num_balas].y = y + 23;
-	balaalien[num_balas].a = 20;
-	balaalien[num_balas].l = 20;
+	balaalien[num_balasalien].x = x + 20;
+	balaalien[num_balasalien].y = y + 23;
+	balaalien[num_balasalien].a = 20;
+	balaalien[num_balasalien].l = 20;
 	
 	if (nx > x + 10)
-		balaalien[num_balas].vx = 7;
+		balaalien[num_balasalien].vx = 7;
 	if (nx <= x + 10 && nx >= x - 10)
-		balaalien[num_balas].vx = 0;
+		balaalien[num_balasalien].vx = 0;
 	if (nx < x - 10)
-		balaalien[num_balas].vx = -7;
+		balaalien[num_balasalien].vx = -7;
 
-	balaalien[num_balas].vy = 10;
-	balaalien[num_balas].active = 1;
+	balaalien[num_balasalien].vy = 10;
+	balaalien[num_balasalien].ativa = 1;
 	num_balasalien++;
 	
 	//atirar++;
 	//if (atirar >= 2)
 	//{
 	//	atirar = 0;
+	//	stop_sample((SAMPLE *)data[WAV_TIRO1].dat);
 	//	play_sample((SAMPLE *)data[WAV_TIRO1].dat, 160, 128, 1000, 0);
 	//}
 }
 
-void CriarAlien(int type)
+//------------------------------------------------------------
+void CriarAlien(int tipo)
 {
-	static int alien_atual;
+	static int alien_atual = 0;
 	num_aliens++;
 	
-	if(alien_atual == 29)
-		alien_atual = 0;
-	
-	myalien[alien_atual].x = rand()%600;
-	myalien[alien_atual].y = rand()%420 - 480;
-	myalien[alien_atual].l = 50;
-	myalien[alien_atual].a = 50;
-	myalien[alien_atual].type = type;
-	
-	if(type == 0)
-		myalien[alien_atual].hit_points = 5;
+	if(alien_atual == 29) alien_atual = 0;
 
-	myalien[alien_atual].status = 1;
+	alien[alien_atual].SetStatus(eAlienNormal);
+	alien[alien_atual].SetX(rand()%600);
+	alien[alien_atual].SetY(rand()%420 - 480);
+	alien[alien_atual].SetL(50);
+	alien[alien_atual].SetA(50);
+	alien[alien_atual].SetTipo(tipo);
+	alien[alien_atual].SetEnergia(5 * tipo);
+
 	alien_atual++;
 }
 
+//------------------------------------------------------------
 void CriarPowerUp()
 {
 	powerup.x = rand()%590;
@@ -262,7 +224,7 @@ void CriarPowerUp()
 	powerup.status = 1;	
 }
 
-/***********************************************************/
+//------------------------------------------------------------
 void IniciarObjetos()
 {	
 	//struct time t;
@@ -280,142 +242,147 @@ void IniciarObjetos()
 
 	data = load_datafile("atena.dat");
 	buffer = create_bitmap(640, 480);
-	set_pallete((RGB *)data[PALETA_JOGO].dat);
-
+	clear(buffer);
+	
 	text_mode(-1);
 	clear_keybuf();
 	
 	play_midi((MIDI *)data[MID_FUNDO1].dat, 1);
-	nave1.setDataFile(load_datafile("nave.dat"));
+	
+	//Objetos
+	fundo.SetArquivoDat(load_datafile("atena.dat"));
+	nave1.SetArquivoDat(load_datafile("nave.dat"));
+	for (int i = 0; i < 30; i++)
+	{
+		alien[i].SetArquivoDat(load_datafile("alien.dat"));
+		alien[i].SetStatus(eAlienInativo);
+	}
 }
 
 //------------------------------------------------------------
 //montagem da barra de status
-void AtualizarStatus()
+void AtualizarStatus(BITMAP *bmp)
 {
-	masked_blit((BITMAP *)data[PAINEL].dat,buffer,0,0,0,0,200,50);
-	
-	sprintf(str,"Mortes : %d   ", nave1.getPontos());
-	
-	escrever(buffer, str, 5, 5, makecol(255,255,255));
-	escrever(buffer, "Casco  :", 5, 15, makecol(255,255,255));
-	escrever(buffer, "Energia:", 5, 25, makecol(255,255,255));
-	
-	barra_progresso(buffer, 70, 25, 100, nave1.getEnergia());
-	barra_progresso(buffer, 70, 15, 100, nave1.getCasco());
-}
+	masked_blit((BITMAP *)data[PAINEL].dat, bmp, 0, 0, 0, 0, 200, 50);
 
+	sprintf(str,"Mortes : %d     ", nave1.GetPontos());
+
+	escrever(bmp, str,        5,  5, makecol(255,255,255));
+	escrever(bmp, "Casco  :", 5, 15, makecol(255,255,255));
+	escrever(bmp, "Energia:", 5, 25, makecol(255,255,255));
+
+	barra_progresso(bmp, 70, 25, 100, nave1.GetEnergia());
+	barra_progresso(bmp, 70, 15, 100, nave1.GetCasco());
+}
 
 //------------------------------------------------------------
 void AtualizarObjetos()
 {
 	if(num_aliens < max_aliens)
-		CriarAlien(0);
+		CriarAlien(1);
 	
-	/* fundo */
-	blit((BITMAP *)data[SOL].dat,buffer, 0, 0, 0, 0,640, 480);
-	masked_blit((BITMAP *)data[ESTRELAS1].dat,buffer, 0, 0, 0, scroll_y2 - 480,640, 480);
-	masked_blit((BITMAP *)data[ESTRELAS1].dat,buffer, 0, 0, 0, scroll_y2,      640, 480);
-	masked_blit((BITMAP *)data[ESTRELAS2].dat,buffer, 0, 0, 0, scroll_y  - 480,640, 480);
-	masked_blit((BITMAP *)data[ESTRELAS2].dat,buffer, 0, 0, 0, scroll_y,       640, 480);
+	//fundo	
+	clear_to_color(buffer, makecol(255,0,255));
+	fundo.Atualizar();
 
-	scroll_y2 += 1;
-	scroll_y  += 2;
-
-	if(scroll_y  == 480) scroll_y  = 0;
-	if(scroll_y2 == 480) scroll_y2 = 0;
-
-
-	/* atualiza dados da nave */
+	//atualiza dados da nave
 	nave1.Atualizar(entrada1);
 	
-	ChecarMorteAlien();
-	ChecarImpacto();
-
-	/* verifica se pode atirar */
+	//verifica se pode atirar
 	if (nave1.Atirar() && tempo_prox_tiro >= 2)
 	{
-		Atirar(nave1.getX() + (nave1.getL() / 2), nave1.getY());
+		Atirar(nave1.GetX() + (nave1.GetL() / 2), nave1.GetY());
 		tempo_prox_tiro = 0;
 	}
 	tempo_prox_tiro++;
 
-	/* verifica se o casco foi destruido */
-	if (nave1.getCasco() <= 0) MostrarPerdeu();
+	//verifica se o casco foi destruido
+	if (nave1.GetCasco() <= 0) MostrarPerdeu();
 
-
-	for(j = 0; j < 30; j++)
+	for (j = 0; j < 30; j++)
 	{
+		
+		if (alien[j].GetStatus() == eAlienNormal
+		&&  alien[j].GetY() >= 60
+		&&  alien[j].GetY() <  63)
+		{
+			AtirarAlien(alien[j].GetX(), alien[j].GetY());
+		}
+
+		//Bala
 		bala[j].y -= 25;
 		balaalien[j].y += balaalien[j].vy;
 		balaalien[j].x += balaalien[j].vx;
-
 		
-		if (myalien[j].status == 1
-		&& myalien[j].y >= 60
-		&& myalien[j].y <= 65)
-			AtirarAlien(myalien[j].x, myalien[j].y);
-		
-		if(bala[j].y < -10)
-			bala[j].active = 0;
+		if (bala[j].y < -10)
+			bala[j].ativa = 0;
 
-		if(bala[j].active)
+		if (bala[j].ativa)
 			masked_blit((BITMAP *)data[TIRO].dat,buffer,0,0,bala[j].x,bala[j].y,20,20);
 
-		if(balaalien[j].y > 480)
-			balaalien[j].active = 0;
+		if (balaalien[j].y > 480)
+			balaalien[j].ativa = 0;
 
-		if(balaalien[j].active)
+		if (balaalien[j].ativa)
 			masked_blit((BITMAP *)data[TIROALIEN].dat,buffer,0,0,balaalien[j].x,balaalien[j].y,10,10);
 
-		if(myalien[j].status == 1)
-			masked_blit((BITMAP *)data[ALIEN].dat,buffer,0,0,myalien[j].x,myalien[j].y,50,50);
-		
-		if(myalien[j].status == 2)
+		//Impacto e morte com o Alien
+		if (bala[j].ativa)
 		{
-			masked_blit((BITMAP *)data[EXPLOSAO1].dat, buffer, 
-				250-(((myalien[j].time*2) - ((myalien[j].time*2)%10))*5),
-				0, myalien[j].x, myalien[j].y, 50, 50);
+			for (register int i = 0; i < 30; i++)
+			{
+				if (bala[j].ativa
+				&& alien[i].GetStatus() == eAlienNormal
+				&& alien[i].Colisao(bala[j].Rect()))
+				{
+					bala[j].ativa = 0;
+					alien[i].IncEnergia(-1);
+					//alien[i].SetStatus(eAlienEscudo);
+					if (alien[i].GetEnergia() <= 0)
+					{
+						play_sample((SAMPLE *)data[WAV_EXPLOSAO1].dat, 255, 128, 1000, 0);
+						alien[i].SetStatus(eAlienExplosao);
+						alien[i].SetTempo(25);
+						nave1.IncPontos(1);
+					}
+					break;
+				}
+			}
 		}
-		
-		if(myalien[j].time > 0) myalien[j].time--;
-		
-		if(myalien[j].time <= 0 && myalien[j].status == 2)
+	
+		//Alien		
+		if (alien[j].GetStatus() != eAlienInativo)
 		{
-			myalien[j].status = 0;
-			num_aliens--;
-		}
-		
-		if(myalien[j].status)
-		{
-			if (nave1.getPontos() > 50) myalien[j].y += 2;
-			if (nave1.getPontos() > 100) myalien[j].y += 2;
-			myalien[j].y += 3;
-		}
-		if(myalien[j].x < -50 && myalien[j].status == 1)
-		{
-			num_aliens--;
-			myalien[j].status = 0;
+			alien[j].Atualizar();
+			if (alien[j].GetStatus() != eAlienInativo)
+			{
+				if (nave1.GetPontos() >  50) alien[j].IncY(2);
+				if (nave1.GetPontos() > 100) alien[j].IncY(2);
+				alien[j].IncY(3);
+			}
+			else
+				num_aliens--;
 		}
 	}
-		
+
+	ChecarImpacto();
+
 	tempo_prox_powerup--;
-	
-	if(tempo_prox_powerup == 0)
+	if (tempo_prox_powerup == 0)
 	{
-		tempo_prox_powerup=(rand()%500) + 600;
+		tempo_prox_powerup = (rand()%500) + 600;
 		CriarPowerUp();
 	}
 	
-	if(powerup.status) powerup.y += 3;
+	if (powerup.status) powerup.y += 3;
 	
-	if(powerup.status == 1)
+	if (powerup.status == 1)
 		masked_blit((BITMAP *)data[HEAL].dat,buffer,0,0,powerup.x,powerup.y,50,50);
 
-	if (nave1.getPontos() > 100) tempo_prox_alien +=2;
 	tempo_prox_alien++;
+	if (nave1.GetPontos() > 100) tempo_prox_alien +=2;
 	
-	if(tempo_prox_alien >= 100)
+	if (tempo_prox_alien >= 100)
 	{
 		tempo_prox_alien = 0;
 		max_aliens++;
@@ -429,18 +396,14 @@ void AtualizarObjetos()
 // desenha os objetos no bitmap da tela
 void DesenharObjetos(BITMAP *bmp)
 {
-	//fundo.Desenhar(buffer);
-	nave1.Desenhar(buffer);
-	//nave2.Desenhar(buffer);
-	//for (int i=0; i < 30; i++)
-	//{
-	//	bala[i].Desenhar(buffer);
-	//	balaalien[i].Desenhar(buffer);
-	//	aliens[i].Desenhar(buffer);
-	//}
-	//status.Desenhar(buffer);
-	AtualizarStatus();
-	blit(buffer, bmp, 0, 0, 0, 0, 640, 480);
+	fundo.Desenhar(bmp);
+	masked_blit(buffer, bmp, 0, 0, 0, 0, 640, 480);
+	for (register int i = 0; i < 30; i++)
+	{
+		alien[i].Desenhar(bmp);
+	}
+	nave1.Desenhar(bmp);
+	AtualizarStatus(bmp);
 }
 
 //------------------------------------------------------------
@@ -449,12 +412,10 @@ void DesligarObjetos()
 {
 	stop_midi();
 	destroy_bitmap(buffer);
+	fundo.Desligar();
 	nave1.Desligar();
-	//nave2.Desligar();
-	//for (int i=0; i < 30; i++)
-	//{
-	//	bala[i].Desligar();
-	//	balaalien[i].Desligar();
-	//	aliens[i].Desligar();
-	//}
+	for (register int i = 0; i < 30; i++)
+	{
+		alien[i].Desligar();
+	}
 }

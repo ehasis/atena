@@ -1,0 +1,18 @@
+inicio
+
+bmp tiro_01
+wav tiro_01_wav
+bmp tiro_02
+wav tiro_02_wav
+bmp tiro_03
+wav tiro_03_wav
+bmp tiro_04
+wav tiro_04_wav
+bmp tiro_05
+wav tiro_05_wav
+bmp tiro_06
+wav tiro_06_wav
+
+wav wav_tiro_explosao
+
+fim

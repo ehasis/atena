@@ -1,0 +1,12 @@
+inicio
+
+bmp arma_01
+bmp arma_01_sombra
+bmp arma_02
+bmp arma_02_sombra
+bmp arma_03
+bmp arma_03_sombra
+bmp arma_04
+bmp arma_04_sombra
+
+fim

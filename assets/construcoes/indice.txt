@@ -1,0 +1,11 @@
+inicio
+
+bmp construcao_ga_01
+bmp construcao_ga_02
+bmp construcao_ga_03
+bmp construcao_ga_04
+bmp construcao_ga_05
+bmp construcao_ga_06
+wav wav_explosao
+
+fim

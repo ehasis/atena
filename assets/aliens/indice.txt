@@ -1,0 +1,19 @@
+inicio
+
+bmp alien_01
+bmp alien_01_s
+bmp alien_02
+bmp alien_02_s
+bmp alien_03
+bmp alien_03_s
+bmp alien_04
+bmp alien_04_s
+bmp alien_05
+bmp alien_05_s
+bmp alien_06
+bmp alien_06_s
+bmp alien_07
+bmp alien_07_s
+wav wav_alien_explosao
+
+fim

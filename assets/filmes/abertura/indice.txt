@@ -1,0 +1,11 @@
+inicio
+
+bmp bmp_abertura
+mid mid_abertura
+bmp mulher_01
+bmp mulher_02
+bmp quadro_01
+bmp quadro_02
+wav wav_abertura
+
+fim

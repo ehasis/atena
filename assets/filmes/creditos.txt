@@ -1,0 +1,113 @@
+;************************************************************
+; Atena
+;
+; Script para os Créditos
+;
+;************************************************************
+
+inicio
+
+cls
+
+dat filmes/abertura.dat
+
+mid MID_ABERTURA
+
+bmp BMP_ABERTURA
+txt ATENA
+seg 5
+txt Desenvolvido por
+seg 3
+txt GA Entretenimento
+seg 3
+
+bmp MULHER_01
+txt Programacao:
+seg 3
+
+txt Diego Giacomelli
+seg 2
+
+txt Edison Henrique Andreassy
+seg 2
+
+bmp MULHER_02
+txt Historia:
+seg 3
+
+txt Vinicius
+seg 2
+
+bmp BMP_ABERTURA
+txt Artes Graficas:
+seg 3
+
+txt Adriano
+set 2
+
+txt Cintia Kimura
+seg 2
+
+txt Diego Giacomelli
+seg 2
+
+txt Edison Henrique Andreassy
+seg 2
+
+txt Henrique Yudi Kimura
+seg 2
+
+txt Wanderson Pereira
+seg 3
+
+bmp MULHER_01
+txt Agradecimentos Especiais:
+seg 2
+
+txt Sulema Munoz (Minha Esposa que Amo Tanto)
+seg 4
+
+txt Ademilson Cavaco
+seg 2
+
+txt Anderson
+
+txt Time da Allegro, por ter feito esta excelente biblioteca
+seg 2
+
+
+bmp MULHER_02
+txt Puxa vida, que legal, sempre quiz programar os creditos...
+seg 4
+
+txt Agora me sinto realizado...
+seg 3
+
+txt Este negocio de programacao de jogos eh muito legal...
+seg 4
+
+txt Recomendo!
+seg 2
+
+txt Tenho agora um recadinho para todos os brasileiros...
+seg 4
+
+txt BRASIL!!!! PENTACAMPEAO!!! UUUOOOOOOHHHHOOOOOOOOO!!!
+seg 5
+
+txt Hehehehehehehehe :)
+seg 2
+
+txt O papo esta bom, mas acho que voce quer jogar, nao eh?
+seg 2
+
+
+mid .
+seg 1
+bmp BMP_ABERTURA
+wav WAV_ABERTURA
+txt Entao tchau! :)
+seg 6
+
+
+fim

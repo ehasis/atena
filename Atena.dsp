@@ -38,8 +38,8 @@ RSC=rc.exe
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 0
-# PROP Output_Dir "Release"
-# PROP Intermediate_Dir "Release"
+# PROP Output_Dir "obj/msvc/atena/release"
+# PROP Intermediate_Dir "obj/msvc/atena/release"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /c
@@ -53,8 +53,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /machine:I386
-# ADD LINK32 galib/galib.lib alleg.lib /nologo /subsystem:windows /machine:I386
-# SUBTRACT LINK32 /incremental:yes /debug /force
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib alleg.lib "lib/galib.lib" "lib/alfont.lib" /nologo /subsystem:windows /machine:I386 /out:"bin/Atena.exe"
 
 !ELSEIF  "$(CFG)" == "Atena - Win32 Debug"
 
@@ -65,13 +64,12 @@ LINK32=link.exe
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "Debug"
-# PROP Intermediate_Dir "Debug"
+# PROP Output_Dir "obj/msvc/atena/debug"
+# PROP Intermediate_Dir "obj/msvc/atena/debug"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /GZ /c
 # ADD CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /GZ /c
-# SUBTRACT CPP /WX /Fr
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x416 /d "_DEBUG"
@@ -81,8 +79,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 galib/galibd.lib alleg.lib /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
-# SUBTRACT LINK32 /profile /pdb:none /incremental:no /map /nodefaultlib
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib alld.lib "lib/galibd.lib" "lib/alfontd.lib" /nologo /subsystem:windows /debug /machine:I386 /out:"bin/Atena.exe" /pdbtype:sept
 
 !ENDIF 
 
@@ -90,252 +87,236 @@ LINK32=link.exe
 
 # Name "Atena - Win32 Release"
 # Name "Atena - Win32 Debug"
-# Begin Group "Source Files"
+# Begin Group "Cabecalhos"
 
-# PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
+# PROP Default_Filter "*.h"
 # Begin Source File
 
-SOURCE=.\calien.cpp
+SOURCE=.\src\atena\arquivos.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\carma.cpp
+SOURCE=.\src\atena\calien.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\cbonus.cpp
+SOURCE=.\src\atena\callegro.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\cchefe.cpp
+SOURCE=.\src\atena\carma.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\ccolecao.cpp
+SOURCE=.\src\atena\cbonus.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\cconfig.cpp
+SOURCE=.\src\atena\cchefe.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\cconstrucao.cpp
+SOURCE=.\src\atena\ccolecao.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\cexplosao.cpp
+SOURCE=.\src\atena\ccolecaoavancada.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\cfase.cpp
+SOURCE=.\src\atena\cconfig.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\cfilme.cpp
+SOURCE=.\src\atena\cconstrucao.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\cfundo.cpp
+SOURCE=.\src\atena\cexplosao.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\cjogo.cpp
+SOURCE=.\src\atena\cfase.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\cladrilho.cpp
+SOURCE=.\src\atena\cfilme.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\clog.cpp
+SOURCE=.\src\atena\cfundo.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\cmenu.cpp
+SOURCE=.\src\atena\cjogo.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\cnave.cpp
+SOURCE=.\src\atena\cladrilho.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\cobjeto.cpp
+SOURCE=.\src\atena\clog.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\ctela.cpp
+SOURCE=.\src\atena\cmenu.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\ctiro.cpp
+SOURCE=.\src\atena\cnave.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\cveiculo.cpp
+SOURCE=.\src\atena\cobjeto.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\erro.cpp
+SOURCE=.\src\atena\construcoes.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\funcoes.cpp
+SOURCE=.\src\atena\ctela.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\main.cpp
-# End Source File
-# End Group
-# Begin Group "Header Files"
-
-# PROP Default_Filter "h;hpp;hxx;hm;inl"
-# Begin Source File
-
-SOURCE=.\calien.h
+SOURCE=.\src\atena\ctiro.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\carma.h
+SOURCE=.\src\atena\cveiculo.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\cbonus.h
+SOURCE=.\src\atena\erro.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\cchefe.h
+SOURCE=.\src\atena\funcoes.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\ccolecao.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\ccolecaoavancada.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\cconfig.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\cconstrucao.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\cexplosao.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\cfase.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\cfilme.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\cfundo.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\cjogo.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\cladrilho.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\clog.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\cmenu.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\cnave.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\cobjeto.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\ctela.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\ctiro.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\cveiculo.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\erro.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\funcoes.h
+SOURCE=.\src\galib\galib.h
 # End Source File
 # End Group
-# Begin Group "Resource Files"
+# Begin Group "Fontes"
 
-# PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
+# PROP Default_Filter "*.cpp"
 # Begin Source File
 
-SOURCE=.\Filmes\abertura.txt
+SOURCE=.\src\atena\calien.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Resources\atena.ico
+SOURCE=.\src\atena\carma.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\atena.ini
+SOURCE=.\src\atena\cbonus.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Resources\atena.rc
+SOURCE=.\src\atena\cchefe.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Resources\atena1.ico
+SOURCE=.\src\atena\ccolecao.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\resource.h
+SOURCE=.\src\atena\cconfig.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\atena\cconstrucao.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\atena\cexplosao.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\atena\cfase.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\atena\cfilme.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\atena\cfundo.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\atena\cjogo.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\atena\cladrilho.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\atena\clog.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\atena\cmenu.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\atena\cnave.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\atena\cobjeto.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\atena\ctela.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\atena\ctiro.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\atena\cveiculo.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\atena\erro.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\atena\funcoes.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\atena\main.cpp
 # End Source File
 # End Group
-# Begin Group "Allegro Headers"
+# Begin Group "Outros"
 
-# PROP Default_Filter ""
+# PROP Default_Filter "*.*"
 # Begin Source File
 
-SOURCE=.\armas.h
+SOURCE=.\bin\atena.ini
+# End Source File
+# End Group
+# Begin Group "Recursos"
+
+# PROP Default_Filter "*.rc"
+# Begin Source File
+
+SOURCE=.\src\atena\rc\atena.ico
 # End Source File
 # Begin Source File
 
-SOURCE=.\atena.h
+SOURCE=.\src\atena\rc\Atena.rc
 # End Source File
 # Begin Source File
 
-SOURCE=.\bonus.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\construcoes.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\tiros.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\veiculos.h
+SOURCE=.\src\atena\rc\atena1.ico
 # End Source File
 # End Group
 # End Target

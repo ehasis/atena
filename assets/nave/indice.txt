@@ -1,0 +1,8 @@
+inicio
+
+bmp escudo
+bmp explosao
+bmp normal
+bmp sombra
+
+fim

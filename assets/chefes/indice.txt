@@ -1,0 +1,5 @@
+inicio
+
+bmp chefe_01
+
+fim

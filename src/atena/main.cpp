@@ -38,29 +38,7 @@ int main(int argc, char *argv[])
 	set_uformat(U_ASCII);
 	alfont_init();
 	alfont_text_mode(-1);
-/*
-	
-	set_color_depth(16);
-	set_gfx_mode(GFX_AUTODETECT_WINDOWED, 320, 240, 0, 0);
 
-
-	
-	fonte = alfont_load_font("dat/lucon.ttf");
-	alfont_set_font_size(fonte, 18);
-
-	GADados dados;
-	dados.Abrir("dat/aliens/indice.txt");
-	blit(dados.Bitmap(0), screen, 0, 0, 0, 0, 100, 100);
-	alfont_textout_aa(screen, fonte, "Puta merda isto é um teste", 10, 10, makecol(255,255,0));
-
-	readkey();
-
-	dados.Fechar();
-	alfont_destroy_font(fonte);
-
-/**/
-
-/**/
 	remove("log.txt");
 
 	CJogo atena;
@@ -69,7 +47,6 @@ int main(int argc, char *argv[])
 	atena.Executar();
 	atena.Finalizar();
 
-/**/
 	alfont_exit();
 	allegro_exit();
 

@@ -9,8 +9,24 @@
 
 #include "cnave.h"
 #include "datnave.h"
-#include "datalien.h"
 #include "erro.h"
+
+#define CONSUMO_TIRO 5.0f
+
+enum ERecursosNave
+{
+	eEnergia = 0,
+	eEscudos,
+	eVelocidade
+};
+
+enum EEstadoRecursos
+{
+	eBaixo = 0,
+	eNormal,
+	eAlto
+};
+
 
 
 //------------------------------------------------------------
@@ -22,7 +38,30 @@ CNave::CNave()
 //------------------------------------------------------------
 void CNave::Iniciar(int tipo, int x, int y)
 {
-	Log("[INICIO]:CNave::Iniciar()");
+	m_largura	= 32;
+	m_altura	= 24;
+	m_tipo		= tipo;
+	m_vi		= 6;
+	m_vx		= 0;
+	m_vy		= 0;
+	m_dx		= 0;
+	m_dy		= 0;
+	m_ativo		= TRUE;
+	m_visivel	= TRUE;
+	m_turbina	= 0;
+	m_atirar	= 0;
+	m_pontos	= 0;
+	m_status	= eNaveNormal;
+	m_quadro	= 2;
+	m_tipo_tiro = 3;
+
+	m_recursos[eEnergia]	= eNormal;
+	m_recursos[eEscudos]	= eNormal;
+	m_recursos[eVelocidade] = eNormal;
+
+	m_bar_energia.SetarXYLA(  19,  96, 58, 4).SetarCor(makecol16(255, 255,   0)).SetarMinimo(0.0f).SetarMaximo(100.0f).SetarPosicao(100.0f);
+	m_bar_escudos.SetarXYLA(  19, 140, 58, 4).SetarCor(makecol16(  0, 255,   0)).SetarMinimo(0.0f).SetarMaximo(100.0f).SetarPosicao(100.0f);
+	m_bar_fuselagem.SetarXYLA(19, 186, 58, 4).SetarCor(makecol16(255, 255, 255)).SetarMinimo(0.0f).SetarMaximo(100.0f).SetarPosicao(100.0f);
 
 	m_armas.Adicionar();
 	m_armas.Obter().Iniciar(eArmaCanhao, x, y);
@@ -35,31 +74,10 @@ void CNave::Iniciar(int tipo, int x, int y)
 
 	m_dat_arquivo.Abrir(ARQUIVO_NAVE_DAT);
 
-	m_largura = 32;
-	m_altura = 24;
-	
 	SetarX(x);
 	SetarY(y);
-	m_tipo = tipo;
-	m_vi = 6;
-	m_vx = 0;
-	m_vy = 0;
-	m_dx = 0;
-	m_dy = 0;
-	m_ativo = TRUE;
-	m_visivel = TRUE;
-	m_turbina = 0;
-	m_atirar = 0;
-	m_pontos = 0;
-	m_energia = 50;
-	m_casco	= 100;
-	m_status = eNaveNormal;
-	m_quadro = 2;
-	m_tipo_tiro = 3;
 
 	SetarTeclas();
-	Log("[FIM]:CNave::Iniciar()");
-
 }
 
 
@@ -81,18 +99,18 @@ void CNave::Desenhar(CTela & tela, int x_real, int y_real)
 			m_status = eNaveNormal;
 
 		case eNaveNormal:
-             tela.MaskedBlit(m_dat_arquivo.Bitmap(SOMBRA), eCamadaObjetos, m_quadro * (m_largura / 1.5), 0, m_x + 50 - x_real, m_y + 50 - y_real, (m_largura / 1.5), (m_altura / 1.5));
-			 tela.MaskedBlit(m_dat_arquivo.Bitmap(NORMAL), eCamadaObjetos, m_quadro * m_largura , 0, m_x - x_real, m_y - y_real, m_largura, m_altura);
-			 if(m_turbina)
-			 {
+			tela.MaskedBlit(m_dat_arquivo.Bitmap(SOMBRA), eCamadaObjetos, m_quadro * (m_largura / 1.5), 0, m_x + 50 - x_real, m_y + 50 - y_real, (m_largura / 1.5), (m_altura / 1.5));
+			tela.MaskedBlit(m_dat_arquivo.Bitmap(NORMAL), eCamadaObjetos, m_quadro * m_largura , 0, m_x - x_real, m_y - y_real, m_largura, m_altura);
+			if(m_turbina)
+			{
 				DesenharExplosao(tela, x_real, y_real, m_x + (m_largura/2) - 2, m_y + m_altura - 5, 2, 8);
 				DesenharExplosao(tela, x_real, y_real, m_x + (m_largura/2) + 2, m_y + m_altura - 5, 2, 8);
-			 }
-			 else
-			 {
+			}
+			else
+			{
 				 DesenharExplosao(tela, x_real, y_real, m_x + (m_largura/2) - 2, m_y + m_altura - 5, 1, 4);
 				 DesenharExplosao(tela, x_real, y_real, m_x + (m_largura/2) + 2, m_y + m_altura - 5, 1, 4);
-			 }
+			}
 			break;
 
 		case eNaveExplosao:
@@ -108,11 +126,15 @@ void CNave::Desenhar(CTela & tela, int x_real, int y_real)
 	}
 	
 	m_armas.Desenhar(tela, x_real, y_real);
+
+	m_bar_energia.Desenhar(tela.ObterCamada(eCamadaFundo));
+	m_bar_escudos.Desenhar(tela.ObterCamada(eCamadaFundo));
+	m_bar_fuselagem.Desenhar(tela.ObterCamada(eCamadaFundo));
 }
 
 //------------------------------------------------------------
 // metodo para atualizacao do objeto
-void CNave::Atualizar(TRect area, CObjetoAvancado * const alvo)
+void CNave::Atualizar(TRect &area, CObjetoAvancado * const alvo)
 {
 	TEntrada valor;
 	static int x_ant = 0;
@@ -123,59 +145,22 @@ void CNave::Atualizar(TRect area, CObjetoAvancado * const alvo)
 	m_atirar = 0;
 
 	// Leitura das Teclas
-	if (key[m_tecla_cima])		valor.y--;
-	if (key[m_tecla_baixo])		valor.y++;
+	if (key[m_tecla_cima])			valor.y--;
+	if (key[m_tecla_baixo])			valor.y++;
 	if (key[m_tecla_esquerda])		valor.x--;
 	if (key[m_tecla_direita])		valor.x++;
-	//if (key[]) valor.b = 1;
-	//if (key[])  valor.c = 1;
-	if (key[m_tecla_arma_esquerda])			valor.arma_esquerda = true;
-	if (key[m_tecla_arma_centro])			valor.arma_centro = true;
-	if (key[m_tecla_arma_direita])			valor.arma_direita = true;
-	if (key[m_tecla_todas_armas])		valor.arma_esquerda = valor.arma_centro = valor.arma_direita = true;
+	if (key[m_tecla_arma_esquerda])	valor.arma_esquerda = true;
+	if (key[m_tecla_arma_centro])	valor.arma_centro = true;
+	if (key[m_tecla_arma_direita])	valor.arma_direita = true;
+	if (key[m_tecla_todas_armas])	valor.arma_esquerda = valor.arma_centro = valor.arma_direita = true;
 
 	if (m_status == eNaveRenacer) m_status = eNaveNormal;
-	
-	/* Teste de HFSM
-	if(alvo)
-	{
-		// Posições
-		if(y > alvo->ObterY2())
-		{
-			if(x < alvo->ObterX()) m_dx = 1;
-			else if(x > alvo->ObterX2()) m_dx = -1;
-			m_tipo_tiro = 3;
-		}
-		else
-		{
-			if(ChecarColisaoX(alvo->ObterX() - alvo->ObterLargura(), alvo->ObterX2() + alvo->ObterLargura()))
-			{
-				m_dx = (ObterPMX() - alvo->ObterPMX()) >= 0 ? 1 : -1;
-				m_tipo_tiro = 4;
-				valor.a = 1;
-			}
-		}
 
-		// Tiros
-		if(ChecarColisaoX(alvo->ObterX(), alvo->ObterX2()))
-		{
-			valor.a = 1;
-		}
 
-		if(y > alvo->ObterY2() + alvo->ObterAltura())
-		{
-			if(ObterY2() == area.y2 && y > area.y1 + (area.y2 - area.y1) / 2) m_dy = -1;
-		}
-		else m_dy = 1;
+	m_bar_energia.IncPosicao((float)(m_recursos[eEnergia] * 1.4f));
+	m_bar_escudos.IncPosicao((float)(m_recursos[eEscudos] * 0.25f));
 
-	}
-	else
-	{
-		m_dy = 1;
-		m_dx = 0;
-	}
-
-	/**/
+	m_vi = 4 + (m_recursos[eVelocidade] * 2);
 
 	// se estiver normal
 	if (m_status == eNaveNormal)
@@ -279,7 +264,7 @@ void CNave::Atualizar(TRect area, CObjetoAvancado * const alvo)
 		{
 			//m_tiros.Adicionar((ETiro)m_tipo_tiro , m_x + (m_largura / 2), m_y, alvo);
 		}
-		if (m_casco <= 0)
+		if (m_bar_fuselagem.ObterPosicao() <= 0)
 		{
 			m_status = eNaveExplosao;
 			m_quadro = 70;
@@ -303,8 +288,13 @@ void CNave::Atualizar(TRect area, CObjetoAvancado * const alvo)
 		}
 	}
 
-	if(!atirando)
+	if(!atirando && (m_bar_energia.ObterPosicao() >= CONSUMO_TIRO))
 	{
+		
+		//consumo de energia de tiros
+		if (valor.arma_centro)
+			m_bar_energia.DecPosicao(CONSUMO_TIRO);
+
 		m_armas.MoverPrimeiro();
 		if(valor.arma_esquerda) m_armas.Obter().Atirar(alvo);
 	
@@ -319,35 +309,25 @@ void CNave::Atualizar(TRect area, CObjetoAvancado * const alvo)
 	else
 		atirando = false;
 
-
-
 	m_armas.Atualizar(area, alvo);
-
 }
 
 //------------------------------------------------------------
 void CNave::DecEnergia(int valor)
 {
-	if (m_energia < valor)
+	if (m_bar_escudos.ObterPosicao() < valor)
 	{
-		if (m_casco < (valor - m_energia))
-			m_casco = 0;
-		else
-			m_casco -= (valor - m_energia);
-
-		m_energia = 0;
+		m_bar_fuselagem.DecPosicao(valor - m_bar_escudos.ObterPosicao());
+		m_bar_escudos.SetarPosicao(0.0f);
 	}
 	else
-		m_energia -= valor;
+		m_bar_escudos.DecPosicao(valor);
 }
 
 //------------------------------------------------------------
 void CNave::IncEnergia(int valor)
 {
-	if (m_energia > valor)
-		m_energia = 100;
-	else
-		m_energia += valor;
+	m_bar_escudos.IncPosicao(valor);
 }
 
 
@@ -373,9 +353,9 @@ void CNave::IncPontos(int incremento)
 
 
 //------------------------------------------------------------
-int CNave::ObterCasco()
+int CNave::ObterFuselagem()
 {
-	return m_casco;
+	return m_bar_fuselagem.ObterPosicao();
 }
 
 
@@ -400,7 +380,7 @@ void CNave::SetarX(int x)
 	m_armas.Obter().SetarX(x - 25);
 
 	m_armas.MoverProximo();
-	m_armas.Obter().SetarX(ObterPMX() - m_armas.Obter().ObterLargura() / 2);
+	m_armas.Obter().SetarX(ObterPMX() - (m_armas.Obter().ObterLargura() / 2));
 
 	m_armas.MoverProximo();
 	m_armas.Obter().SetarX(x + m_largura + 12);
@@ -484,7 +464,7 @@ void CNave::DecY(int decremento)
 
 
 //------------------------------------------------------------
-bool CNave::Colidir(TRect area, int energia)
+bool CNave::Colidir(TRect &area, int energia)
 {
 	bool colidiu = false;
 
@@ -495,7 +475,19 @@ bool CNave::Colidir(TRect area, int energia)
 		colidiu = true;
 	}
 
-	if(m_armas.Colidir(area, energia)) colidiu = true;
+
+	//if(m_armas.Colidir(area, energia)) colidiu = true;
+	/**/
+	m_armas.MoverPrimeiro();
+    if(m_armas.Obter().Colidir(area, energia)) colidiu = true;
+
+	m_armas.MoverProximo();
+	//m_armas.Obter().IncY(incremento);
+
+	m_armas.MoverProximo();
+	if(m_armas.Obter().Colidir(area, energia)) colidiu = true;
+
+	/**/
 
 	return colidiu;
 }
@@ -508,7 +500,7 @@ void CNave::SetarBonus(int bonus)
 	switch(m_bonus)
 	{
 		case eBonusEnergiaTotal:
-			m_energia = 100;
+			m_bar_escudos.IncPosicao(50.0f);
 			break;
 	}
 }

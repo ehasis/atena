@@ -17,7 +17,10 @@
 #ifndef GASCRIPT_H_INCLUIDO
 #define GASCRIPT_H_INCLUIDO
 
-#include "galib.h"
+#include <allegro.h>
+#include <winalleg.h>
+#include <string>
+#include <vector>
 
 
 //------------------------------------------------------------

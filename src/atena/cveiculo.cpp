@@ -14,22 +14,18 @@
 //------------------------------------------------------------
 void CVeiculo::Iniciar(TObjeto &obj)
 {
-	IniciarInimigo(obj);
+	CInimigo::Iniciar(obj);
 
 	m_flag_x	= (rand() % 2) * -2 + 1;
 	m_flag_y	= (rand() % 2) * -2 + 1;
-	m_status	= eInimigoNormal;
-	m_quadro	= 0;
-	m_tempo		= 0;
 	m_dir_x     = 0;
 	m_dir_y	    = 1;
-	m_angulo	= 0;
 }
 
 //------------------------------------------------------------
 void CVeiculo::Finalizar()
 {
-	FinalizarInimigo();
+	CInimigo::Finalizar();
 }
 
 

@@ -99,7 +99,7 @@ CColecao< cls >::~CColecao()
 
 //------------------------------------------------------------
 template< class cls > 
-bool CColecao< cls >::Adicionar()
+inline bool CColecao< cls >::Adicionar()
 {
 	cls valor;
 
@@ -168,7 +168,7 @@ bool CColecao< cls >::Adicionar(cls valor, int indice)
 
 //------------------------------------------------------------
 template< class cls > 
-bool CColecao< cls >::AdicionarInicio(cls valor)
+inline bool CColecao< cls >::AdicionarInicio(cls valor)
 {
 	m_p_itm_atual = m_p_pri_itm;
 	m_ind_itm_atual = 1;
@@ -178,7 +178,7 @@ bool CColecao< cls >::AdicionarInicio(cls valor)
 
 //------------------------------------------------------------
 template< class cls > 
-bool CColecao< cls >::AdicionarFim()
+inline bool CColecao< cls >::AdicionarFim()
 {
 	cls valor;
 
@@ -251,7 +251,7 @@ bool CColecao< cls >::Remover()
 
 //------------------------------------------------------------	
 template< class cls > 
-bool CColecao< cls >::Remover(int indice)
+inline bool CColecao< cls >::Remover(int indice)
 {
 	if(Mover(indice)) return Remover();
 	return false;
@@ -260,7 +260,7 @@ bool CColecao< cls >::Remover(int indice)
 
 //------------------------------------------------------------	
 template< class cls > 
-bool CColecao< cls >::RemoverInicio()
+inline bool CColecao< cls >::RemoverInicio()
 {
 	m_p_itm_atual = m_p_pri_itm;
 	return Remover();
@@ -269,7 +269,7 @@ bool CColecao< cls >::RemoverInicio()
 
 //------------------------------------------------------------	
 template< class cls > 
-bool CColecao< cls >::RemoverFim()
+inline bool CColecao< cls >::RemoverFim()
 {
 	m_p_itm_atual = m_p_ult_itm;
 	return Remover();
@@ -278,7 +278,7 @@ bool CColecao< cls >::RemoverFim()
 
 //------------------------------------------------------------	
 template< class cls > 
-bool CColecao< cls >::RemoverTodos()
+inline bool CColecao< cls >::RemoverTodos()
 {
 	while(m_p_pri_itm)
 		if(!RemoverFim()) return false;
@@ -288,7 +288,7 @@ bool CColecao< cls >::RemoverTodos()
 
 //------------------------------------------------------------	
 template< class cls > 
-cls & CColecao< cls >::Obter()
+inline cls & CColecao< cls >::Obter()
 {
 	return m_p_itm_atual->valor;
 }
@@ -296,7 +296,7 @@ cls & CColecao< cls >::Obter()
 
 //------------------------------------------------------------	
 template< class cls > 
-cls & CColecao< cls >::Obter(int indice)
+inline cls & CColecao< cls >::Obter(int indice)
 {
 	Mover(indice);
 	return Obter();
@@ -305,7 +305,7 @@ cls & CColecao< cls >::Obter(int indice)
 
 //------------------------------------------------------------	
 template< class cls > 
-int CColecao< cls >::ObterIndice()
+inline int CColecao< cls >::ObterIndice()
 {
 	return m_ind_itm_atual;
 }
@@ -313,7 +313,7 @@ int CColecao< cls >::ObterIndice()
 
 //------------------------------------------------------------	
 template< class cls > 
-int CColecao< cls >::ObterQuantidade()
+inline int CColecao< cls >::ObterQuantidade()
 {
 	return m_qtd_itm;
 }
@@ -321,7 +321,7 @@ int CColecao< cls >::ObterQuantidade()
 
 //------------------------------------------------------------	
 template< class cls > 
-bool CColecao< cls >::Mover(int indice)
+inline bool CColecao< cls >::Mover(int indice)
 {
 	int ind;
 
@@ -338,7 +338,7 @@ bool CColecao< cls >::Mover(int indice)
 
 //------------------------------------------------------------	
 template< class cls > 
-bool CColecao< cls >::MoverPrimeiro()
+inline bool CColecao< cls >::MoverPrimeiro()
 {
 	if(m_p_pri_itm)	
 	{
@@ -352,7 +352,7 @@ bool CColecao< cls >::MoverPrimeiro()
 
 //------------------------------------------------------------	
 template< class cls > 
-bool CColecao< cls >::MoverUltimo()
+inline bool CColecao< cls >::MoverUltimo()
 {
 	if(m_p_ult_itm)	
 	{
@@ -366,7 +366,7 @@ bool CColecao< cls >::MoverUltimo()
 
 //------------------------------------------------------------	
 template< class cls > 
-bool CColecao< cls >::MoverAnterior()
+inline bool CColecao< cls >::MoverAnterior()
 {
 	if(m_p_itm_atual && m_p_itm_atual->m_p_itm_ant)
 	{
@@ -380,7 +380,7 @@ bool CColecao< cls >::MoverAnterior()
 
 //------------------------------------------------------------	
 template< class cls > 
-bool CColecao< cls >::MoverProximo()
+inline bool CColecao< cls >::MoverProximo()
 {
 	if(m_p_itm_atual && m_p_itm_atual->m_p_prx_itm)
 	{

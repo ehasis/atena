@@ -29,7 +29,6 @@
 
 #include "cfase.h"
 #include "ctela.h"
-#include "cconfig.h"
 
 enum EEstadoJogo
 {
@@ -61,7 +60,7 @@ protected:
 	int g_FPS;
 
 	GADados		m_dados;
-	CConfig		m_cfg;
+	GAConfig	m_cfg;
 	CTela		m_tela;
 	CFase		m_fase;
 	

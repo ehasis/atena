@@ -22,8 +22,8 @@ CMenuH::CMenuH()
 	m_x 			= 0;
 	m_y				= 0;
 	m_fonte			= NULL;
-	m_cor_texto		= makecol(255,255,255);
-	m_cor_selecao	= makecol(255,255,0);
+	m_cor_texto		= makecol16(255,255,255);
+	m_cor_selecao	= makecol16(255,255,0);
 	m_num_itens		= 0;
 	m_pos_atual		= 0;
 	m_alinhamento	= eAlinharEsquerda;

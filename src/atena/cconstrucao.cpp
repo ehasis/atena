@@ -10,25 +10,20 @@
 
 
 #include "cconstrucao.h"
-#include "construcoes.h"
 #include "erro.h"
 
 //------------------------------------------------------------
 void CConstrucao::Iniciar(TObjeto &obj)
 {
-	IniciarInimigo(obj);
+	CInimigo::Iniciar(obj);
 
-	m_quadro	= 0;
-	m_atirar	= 1;
-	m_ativo		= 1;
-	m_status	= eInimigoNormal;
 	m_atirar	= 1;
 }
 
 //------------------------------------------------------------
 void CConstrucao::Finalizar()
 {
-	FinalizarInimigo();
+	CInimigo::Finalizar();
 }
 
 //------------------------------------------------------------

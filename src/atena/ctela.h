@@ -38,6 +38,7 @@
 #define ctela_h_incluido
 
 #include "callegro.h"
+#include "cexplosao.h"
 
 #define TELA_L    640	//Largura da Tela
 #define TELA_A	  480	//Altura da Tela
@@ -85,6 +86,7 @@ public:
 	void SetarEscreverSombra(bool valor);
 	void SetarModoGrafico(int modo, int largura, int altura, int bit_cores);
 	void SetarTransBlender(int r, int g, int b, int alpha);
+	void SetarExibirParticulas(bool valor);
 
 	//Metodos espelhos das funções da Allegro e sobrecargas
 	void Blit(BITMAP *bmp, ECamada camada);
@@ -102,7 +104,7 @@ public:
 	void Escrever(const char * str, int x, int y, int cor, ALFONT_FONT *fonte);
 
 	//Metodo auxiliar que retorna o bitmap associado a camada
-	BITMAP *RetornarCamada(ECamada camada);
+	BITMAP *ObterCamada(ECamada camada);
 protected:
 	void Salvar(BITMAP *bmp);
 
@@ -117,6 +119,132 @@ protected:
 
 	
 };
+
+
+//------------------------------------------------------------
+// Métodos INLINE
+//------------------------------------------------------------
+
+
+//------------------------------------------------------------
+inline void CTela::AtualizarNaTela()
+{
+	//if (m_utilizar_vsync) vsync();
+	acquire_screen();
+	Atualizar(screen);
+	release_screen();
+}
+
+
+//------------------------------------------------------------
+inline void CTela::Limpar(ECamada camada, int cor)
+{
+	if (camada == eCamadaTodas)
+	{
+		clear_to_color(m_bmp_fundo, cor);
+		clear_to_color(m_bmp_objetos, cor);
+		clear_to_color(m_bmp_efeitos, cor);
+	}
+	else
+	{
+		clear_to_color(ObterCamada(camada), cor);
+	}
+}
+
+//------------------------------------------------------------
+inline BITMAP *CTela::ObterCamada(ECamada camada)
+{
+	switch (camada)
+	{
+		case eCamadaFundo:
+			return m_bmp_fundo;
+		case eCamadaObjetos:
+			return m_bmp_objetos;
+		case eCamadaEfeitos:
+			return m_bmp_efeitos;
+		default:
+			return screen;
+	}
+}
+
+//////////////////////////////////////////////////////////////
+//Espelho das funções da Allegro com algumas sobrecarcas
+//////////////////////////////////////////////////////////////
+
+//------------------------------------------------------------
+inline void CTela::Blit(BITMAP *bmp, ECamada camada)
+{
+	Blit(bmp, camada, 0, 0, 0, 0, bmp->w, bmp->h);
+}
+
+//------------------------------------------------------------
+inline void CTela::Blit(BITMAP *bmp, ECamada camada, int fx, int fy, int dx, int dy, int l, int a)
+{
+	blit(bmp, ObterCamada(camada), fx, fy, dx, dy, l, a);
+}
+
+//------------------------------------------------------------
+inline void CTela::MaskedBlit(BITMAP *bmp, ECamada camada)
+{
+	MaskedBlit(bmp, camada, 0, 0, 0, 0, bmp->w, bmp->h);
+}
+
+//------------------------------------------------------------
+inline void CTela::MaskedBlit(BITMAP *bmp, ECamada camada, int fx, int fy, int dx, int dy, int l, int a)
+{
+	masked_blit(bmp, ObterCamada(camada), fx, fy, dx, dy, l, a);
+}
+
+//------------------------------------------------------------
+inline void CTela::DrawSprite(ECamada camada, BITMAP *bmp, int x, int y)
+{
+	draw_sprite(ObterCamada(camada), bmp, x, y);
+}
+
+//------------------------------------------------------------
+inline void CTela::DrawTransSprite(ECamada camada, BITMAP *bmp, int x, int y)
+{
+	draw_trans_sprite(ObterCamada(camada), bmp, x, y);
+}
+
+//------------------------------------------------------------
+inline void CTela::Rect(ECamada camada, int x1, int y1, int x2, int y2, int cor)
+{
+	rect(ObterCamada(camada), x1, y1, x2, y2, cor);
+}
+
+//------------------------------------------------------------
+inline void CTela::RectFill(ECamada camada, int x1, int y1, int x2, int y2, int cor)
+{
+	rectfill(ObterCamada(camada), x1, y1, x2, y2, cor);
+}
+
+//------------------------------------------------------------
+inline void CTela::Escrever(const char * str, int x, int y, int cor, ALFONT_FONT *fonte)
+{
+	if (fonte != NULL)
+		alfont_textout(ObterCamada(eCamadaFundo), fonte, str, x, y, cor);
+	else
+		textout(ObterCamada(eCamadaFundo), font, str, x, y, cor);
+}
+
+//------------------------------------------------------------
+inline void CTela::PutPixel(ECamada camada, int x, int y, int cor)
+{
+	putpixel(ObterCamada(camada), x, y, cor);
+}
+
+//------------------------------------------------------------
+inline void CTela::SetarTransBlender(int r, int g, int b, int alpha)
+{
+	set_trans_blender(r, g, b, alpha);
+}
+
+inline void CTela::RotateSprite(ECamada camada, BITMAP * bmp, int x, int y, fixed angulo)
+{
+	rotate_sprite(ObterCamada(camada), bmp, x, y, angulo);
+}
+
 
 #endif
 

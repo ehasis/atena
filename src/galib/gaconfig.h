@@ -10,7 +10,7 @@
 #ifndef GACONFIG_H_INCLUIDO
 #define GACONFIG_H_INCLUIDO
 
-#include "galib.h"
+#include <allegro.h>
 
 // - Utilizando o Metodo Antigo da Allegro
 class GAConfig
@@ -23,13 +23,13 @@ public:
 	void Abrir(const char *arquivo);
 	void Fechar();
 
-	void FixarSecao(const char *secao);
-	void FixarBool(const char *chave, bool valor);
-	void FixarBool(const char *secao, const char *chave, bool valor);
-	void FixarInt(const char *chave, int valor);
-	void FixarInt(const char *secao, const char *chave, int valor);
-	void FixarStr(const char *chave, const char *valor);
-	void FixarStr(const char *secao, const char *chave, const char *valor);
+	void SetarSecao(const char *secao);
+	void SetarBool(const char *chave, bool valor);
+	void SetarBool(const char *secao, const char *chave, bool valor);
+	void SetarInt(const char *chave, int valor);
+	void SetarInt(const char *secao, const char *chave, int valor);
+	void SetarStr(const char *chave, const char *valor);
+	void SetarStr(const char *secao, const char *chave, const char *valor);
 
 	bool ObterBool(const char *chave, bool padrao = false);
 	bool ObterBool(const char *secao, const char *chave, bool padrao = false);

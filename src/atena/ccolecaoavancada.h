@@ -25,13 +25,13 @@ template < class cls >
 class CColecaoAvancada : public CColecao< cls >
 {
 public:
-	void Atualizar(TRect area, CObjetoAvancado * const alvo);
-	void Desenhar(CTela & tela, int x_real, int y_real);
+	void Atualizar(TRect &area, CObjetoAvancado * const alvo);
+	void Desenhar(CTela &tela, int x_real, int y_real);
 	void Sonorizar();
 	void Finalizar();
-	bool Colidir(TRect area, int energia);
+	bool Colidir(TRect &area, int energia);
 	bool ChecarColisao(int x1, int y1, int x2, int y2);
-	bool ChecarColisao(TRect area);
+	bool ChecarColisao(TRect &area);
 	void RemoverPorColisao(int x1, int y1, int x2, int y2);
 	cls &ObterMaisProximo(int x, int y);
 };
@@ -39,7 +39,7 @@ public:
 
 //------------------------------------------------------------
 template < class cls >
-void CColecaoAvancada< cls >::Atualizar(TRect area, CObjetoAvancado * const alvo)
+void CColecaoAvancada< cls >::Atualizar(TRect &area, CObjetoAvancado * const alvo)
 {
 	if(MoverPrimeiro())
 	{
@@ -54,7 +54,7 @@ void CColecaoAvancada< cls >::Atualizar(TRect area, CObjetoAvancado * const alvo
 
 //------------------------------------------------------------
 template < class cls >
-void CColecaoAvancada< cls >::Desenhar(CTela & tela, int x_real, int y_real)
+void CColecaoAvancada< cls >::Desenhar(CTela &tela, int x_real, int y_real)
 {
 	if(MoverPrimeiro())
 	{
@@ -97,7 +97,7 @@ void CColecaoAvancada< cls >::Finalizar()
 
 //------------------------------------------------------------
 template < class cls >
-bool CColecaoAvancada< cls >::Colidir(TRect area, int energia)
+inline bool CColecaoAvancada< cls >::Colidir(TRect &area, int energia)
 {
 	bool colidiu = false;
 
@@ -114,7 +114,7 @@ bool CColecaoAvancada< cls >::Colidir(TRect area, int energia)
 
 //------------------------------------------------------------
 template < class cls >
-bool CColecaoAvancada< cls >::ChecarColisao(int x1, int y1, int x2, int y2)
+inline bool CColecaoAvancada< cls >::ChecarColisao(int x1, int y1, int x2, int y2)
 {
 	if(MoverPrimeiro())
 	{
@@ -129,7 +129,7 @@ bool CColecaoAvancada< cls >::ChecarColisao(int x1, int y1, int x2, int y2)
 
 //------------------------------------------------------------
 template < class cls >
-bool CColecaoAvancada< cls >::ChecarColisao(TRect area)
+inline bool CColecaoAvancada< cls >::ChecarColisao(TRect &area)
 {
 	if(MoverPrimeiro())
 	{

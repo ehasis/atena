@@ -56,6 +56,13 @@ implementation
 
 procedure TfrmPropObj.FormShow(Sender: TObject);
 begin
+  if Objeto.Tipo = 3 then
+  begin
+    cboTipo.Enabled := false;
+    mskSubTipo.Enabled := false;
+    mskEnergia.Enabled := false;
+    mskVelocidade.Enabled := false;
+  end;
   txtNome.Text := Objeto.Nome;
   cboTipo.ItemIndex := Integer(Objeto.Tipo);
   mskSubTipo.Text := IntToStr(Objeto.SubTipo);

@@ -35,6 +35,9 @@ public:
 	CInimigo();
 	~CInimigo();
 
+	virtual void Iniciar(TObjeto &obj);
+	virtual void Finalizar();
+
 	CColecaoAvancada< CArma > & ObterArmas();
 
 	bool Colidir(TRect &area, int energia);
@@ -44,10 +47,6 @@ public:
 	EStatusInimigo ObterStatus();
 
 protected:
-	void IniciarInimigo(TObjeto &obj);
-	void FinalizarInimigo();
-
-protected:
 	EStatusInimigo m_status;
 	int m_subtipo;
 	int m_velocidade;
@@ -55,5 +54,29 @@ protected:
 	CColecaoAvancada< CArma > m_armas;
 };
 
+//------------------------------------------------------------
+inline void CInimigo::DecEnergia(int decremento)
+{
+	m_energia -= decremento;
+
+	if(m_energia <= 0)
+	{
+		m_status = eInimigoExplosao;
+		m_quadro = 0;
+	}
+}
+
+//------------------------------------------------------------
+inline bool CInimigo::Colidir(TRect &area, int energia)
+{
+	if(m_status != eInimigoInativo
+	&& m_status != eInimigoExplosao
+	&& ChecarColisao(area))
+	{
+		DecEnergia(energia);
+		return true;
+	}
+	return false;
+}
 
 #endif

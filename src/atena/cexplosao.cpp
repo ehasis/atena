@@ -16,7 +16,7 @@ void CExplosao::Iniciar(int largura, int altura, bool ativo)
 
 	m_ativo = ativo;
 	m_bmp = create_bitmap(largura + 2, altura + 2);
-	clear_to_color(m_bmp, makecol(0,0,0));
+	clear_to_color(m_bmp, makecol16(0,0,0));
 	
 
 	num_bytes = 2;
@@ -49,16 +49,18 @@ void CExplosao::Iniciar(int largura, int altura, bool ativo)
 }
 
 
-void CExplosao::Desenhar(CTela & tela)
+void CExplosao::Desenhar(BITMAP *bmp)
 {
 	if (!m_ativo) return;
 
-	register int  x, y;
+	register int x, y;
 	register int data;
 
-	for (y = 1; y <= ARENA_A; y++ )
+	rectfill(m_bmp, 0, bmp->h - 3, m_bmp->w - 1, bmp->h, makecol16(0,0,0));
+
+	for (y = 1; y < bmp->h; y++ )
 	{
-    	for (x = 1; x <= ARENA_L; x++)
+    	for (x = 1; x < bmp->w; x++)
         {		
 
 			data  = m_bmp->line[y-1][x];
@@ -67,7 +69,7 @@ void CExplosao::Desenhar(CTela & tela)
 			data += m_bmp->line[y][x+1];
 
 			//divide por quaro
-			data /= 4;	
+			data >>= 2;	
 			data -= 7;
 
             /**/
@@ -149,8 +151,11 @@ void CExplosao::Desenhar(CTela & tela)
 			else
 			{
 				m_bmp->line[y-1][x] = data;
-				if (((x % 2 ) && !(y % 2)) || (!(x % 2) && (y % 2)))
-					tela.PutPixel(eCamadaEfeitos, x, y, makecol16(palette[m_bmp->line[y][x]].r, palette[m_bmp->line[y][x]].g, palette[m_bmp->line[y][x]].b));
+				
+				//vou usar XOR, é mais rápido
+				//if (((x % 2 ) && !(y % 2)) || (!(x % 2) && (y % 2)))
+				if ((x % 2) ^ (y % 2))
+					_putpixel16(bmp, x, y, makecol16(palette[m_bmp->line[y][x]].r, palette[m_bmp->line[y][x]].g, palette[m_bmp->line[y][x]].b));
 			}
 /**/
         }
@@ -204,7 +209,7 @@ void CExplosao::IniciarExplosao(int x, int y, int raio, int num_particulas)
 			m_bmp->line[(int)particulas[i].y] [(int)particulas[i].x] = 0;
 			m_bmp->line[(int)particulas[i].y] [(int)particulas[i].x + 1] = particulas[i].cor;
 		}
-	}	
+	}
 }
 
 

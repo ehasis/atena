@@ -62,9 +62,9 @@ object frmPropObj: TfrmPropObj
       object Label2: TLabel
         Left = 8
         Top = 176
-        Width = 36
+        Width = 39
         Height = 13
-        Caption = 'Subtipo'
+        Caption = 'Subtipo:'
       end
       object Label3: TLabel
         Left = 8
@@ -133,7 +133,8 @@ object frmPropObj: TfrmPropObj
         Items.Strings = (
           'Aliens'
           'Ve'#237'culos'
-          'Constru'#231#245'es')
+          'Constru'#231#245'es'
+          'Cen'#225'rio')
       end
       object mskSubTipo: TMaskEdit
         Left = 72

@@ -7,8 +7,8 @@
 *
 *------------------------------------------------------------*/
 
+#include "gaconfig.h"
 #include <stdio.h>
-#include "galib.h"
 
 GAConfig::GAConfig()
 {
@@ -29,43 +29,43 @@ void GAConfig::Fechar()
 }
 
 //------------------------------------------------------------
-void GAConfig::FixarSecao(const char *secao)
+void GAConfig::SetarSecao(const char *secao)
 {
 	sprintf(m_secao, secao);
 }
 
 //------------------------------------------------------------
-void GAConfig::FixarBool(const char *chave, bool valor)
+void GAConfig::SetarBool(const char *chave, bool valor)
 {
 	set_config_int(m_secao, chave, (valor ? 1: 0));
 }
 
-void GAConfig::FixarBool(const char *secao, const char *chave, bool valor)
+void GAConfig::SetarBool(const char *secao, const char *chave, bool valor)
 {
-	FixarSecao(secao);
-	FixarBool(chave, valor);
+	SetarSecao(secao);
+	SetarBool(chave, valor);
 }
 
-void GAConfig::FixarInt(const char *chave, int valor)
+void GAConfig::SetarInt(const char *chave, int valor)
 {
 	set_config_int(m_secao, chave, valor);
 }
 
-void GAConfig::FixarInt(const char *secao, const char *chave, int valor)
+void GAConfig::SetarInt(const char *secao, const char *chave, int valor)
 {
-	FixarSecao(secao);
-	FixarInt(chave, valor);
+	SetarSecao(secao);
+	SetarInt(chave, valor);
 }
 
-void GAConfig::FixarStr(const char *chave, const char *valor)
+void GAConfig::SetarStr(const char *chave, const char *valor)
 {
 	set_config_string(m_secao, chave, valor);
 }
 
-void GAConfig::FixarStr(const char *secao, const char *chave, const char *valor)
+void GAConfig::SetarStr(const char *secao, const char *chave, const char *valor)
 {
-	FixarSecao(secao);
-	FixarStr(chave, valor);
+	SetarSecao(secao);
+	SetarStr(chave, valor);
 }
 
 //------------------------------------------------------------
@@ -80,7 +80,7 @@ bool GAConfig::ObterBool(const char *chave, bool padrao)
 
 bool GAConfig::ObterBool(const char *secao, const char *chave, bool padrao)
 {
-	FixarSecao(secao);
+	SetarSecao(secao);
 	return ObterBool(chave, padrao);
 }
 
@@ -91,7 +91,7 @@ int	GAConfig::ObterInt(const char *chave, int padrao)
 
 int GAConfig::ObterInt(const char *secao, const char *chave, int padrao)
 {
-	FixarSecao(secao);
+	SetarSecao(secao);
 	return ObterInt(chave, padrao);
 }
 
@@ -102,7 +102,7 @@ const char *GAConfig::ObterStr(const char *chave, const char *padrao)
 
 const char *GAConfig::ObterStr(const char *secao, const char *chave, const char *padrao)
 {
-	FixarSecao(secao);
+	SetarSecao(secao);
 	return get_config_string(m_secao, chave, padrao);
 }
 

@@ -7,7 +7,7 @@
 *
 *------------------------------------------------------------*/
 
-#include "galib.h"
+#include "gascript.h"
 #include <fstream>
 
 #define CODIGO_INICIO 1000

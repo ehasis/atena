@@ -42,7 +42,6 @@
 
 #include "callegro.h"
 
-#include "funcoes.h"
 #include "cobjeto.h"
 
 #define LADRILHO_LARGURA		 32	// Largura do m_ladrilho em pixel
@@ -100,6 +99,12 @@ private:
 	BITMAP *m_bmp_fonte;
 	BITMAP *m_bmp_ladrilho, *m_bmp_aux;
 };
+
+//------------------------------------------------------------
+inline void CLadrilho::Desenhar(CTela & tela, int x_real, int y_real)
+{
+	tela.DrawSprite(eCamadaFundo, m_bmp_ladrilho, m_x - x_real, m_y - y_real);
+}
 
 #endif
 

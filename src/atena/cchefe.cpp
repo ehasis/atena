@@ -44,7 +44,7 @@ void CChefe::Finalizar()
 	m_armas.Finalizar();
 }
 
-void CChefe::Atualizar(TRect area, CObjetoAvancado * const alvo)
+void CChefe::Atualizar(TRect &area, CObjetoAvancado * const alvo)
 {
 	if (m_status == eChefeInativo) return;
 	if (!ChecarColisao(area))
@@ -78,17 +78,19 @@ void CChefe::Atualizar(TRect area, CObjetoAvancado * const alvo)
 
 
 //------------------------------------------------------------
-void CChefe::Desenhar(CTela & tela, int x_real, int y_real)
+void CChefe::Desenhar(CTela &tela, int x_real, int y_real)
 {
 	if (!m_ativo) return;
-	//char buf[128];
 	
 	switch (m_status)
 	{
 		case eChefeNormal:
-			//sprintf(buf, "Energia: %d", m_energia);
-			tela.MaskedBlit(m_dados.Bitmap(0), eCamadaObjetos, 0, 0, m_x - x_real, m_y - y_real, m_largura, m_altura);
-			//tela.Escrever(eCamadaEfeitos, buf, 150, 30, makecol(0,255,0));
+			{
+				char buf[64];
+				sprintf(buf, "Energia: %d", m_energia);
+				tela.MaskedBlit(m_dados.Bitmap(0), eCamadaObjetos, 0, 0, m_x - x_real, m_y - y_real, m_largura, m_altura);
+				tela.Escrever(buf, 150, 30, makecol16(0,255,0), NULL);
+			}
 			break;
 
 		case eChefeExplosao:
@@ -98,7 +100,7 @@ void CChefe::Desenhar(CTela & tela, int x_real, int y_real)
 			DesenharExplosao(tela, x_real, y_real, m_x + (m_largura/2), m_y + (m_altura/2), (m_quadro * 3) + (m_largura / 2), m_largura);
 			DesenharExplosao(tela, x_real, y_real, m_x + m_largura, m_y + m_altura, (m_quadro * 3) + (m_largura / 2), m_largura);
 			DesenharExplosao(tela, x_real, y_real, m_x + (m_largura/2), m_y + (m_altura/2), (m_quadro * 3) + (m_largura / 2), m_largura);
-			*/
+			/**/
 
 			break;
 	}
@@ -133,9 +135,10 @@ EStatusChefe CChefe::ObterStatus()
 
 
 //------------------------------------------------------------
-bool CChefe::Colidir(TRect area, int energia)
+bool CChefe::Colidir(TRect &area, int energia)
 {
-	if(ChecarColisao(area)
+
+	if(m_armas.Colidir(area, energia)
 	&& m_status != eChefeInativo
 	&& m_status != eChefeExplosao)
 	{

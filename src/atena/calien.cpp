@@ -8,27 +8,44 @@
 *------------------------------------------------------------*/
 
 #include <time.h>
-#include "aliens.h"
 #include "calien.h"
 #include "erro.h"
+
+CAlien::CAlien()
+{
+	m_sombra = NULL;
+}
+
+CAlien::~CAlien()
+{
+//	Finalizar();
+}
+
 
 //------------------------------------------------------------
 void CAlien::Iniciar(TObjeto &obj)
 {
+	register int x, y;
+
 	//Inicializa a classe base
-	IniciarInimigo(obj);
+	CInimigo::Iniciar(obj);
+
+	//m_sombra= load_bmp(tmp_arquivo, NULL);
+	m_sombra = create_bitmap(m_largura / 2, m_altura / 2);
+	stretch_blit(m_bitmap, m_sombra, 0, 0, m_bitmap->w, m_bitmap->h, 0, 0, m_sombra->w, m_sombra->h);
+	for (x = 0; x < m_sombra->w; x++)
+	{
+		for (y = 0; y < m_sombra->h; y++)
+		{
+			if (_getpixel16(m_sombra, x, y) != COR_ROSA)
+				_putpixel16(m_sombra, x, y, COR_PRETA);
+		}
+	}
 
 	m_dir_x     = 0;
 	m_dir_y	    = 1;
-	m_quadro	= 0;
-
-	m_ativo     = 1;
-	m_visivel	= 1;
 
 	m_atirar    = rand() % 2;
-	m_status    = eInimigoNormal;
-	m_angulo	= 0;
-	m_tempo		= 0;
 	m_flag_x	= (rand() % 2) * -2 + 1;
 	m_flag_y	= (rand() % 2) * -2 + 1;
 	m_dir_r		= 0;
@@ -48,7 +65,12 @@ void CAlien::Iniciar(TObjeto &obj)
 //------------------------------------------------------------
 void CAlien::Finalizar()
 {
-	FinalizarInimigo();
+	if (m_sombra != NULL)
+	{
+		destroy_bitmap(m_sombra);
+		m_sombra = NULL;
+	}
+	CInimigo::Finalizar();
 }
 
 //------------------------------------------------------------
@@ -225,7 +247,9 @@ void CAlien::Desenhar(CTela & tela, int x_real, int y_real)
 			case eInimigoNormal:
 			case eInimigoAtingido:
 				//sombra
-				//tela.RotateSprite(eCamadaObjetos, m_bitmap, m_x - x_real + m_pos_sombra, m_y  - y_real + m_pos_sombra, itofix(m_angulo));
+				tela.RotateSprite(eCamadaObjetos, m_sombra, m_x - x_real + m_pos_sombra, m_y  - y_real + m_pos_sombra, itofix(m_angulo));
+				
+				//alien
 				tela.RotateSprite(eCamadaObjetos, m_bitmap, m_x - x_real, m_y - y_real, itofix(m_angulo));
  				
 				break;

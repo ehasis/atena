@@ -85,6 +85,14 @@ LIB32=link.exe -lib
 # PROP Default_Filter "*.h"
 # Begin Source File
 
+SOURCE=.\src\galib\gabarra.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\galib\gabitmap.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\src\galib\gaconfig.h
 # End Source File
 # Begin Source File
@@ -103,6 +111,14 @@ SOURCE=.\src\galib\gascript.h
 # Begin Group "Fontes"
 
 # PROP Default_Filter "*.cpp"
+# Begin Source File
+
+SOURCE=.\src\galib\gabarra.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\galib\gabitmap.cpp
+# End Source File
 # Begin Source File
 
 SOURCE=.\src\galib\gaconfig.cpp

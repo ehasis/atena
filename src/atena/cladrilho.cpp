@@ -48,7 +48,7 @@ void CLadrilho::Iniciar(TLadrilho ladrilho, int largura, int altura, BITMAP * bm
 		}
 	}
 
-	clear(m_bmp_ladrilho);
+	//clear(m_bmp_ladrilho);
 	blit(m_bmp_fonte, m_bmp_ladrilho, m_bmp_x, m_bmp_y, 0, 0, m_largura, m_altura);
 
 	if(!m_bmp_aux)
@@ -59,7 +59,6 @@ void CLadrilho::Iniciar(TLadrilho ladrilho, int largura, int altura, BITMAP * bm
 			Erro("Código do Erro:", "0301");
 		}
 	}
-	clear(m_bmp_aux);
 
 	if(m_v_flip)
 	{
@@ -73,14 +72,9 @@ void CLadrilho::Iniciar(TLadrilho ladrilho, int largura, int altura, BITMAP * bm
 	}
 	aux_angulo = m_angulo;
 	m_angulo = 0;
-	Rotacionar(aux_angulo);
-	//SuavizarBitmap(m_bmp_ladrilho);
-}
 
-//------------------------------------------------------------
-void CLadrilho::Desenhar(CTela & tela, int x_real, int y_real)
-{
-	tela.DrawSprite(eCamadaFundo, m_bmp_ladrilho, m_x - x_real, m_y - y_real);
+	//Rotacionar(aux_angulo);
+	//SuavizarBitmap(m_bmp_ladrilho);
 }
 
 //------------------------------------------------------------
@@ -142,27 +136,27 @@ char *CLadrilho::ObterArquivoBmp()
 void CLadrilho::VirarHorizontal()
 {
 	m_h_flip = !m_h_flip;
+	clear(m_bmp_aux);
 	draw_sprite_h_flip(m_bmp_aux, m_bmp_ladrilho, 0, 0);
 	draw_sprite(m_bmp_ladrilho, m_bmp_aux, 0, 0);
-	clear(m_bmp_aux);
 }
 
 //------------------------------------------------------------
 void CLadrilho::VirarVertical()
 {
 	m_v_flip = !m_v_flip;
+	clear(m_bmp_aux);
 	draw_sprite_v_flip(m_bmp_aux, m_bmp_ladrilho, 0, 0);
 	draw_sprite(m_bmp_ladrilho, m_bmp_aux, 0, 0);
-	clear(m_bmp_aux);
 }
 
 //------------------------------------------------------------
 void CLadrilho::Rotacionar(int rotacoes)
 {
 	m_angulo = (m_angulo + rotacoes) <= 4 ? m_angulo + rotacoes : 1;
+	clear(m_bmp_aux);
 	rotate_sprite(m_bmp_aux, m_bmp_ladrilho, 0, 0, itofix(rotacoes * 64));
 	draw_sprite(m_bmp_ladrilho, m_bmp_aux, 0, 0);
-	clear(m_bmp_aux);
 }
 
 //------------------------------------------------------------

@@ -80,13 +80,13 @@ bool CFilme::Escrever(const char *texto)
 		{
 			alfont_textprintf_aa(screen,
 					   m_fonte, (coluna * 8) + 50, linha,
-					   makecol(255,255,0), "%c", texto[i]);
+					   makecol16(255,255,0), "%c", texto[i]);
 		}
 		else
 		{
 			textprintf(screen,
 					   font, (coluna * 8) + 50, linha,
-					   makecol(255,255,0), "%c", texto[i]);
+					   makecol16(255,255,0), "%c", texto[i]);
 		}
 
 

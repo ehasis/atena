@@ -11,11 +11,11 @@ CInimigo::CInimigo()
 //Destructor
 CInimigo::~CInimigo()
 {
-	FinalizarInimigo();
+	Finalizar();
 }
 
 //------------------------------------------------------------
-void CInimigo::IniciarInimigo(TObjeto &obj)
+void CInimigo::Iniciar(TObjeto &obj)
 {
 	m_tipo_objeto	= (EObjeto)obj.tipo;
 	m_subtipo		= obj.subtipo;
@@ -27,18 +27,25 @@ void CInimigo::IniciarInimigo(TObjeto &obj)
 	m_largura		= m_bitmap->w;
 	m_altura		= m_bitmap->h;
 
+	m_quadro		= 0;
+	m_ativo			= 1;
+	m_visivel		= 1;
+	m_angulo		= 0;
+	m_tempo			= 0;
+	m_status		= eInimigoNormal;
+
 	m_armas.Adicionar();
 	m_armas.Obter().Iniciar(eArmaInvisivel, m_x, m_y);
 }
 
 //------------------------------------------------------------
-void CInimigo::FinalizarInimigo()
+void CInimigo::Finalizar()
 {
+	m_armas.Finalizar();
+
 	if (m_bitmap != NULL)
 		destroy_bitmap(m_bitmap);
 	m_bitmap = NULL;
-
-	m_armas.Finalizar();
 }
 
 //------------------------------------------------------------
@@ -71,29 +78,4 @@ void CInimigo::SetarStatus(EStatusInimigo status)
 EStatusInimigo CInimigo::ObterStatus()
 {
 	return m_status;
-}
-
-//------------------------------------------------------------
-void CInimigo::DecEnergia(int decremento)
-{
-	m_energia -= decremento;
-
-	if(m_energia <= 0)
-	{
-		m_status = eInimigoExplosao;
-		m_quadro = 0;
-	}
-}
-
-//------------------------------------------------------------
-bool CInimigo::Colidir(TRect &area, int energia)
-{
-	if(m_status != eInimigoInativo
-	&& m_status != eInimigoExplosao
-	&& ChecarColisao(area))
-	{
-		DecEnergia(energia);
-		return true;
-	}
-	return false;
 }

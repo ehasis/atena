@@ -39,10 +39,11 @@
 #include "callegro.h"
 
 #include "cfundo.h"
-#include "funcoes.h"
 #include "erro.h"
 #include "cladrilho.h"
 #include "cobjeto.h"
+#include "ccolecaoavancada.h"
+#include "ccenario.h"
 
 #define MAPA_LARGURA_LADRILHOS   17 											// Largura do mapa em numero de ladrilhos
 #define MAPA_ALTURA_LADRILHOS   200												// Altura do mapa em numero de ladrilhos
@@ -77,13 +78,14 @@ class CFundo
 {
 public:
 	int Iniciar(TLadrilho mapa_ladrilhos[MAPA_LARGURA_LADRILHOS][MAPA_ALTURA_LADRILHOS], int x_fonte, int y_fonte, int mapa_largura_ladrilhos, int mapa_altura_ladrilhos, int ladrilho_largura, int ladrilho_altura, int x_destino, int y_destino, int m_largura_destino, int m_altura_destino);
-	void Desenhar(CTela & tela, int x_real, int y_real);;
+	void Desenhar(CTela & tela, int x_real, int y_real);
 	int Rolar(EDirecao direcao, int pixels);
 	void Atualizar();
 	CLadrilho ObterLadrilho(int x, int y);
 	void SetarLadrilho(int x, int y, TLadrilho ladrilho, BITMAP * bmp_fonte);
 	void SalvarFundo(char * fase);
 	void Finalizar();
+	void AdicionarCenario(TObjeto &obj);
 private:
 	TBmp *m_bmp_arquivos;
 	int m_x_fonte;
@@ -97,6 +99,7 @@ private:
 	int m_largura_destino;
 	int m_altura_destino;
 	CLadrilho m_mapa_ladrilho[MAPA_LARGURA_LADRILHOS][MAPA_ALTURA_LADRILHOS];
+	CColecaoAvancada< CCenario > m_cenario;
 };
 
 #endif

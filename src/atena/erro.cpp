@@ -7,12 +7,12 @@
 *
 *------------------------------------------------------------*/
 
+#include <allegro.h>
 #include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 #include "erro.h"
-#include "clog.h"
 
 void ErroX(char *arquivo, int linha, char *s1, char *s2)
 {
@@ -29,6 +29,9 @@ void ErroX(char *arquivo, int linha, char *s1, char *s2)
 	fprintf(f, "\n");
 
 	fclose(f);
+
+	allegro_message(s1);
+
 	exit(EXIT_FAILURE);
 }
 

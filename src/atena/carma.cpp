@@ -20,7 +20,6 @@ GADados CArma::m_dat_arquivo;
 //------------------------------------------------------------
 void CArma::CarregarArquivoDados(const char *arquivo)
 {
-	Log("CArma::CarregarArquivoDados();");
 	m_dat_arquivo.Abrir(arquivo);
 }
 
@@ -28,7 +27,6 @@ void CArma::CarregarArquivoDados(const char *arquivo)
 //------------------------------------------------------------
 void CArma::DescarregarArquivoDados()
 {
-	Log("CArma::DescarregarArquivoDados();");
 	m_dat_arquivo.Fechar();
 }
 
@@ -48,17 +46,10 @@ void CArma::Iniciar(int tipo, int x, int y)
 	m_y			= y;
 	m_flag_x	= x;
 	m_flag_y	= y;
-	//m_tipo_objeto = (EObjeto) m_tipo;
 	m_status	= eArmaNormal;
 	m_quadro	= 0;
-
-//#ifdef ZEUS // Atena = 0 / Zeus = 1
-	m_ativo     = 1;	
+	m_ativo     = 1;
 	m_visivel	= 1;
-//#else
-//	m_ativo     = 0;
-//	m_visivel	= 0;
-//#endif
 
 	switch(m_tipo)
 	{
@@ -93,6 +84,11 @@ void CArma::Iniciar(int tipo, int x, int y)
 	}
 }
 
+//------------------------------------------------------------
+void CArma::Finalizar()
+{
+	m_tiros.Finalizar();
+}
 
 //------------------------------------------------------------
 void CArma::Desenhar(CTela &tela, int x_real, int y_real)
@@ -100,7 +96,6 @@ void CArma::Desenhar(CTela &tela, int x_real, int y_real)
 	switch(m_status)
 	{
 		case eArmaNormal:
-			//m_tela.RotateSprite(eCamadaObjetos, m_dat_arquivo.Bitmap(m_tipo), 0, 0, 0);
 			tela.MaskedBlit(m_dat_arquivo.Bitmap((m_tipo * 2) + 1), eCamadaEfeitos, m_quadro * m_largura, 0, m_x - x_real + 40, m_y - y_real + 40, m_largura, m_altura);
 			tela.MaskedBlit(m_dat_arquivo.Bitmap((m_tipo * 2)), eCamadaEfeitos, m_quadro * m_largura, 0, m_x - x_real, m_y - y_real, m_largura, m_altura);
 
@@ -121,9 +116,8 @@ void CArma::Desenhar(CTela &tela, int x_real, int y_real)
 }
 
 
-
 //------------------------------------------------------------
-void CArma::Atualizar(TRect area, CObjetoAvancado * const alvo)
+void CArma::Atualizar(TRect &area, CObjetoAvancado * const alvo)
 {
 
 	m_turbina = 0;
@@ -160,7 +154,6 @@ void CArma::Atualizar(TRect area, CObjetoAvancado * const alvo)
 				m_flag_y = 0;
 			break;
 	}
-			
 
 	if(m_status != eArmaInativa)
 	{
@@ -170,39 +163,11 @@ void CArma::Atualizar(TRect area, CObjetoAvancado * const alvo)
 	}
 }
 
-
-//------------------------------------------------------------
-void CArma::Sonorizar()
-{
-	m_tiros.Sonorizar();
-}
-
-
-//------------------------------------------------------------
-void CArma::Finalizar()
-{
-	m_tiros.Finalizar();
-}
-
-
-//------------------------------------------------------------
-void CArma::Atirar(CObjetoAvancado * const alvo)
-{
-	if(m_status != eArmaExplosao && m_status != eArmaInativa)
-	{
-		m_tiros.AdicionarFim();
-		m_tiros.Obter().Iniciar(m_tipo_tiro,  m_x + (m_largura / 2), m_y, alvo);
-	}
-
-}
-
-
 //------------------------------------------------------------
 int CArma::ObterTipo()
 {
 	return m_tipo;
 }
-
 
 //------------------------------------------------------------
 void CArma::SetarStatus(EStatusArma status)
@@ -217,38 +182,8 @@ EStatusArma CArma::ObterStatus()
 	return m_status;
 }
 
-
-//------------------------------------------------------------
-CColecaoAvancada< CTiro > & CArma::ObterTiros()
-{
-	return m_tiros;
-}
-
-
-//------------------------------------------------------------
-bool CArma::Colidir(TRect area, int energia)
-{
-	if(ChecarColisao(area)
-	&& m_status != eArmaInativa
-	&& m_status != eArmaExplosao)
-	{
-		DecEnergia(energia);
-		return true;
-	}
-	return false;
-}
-
-
 //------------------------------------------------------------
 void CArma::SetarTipoTiro(ETiro tipo_tiro)
 {
 	m_tipo_tiro = tipo_tiro;
-}
-
-
-//------------------------------------------------------------
-void CArma::DecY(int decremento)
-{
-	m_y -= decremento;
-	m_turbina = 1;
 }

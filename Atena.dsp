@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /c
+# ADD CPP /nologo /W3 /GX /Ox /Ot /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x416 /d "NDEBUG"
@@ -79,7 +79,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib alld.lib "lib/galibd.lib" "lib/alfontd.lib" /nologo /subsystem:windows /debug /machine:I386 /out:"bin/Atena.exe" /pdbtype:sept
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib alld.lib "lib/galibd.lib" "lib/alfontd.lib" /nologo /subsystem:windows /debug /machine:I386 /out:"bin/Atenad.exe" /pdbtype:sept
 
 !ENDIF 
 
@@ -112,6 +112,10 @@ SOURCE=.\src\atena\cbonus.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\src\atena\ccenario.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\src\atena\cchefe.h
 # End Source File
 # Begin Source File
@@ -121,10 +125,6 @@ SOURCE=.\src\atena\ccolecao.h
 # Begin Source File
 
 SOURCE=.\src\atena\ccolecaoavancada.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\src\atena\cconfig.h
 # End Source File
 # Begin Source File
 
@@ -148,15 +148,15 @@ SOURCE=.\src\atena\cfundo.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\src\atena\cinimigo.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\src\atena\cjogo.h
 # End Source File
 # Begin Source File
 
 SOURCE=.\src\atena\cladrilho.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\src\atena\clog.h
 # End Source File
 # Begin Source File
 
@@ -192,10 +192,6 @@ SOURCE=.\src\atena\erro.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\atena\funcoes.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\src\galib\galib.h
 # End Source File
 # End Group
@@ -216,15 +212,15 @@ SOURCE=.\src\atena\cbonus.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\src\atena\ccenario.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\src\atena\cchefe.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\src\atena\ccolecao.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\src\atena\cconfig.cpp
 # End Source File
 # Begin Source File
 
@@ -248,15 +244,15 @@ SOURCE=.\src\atena\cfundo.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\src\atena\cinimigo.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\src\atena\cjogo.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\src\atena\cladrilho.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\src\atena\clog.cpp
 # End Source File
 # Begin Source File
 
@@ -285,10 +281,6 @@ SOURCE=.\src\atena\cveiculo.cpp
 # Begin Source File
 
 SOURCE=.\src\atena\erro.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\src\atena\funcoes.cpp
 # End Source File
 # Begin Source File
 

@@ -34,19 +34,19 @@ class CChefe: public CObjetoAvancado
 {
 public:
 	void Iniciar();
-	void Atualizar(TRect area, CObjetoAvancado * const alvo);
-	void Desenhar(CTela & tela, int x_real, int y_real);
+	void Atualizar(TRect &area, CObjetoAvancado * const alvo);
+	void Desenhar(CTela &tela, int x_real, int y_real);
 	void Sonorizar();
 	void Finalizar();
 	
 	void DecEnergia(int decremento);
 	void SetarStatus(EStatusChefe status);
 	EStatusChefe ObterStatus();
-	bool CChefe::Colidir(TRect area, int energia);
+	bool CChefe::Colidir(TRect &area, int energia);
 
 private:
-	EStatusChefe m_status;
-	GADados m_dados;
+	EStatusChefe	m_status;
+	GADados			m_dados;
 	CColecaoAvancada< CArma > m_armas;
 
 };

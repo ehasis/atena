@@ -46,6 +46,7 @@ end;
 procedure TfrmPaleta.imgLadrilhosMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
   lad: TLadrilho;
+  posX, posY: integer;
 begin
 
   //Obtem a coordenada x, y do ladrilho
@@ -58,10 +59,26 @@ begin
     Exit;
   end;
 
+  frmZeus.sbtLadrilhos.Down := true;
   //Move o Bevel para cima do ladrilho selecionado
   bvlLadrilhos.Visible := True;
-  bvlLadrilhos.Top := (ladY * 32) + imgLadrilhos.Top - 1;
-  bvlLadrilhos.Left := (ladX * 32) + imgLadrilhos.Left - 1;
+
+  posY := (ladY * 32) + imgLadrilhos.Top;
+  posX := (ladX * 32) + imgLadrilhos.Left;
+
+  if (ssShift in Shift) and (bvlLadrilhos.Top < posY) and (bvlLadrilhos.Left < posX) then
+  begin
+    bvlLadrilhos.Tag := 1;
+    bvlLadrilhos.Width := posX - bvlLadrilhos.Left + 33;
+    bvlLadrilhos.Height := posY - bvlLadrilhos.Top + 33;
+  end else
+  begin
+    bvlLadrilhos.Tag := 0;
+    bvlLadrilhos.Top := posY - 1;
+    bvlLadrilhos.Left := posX - 1;
+    bvlLadrilhos.Width := 34;
+    bvlLadrilhos.Height := 34;
+  end;
 
   //Obtem as caracterísicas do ladirlho selecionado
   lad := mapLadrilhos.GetTLadrilho(ladX, ladY);
@@ -93,8 +110,8 @@ begin
   StrCopy(lad.arquivo, PChar(cboLadrilhos.Text));
 
   //Carrega os ladrilhos da paleta
-  for x := 0 to 2 do
-    for y := 0 to 14 do
+  for x := 0 to 9 do
+    for y := 0 to 9 do
     begin
       lad.x := x * 32;
       lad.y := y * 32;

@@ -9,4 +9,5 @@
 #define LUCON                            3
 #define MID_FUNDO1                       4        /* MIDI */
 #define PAINEL                           5        /* BMP  */
+#define PREVISAO                         6        /* BMP  */
 

@@ -13,27 +13,32 @@
 //------------------------------------------------------------
 int CFundo::Iniciar(TLadrilho mapa_ladrilhos[MAPA_LARGURA_LADRILHOS][MAPA_ALTURA_LADRILHOS], int x_fonte, int y_fonte, int mapa_largura_ladrilhos, int mapa_altura_ladrilhos, int ladrilho_largura, int ladrilho_altura, int x_destino, int y_destino, int largura_destino, int altura_destino)
 {
-   register int x, y;
-   int quant_bmp = 0, flag_load = FALSE;
-   TBmp **aux_bmp = NULL;
+	register int x, y;
+	int quant_bmp = 0, flag_load = FALSE;
+	TBmp **aux_bmp = NULL;
+	GABarraProgresso barra;
 
-   m_bmp_arquivos = NULL;
+	m_bmp_arquivos = NULL;
 
-   m_x_fonte = x_fonte;
-   m_y_fonte = y_fonte;
-   m_mapa_largura_ladrilhos = mapa_largura_ladrilhos;
-   m_mapa_altura_ladrilhos = mapa_altura_ladrilhos;
-   m_ladrilho_largura = ladrilho_largura;
-   m_ladrilho_altura = ladrilho_altura;
-   m_x_destino = x_destino;
-   m_y_destino = y_destino;
-   m_largura_destino = largura_destino;
-   m_altura_destino = altura_destino;
+	m_x_fonte = x_fonte;
+	m_y_fonte = y_fonte;
+	m_mapa_largura_ladrilhos = mapa_largura_ladrilhos;
+	m_mapa_altura_ladrilhos = mapa_altura_ladrilhos;
+	m_ladrilho_largura = ladrilho_largura;
+	m_ladrilho_altura = ladrilho_altura;
+	m_x_destino = x_destino;
+	m_y_destino = y_destino;
+	m_largura_destino = largura_destino;
+	m_altura_destino = altura_destino;
 
-    // Loop para inicializar cada CLadrilho do fundo
-	for (x = 0; x < mapa_largura_ladrilhos; x++)
+
+	rect(screen, 100, 400, 540, 405, makecol16(0,0,255));
+	barra.SetarXYLA(100, 400, 440, 5).SetarCor(makecol16(0, 0, 255)).SetarMinimo(0.0f).SetarMaximo((float)(mapa_altura_ladrilhos - 1));
+
+	// Loop para inicializar cada CLadrilho do fundo
+	for (y = 0; y < mapa_altura_ladrilhos; y++)
 	{
-		for (y = 0; y < mapa_altura_ladrilhos; y++)
+		for (x = 0; x < mapa_largura_ladrilhos; x++)
 		{
 
 			flag_load = TRUE;
@@ -58,10 +63,11 @@ int CFundo::Iniciar(TLadrilho mapa_ladrilhos[MAPA_LARGURA_LADRILHOS][MAPA_ALTURA
 				o m_ladrilho corrente */
 				m_mapa_ladrilho[x][y].Iniciar(mapa_ladrilhos[x][y], m_ladrilho_largura, m_ladrilho_altura, (*aux_bmp)->bmp_bmp);
 			}
-
-      }
-   }
-   return TRUE;
+		}
+		barra.SetarPosicao(y);
+		barra.Desenhar(screen);
+	}
+	return TRUE;
 }
 
 
@@ -85,6 +91,7 @@ void CFundo::Desenhar(CTela & tela, int x_real, int y_real)
 			m_mapa_ladrilho[x][y].Desenhar(tela, x_real - m_x_destino, y_real - m_y_destino);
 		}
 	}
+	m_cenario.Desenhar(tela, x_real, y_real);
 }
 
 
@@ -172,7 +179,6 @@ void CFundo::SalvarFundo(char * fase)
          }
       fclose(m_arquivo);
    }
-
 }
 
 
@@ -181,6 +187,8 @@ void CFundo::Finalizar()
 {
 	register int x, y;
 	TBmp *aux_bmp;
+
+	m_cenario.Finalizar();
 
 	for(; m_bmp_arquivos;)
 	{
@@ -196,4 +204,12 @@ void CFundo::Finalizar()
 			m_mapa_ladrilho[x][y].Finalizar();
 		}
 	}
+}
+
+
+//------------------------------------------------------------
+void CFundo::AdicionarCenario(TObjeto &obj)
+{
+	m_cenario.Adicionar();
+	m_cenario.Obter().Iniciar(obj);
 }

@@ -94,13 +94,13 @@ public:
 	void Iniciar(int tipo, int x, int y);
 	void DecEnergia(int valor);
 	void IncEnergia(int valor);
-	void Atualizar(TRect area, CObjetoAvancado * const alvo);
-	void Desenhar(CTela & tela, int x_real, int y_real);;
+	void Atualizar(TRect &area, CObjetoAvancado * const alvo);
+	void Desenhar(CTela &tela, int x_real, int y_real);;
 	void Finalizar();
 	void Sonorizar();
 	int ObterPontos();
 	void IncPontos(int incremento);
-	int ObterCasco();
+	int ObterFuselagem();
 	int ObterStatus();
 	CColecaoAvancada< CArma > & ObterArmas();
 	void SetarX(int x);
@@ -109,22 +109,18 @@ public:
 	void SetarY(int y);
 	void IncY(int incremento);
 	void DecY(int decremento);
-	bool Colidir(TRect area, int energia);
+	bool Colidir(TRect &area, int energia);
 	void SetarBonus(int bonus);
 	void SetarTeclas(int tecla_cima = KEY_UP, int tecla_baixo = KEY_DOWN, int tecla_esquerda = KEY_LEFT, int tecla_direita = KEY_RIGHT, int tecla_arma_esquerda = KEY_Z, int tecla_arma_centro = KEY_X, int tecla_arma_direita = KEY_C, int tecla_todas_armas = KEY_SPACE);
 
 private:
-	GADados m_dat_arquivo;
-	CColecaoAvancada < CArma > m_armas;
+	bool atirando;
 	int m_pontos;
-	int m_casco;
 	int m_atirar;
 	int m_tipo_tiro;
-	EStatusNave m_status;
 	int m_turbina;
-	float m_vi, m_vx, m_vy;
 	int m_dx, m_dy;
-	int m_tipo; // ENave
+	int m_tipo;
 	int m_bonus;
 	int m_tecla_cima;
 	int m_tecla_baixo;
@@ -134,7 +130,15 @@ private:
 	int m_tecla_arma_centro;
 	int m_tecla_arma_direita;
 	int m_tecla_todas_armas;
-	bool atirando;
+	float m_vi, m_vx, m_vy;
+	int m_recursos[3];
+	EStatusNave m_status;
+	GADados m_dat_arquivo;
+	CColecaoAvancada < CArma > m_armas;
+	GABarraProgresso m_bar_energia;
+	GABarraProgresso m_bar_escudos;
+	GABarraProgresso m_bar_fuselagem;
+	
 };
 
 #endif

@@ -52,8 +52,8 @@ public:
 	static void CarregarArquivoDados(const char *arquivo);
 	static void DescarregarArquivoDados();
 	void Iniciar(int tipo, int x, int y);
-	void Desenhar(CTela & tela, int x_real, int y_real);
-	void Atualizar(TRect area, CObjetoAvancado * const alvo);
+	void Desenhar(CTela &tela, int x_real, int y_real);
+	void Atualizar(TRect &area, CObjetoAvancado * const alvo);
 	void Sonorizar();
 	void Finalizar();
 	void Atirar(CObjetoAvancado * const alvo);
@@ -61,19 +61,65 @@ public:
 	CColecaoAvancada< CTiro > & ObterTiros();
 	void SetarStatus(EStatusArma status);
 	EStatusArma ObterStatus();
-	bool Colidir(TRect area, int energia);
+	bool Colidir(TRect &area, int energia);
 	void SetarTipoTiro(ETiro tipo_tiro);
 	void DecY(int decremento);
 
 protected:
-	int m_tipo; // EArma
-	ETiro m_tipo_tiro;
+	int			m_tipo; // EArma
+	int			m_flag_x;
+	int			m_flag_y;
+	int			m_turbina;
+	ETiro		m_tipo_tiro;
 	EStatusArma m_status;
-	static GADados m_dat_arquivo;
 	CColecaoAvancada< CTiro > m_tiros;
-	int m_flag_x, m_flag_y;
-	int m_turbina;
+	static GADados m_dat_arquivo;
 };
+
+//------------------------------------------------------------
+inline void CArma::Atirar(CObjetoAvancado * const alvo)
+{
+	if(m_status != eArmaExplosao
+	&& m_status != eArmaInativa)
+	{
+		m_tiros.AdicionarFim();
+		m_tiros.Obter().Iniciar(m_tipo_tiro,  m_x + (m_largura / 2), m_y, alvo);
+	}
+}
+
+//------------------------------------------------------------
+inline CColecaoAvancada< CTiro > & CArma::ObterTiros()
+{
+	return m_tiros;
+}
+
+
+//------------------------------------------------------------
+inline bool CArma::Colidir(TRect &area, int energia)
+{
+	if(m_status != eArmaInativa
+	&& m_status != eArmaExplosao
+	&& ChecarColisao(area))
+	{
+		DecEnergia(energia);
+		return true;
+	}
+	return false;
+}
+
+//------------------------------------------------------------
+inline void CArma::DecY(int decremento)
+{
+	m_y -= decremento;
+	m_turbina = 1;
+}
+
+//------------------------------------------------------------
+inline void CArma::Sonorizar()
+{
+	m_tiros.Sonorizar();
+}
+
 
 #endif
 

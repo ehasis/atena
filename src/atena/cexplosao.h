@@ -11,12 +11,9 @@
 
 #include "callegro.h"
 
-#include "ctela.h"
-
-#define TAM_PALETA 256
-
-#define QTD_PARTICULAS 8000
-#define RANDOM(n)       (((float)rand() / (float)RAND_MAX)*(n))
+#define TAM_PALETA		256
+#define QTD_PARTICULAS	8000
+#define RANDOM(n)		(((float)rand() / (float)RAND_MAX)*(n))
 
 typedef struct 
 {
@@ -39,7 +36,7 @@ class CExplosao
 public:
 	static void Iniciar(int largura, int altura, bool ativo);
 	static void Desligar();
-	static void Desenhar (CTela & tela);
+	static void Desenhar (BITMAP *bmp);
 	static void Ativo(bool ativo);
 	void IniciarExplosao(int x, int y, int raio, int num_particulas);
 	void IniciarExplosaoRadial(int x, int y, int raio);
@@ -52,7 +49,6 @@ private:
 	static int tempo;
 	static TPaleta palette[TAM_PALETA];
 	static bool m_ativo;
-
 };
 
 #endif

@@ -6,5 +6,6 @@ bmp logo_ga
 ttf lucon
 mid mid_fundo1
 bmp painel
+bmp previsao
 
 fim

@@ -59,7 +59,7 @@ type
     alZeus: TActionList;
     ExibirPaletaLadrilhos: TAction;
     sbtLadrilhos: TToolButton;
-    sbtAliens: TToolButton;
+    sbtObjetos: TToolButton;
     mnuObjeto: TMenuItem;
     itmPropriedades: TMenuItem;
     itmExibirObjetos: TMenuItem;
@@ -68,6 +68,10 @@ type
     itmConteudo: TMenuItem;
     N4: TMenuItem;
     itmSobre: TMenuItem;
+    N5: TMenuItem;
+    itmAtualizarTela: TMenuItem;
+    sbtCenario: TToolButton;
+    itmExibirCenario: TMenuItem;
     procedure itmNovoClick(Sender: TObject);
     procedure itmFecharClick(Sender: TObject);
     procedure imgTelaMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
@@ -81,7 +85,7 @@ type
     procedure itmObjetosExcluirClick(Sender: TObject);
     procedure itmObjetosPropriedadesClick(Sender: TObject);
     procedure sbtLadrilhosClick(Sender: TObject);
-    procedure sbtAliensClick(Sender: TObject);
+    procedure sbtObjetosClick(Sender: TObject);
     procedure imgPrevisaoClick(Sender: TObject);
     procedure tvObjetosClick(Sender: TObject);
     procedure itmExportarClick(Sender: TObject);
@@ -91,6 +95,8 @@ type
     procedure itmExibirObjetosClick(Sender: TObject);
     procedure itmSobreClick(Sender: TObject);
     procedure itmConteudoClick(Sender: TObject);
+    procedure itmAtualizarTelaClick(Sender: TObject);
+    procedure itmExibirCenarioClick(Sender: TObject);
 
   private
     procedure RedesenhaMapa;
@@ -121,6 +127,7 @@ var
   ladPincel:    CLadrilho;
   objPincel:    CObjeto;
   lstObjetos:   TObjectList;
+  lstCenario:   TObjectList;
   glbAlterado:  boolean;
 
 implementation
@@ -155,10 +162,16 @@ begin
   //Desenha o Fundo
   mapFundo.Desenhar(imgTela, 0, ScrollBarY.Position);
 
+  //Desenha o cenario
+  if itmExibirCenario.Checked then
+    for i := 0 to lstCenario.Count - 1 do
+      CObjeto(lstCenario[i]).Desenhar(imgTela, 0, ScrollBarY.Position * 32);
+
   //Desenha os Objetos
   if itmExibirObjetos.Checked then
     for i := 0 to lstObjetos.Count - 1 do
       CObjeto(lstObjetos[i]).Desenhar(imgTela, 0, ScrollBarY.Position * 32);
+
 end;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -173,7 +186,7 @@ begin
   panCentro.Enabled := habilitar;
   imgTela.Enabled := habilitar;
   sbtLadrilhos.Enabled := habilitar;
-  sbtAliens.Enabled := habilitar;
+  sbtObjetos.Enabled := habilitar;
   ScrollBarY.Enabled := habilitar;
 end;
 
@@ -197,10 +210,11 @@ begin
 
   //Cria os Objetos
   mapFundo      := CMapa.Create(MAPA_LARGURA, MAPA_ALTURA, TELA_LARGURA, TELA_ALTURA);
-  mapLadrilhos  := CMapa.Create(3, 15, 3, 15);
+  mapLadrilhos  := CMapa.Create(10, 10, 10, 10);
   ladPincel     := CLadrilho.Create;
   objPincel     := CObjeto.Create;
   lstObjetos    := TObjectList.Create;
+  lstCenario    := TObjectList.Create;
 
   //Abre o XML contendo a lista de objetos
   xmlDoc1 := TXMLDocument.Create(self);
@@ -248,11 +262,13 @@ var i: integer;
 begin
   //Libera a memória alocada
   lstObjetos.Clear;
+  lstCenario.Clear;
   mapFundo.Free;
   mapLadrilhos.Free;
   ladPincel.Free;
   objPincel.Free;
   lstObjetos.Free;
+  lstCenario.Free;
   for i := 0 to tvObjetos.Items.Count - 1 do
   begin
     if not tvObjetos.Items[i].HasChildren then
@@ -319,9 +335,6 @@ begin
 
   //Codificação temporária
   frmPaleta.cboLadrilhos.Items.Clear;
-  bmp := TBitmap.Create;
-  bmp.LoadFromFile(ExtractFilePath(Application.ExeName) + 'fases\fase.bmp');
-  ////////////////////////
 
 
   //Abertura do XML
@@ -337,7 +350,9 @@ begin
   for i := 0 to nBitmap.ChildNodes.Count - 1 do
   begin
     nAtual := nBitmap.ChildNodes[i];
-    frmPaleta.cboLadrilhos.Items.Add(nAtual.Attributes['nome']);
+    bmp := TBitmap.Create;
+    bmp.LoadFromFile(ExtractFilePath(Application.ExeName) + nAtual.Attributes['nome']);
+    frmPaleta.cboLadrilhos.Items.AddObject(nAtual.Attributes['nome'], TObject(bmp));
   end;
 
   //Carrega o Mapa
@@ -356,7 +371,11 @@ begin
       lad.v_flip  := StrToInt(nAtual.Attributes['v_flip']);
       s := nAtual.Attributes['arquivo'];
       StrCopy(lad.arquivo, PChar(s));
-      mapFundo.SetTLadrilho(x, y, lad, bmp, lad.bmp_x, lad.bmp_y);
+
+      with frmPaleta.cboLadrilhos do
+        for i := 0 to Items.Count - 1 do
+          if Items[i] = s then
+            mapFundo.SetTLadrilho(x, y, lad, TBitmap(Items.Objects[i]), lad.bmp_x, lad.bmp_y);
 
       if Boolean(lad.h_flip) then
       begin
@@ -376,6 +395,7 @@ begin
 
   //Carrega os Objetos
   lstObjetos.Clear;
+  lstCenario.Clear;
   for i := 0 to nObjetos.ChildNodes.Count - 1 do
   begin
     nAtual          := nObjetos.ChildNodes[i];
@@ -389,13 +409,18 @@ begin
     objNovo.Velocidade := StrToInt(nAtual.Attributes['velocidade']);
     objNovo.AbrirBitmap(nAtual.Attributes['arquivo']);
     objNovo.Desenhar(imgTela, 0, ScrollBarY.Position * 32);
-    lstObjetos.Add(objNovo);
+    if objNovo.Tipo = 3 then
+      lstCenario.Add(objNovo)
+    else
+      lstObjetos.Add(objNovo);
   end;
 
   //Libera a memoria
+  for i := 0 to frmPaleta.cboLadrilhos.Items.Count - 1 do
+    TBitmap(frmPaleta.cboLadrilhos.Items.Objects[i]).Free;
+
   xmlDoc1.Active := false;
   xmlDoc1.Free;
-  bmp.Free;
   BarraProgresso.Position := 0;
 end;
 
@@ -453,6 +478,21 @@ begin
     end;
   end;
 
+  //Salva o Cenario
+  for i := 0 to lstCenario.Count - 1 do
+  begin
+    obj := CObjeto(lstCenario[i]);
+    nAtual := nObjetos.AddChild('Objeto');
+    nAtual.Attributes['nome'] := obj.Nome;
+    nAtual.Attributes['tipo'] := IntToStr(obj.Tipo);
+    nAtual.Attributes['subtipo'] := IntToStr(obj.SubTipo);
+    nAtual.Attributes['x'] := IntToStr(obj.X);
+    nAtual.Attributes['y'] := IntToStr(obj.Y);
+    nAtual.Attributes['energia'] := IntToStr(obj.Energia);
+    nAtual.Attributes['velocidade'] := IntToStr(obj.Velocidade);
+    nAtual.Attributes['arquivo'] := obj.Arquivo;
+  end;
+
   //Salva os Objetos
   for i := 0 to lstObjetos.Count - 1 do
   begin
@@ -481,6 +521,7 @@ begin
 
   //Limpa os objetos
   lstObjetos.Clear;
+  lstCenario.Clear;
   frmPaleta.cboLadrilhos.ItemIndex := -1;
   frmPaleta.imgLadrilhos.Canvas.FillRect(Rect(0,0, 96, 480));
   imgTela.Canvas.FillRect(Rect(0,0, imgTela.Width, imgTela.Height));
@@ -510,6 +551,13 @@ begin
       lad := mapFundo.GetTLadrilho(x, y);
       BlockWrite(arq, lad, SizeOf(lad));
     end;
+
+  //Grava o cenario
+  for i := 0 to lstCenario.Count - 1 do
+  begin
+    obj := CObjeto(lstCenario[i]).GetTObjeto;
+    BlockWrite(arq, obj, SizeOf(obj));
+  end;
 
   //Grava os objetos
   for i := 0 to lstObjetos.Count - 1 do
@@ -548,12 +596,15 @@ begin
   frmPaleta.Visible := itmPaletadeLadrilhos.Checked;
 end;
 
-procedure TfrmZeus.itmExibirObjetosClick(Sender: TObject);
+procedure TfrmZeus.itmExibirCenarioClick(Sender: TObject);
 begin
   RedesenhaMapa;
 end;
 
-
+procedure TfrmZeus.itmExibirObjetosClick(Sender: TObject);
+begin
+  RedesenhaMapa;
+end;
 
 //------------------------------------------------------------------------------
 //Eventos dos Controles
@@ -565,7 +616,7 @@ var
   lad_x, lad_y: integer;
 begin
   //Se estiver editando os Objetos
-  if (sbtAliens.Down) and (itmExibirObjetos.Checked) then
+  if (sbtObjetos.Down) and (itmExibirObjetos.Checked) then
   begin
     //Se clicar o botão direito, abre o PopUp
     if Button = mbRight then
@@ -587,11 +638,40 @@ begin
       //Cria o objeto novo e adiciona na lista
       objNovo := CObjeto.Create;
       objNovo.Iniciar(objPincel);
+      objNovo.Desenhar(imgTela, 0, ScrollBarY.Position * 32);
       lstObjetos.Add(objNovo);
 
       //Desenha os objetos visiveis
-      for i := 0 to lstObjetos.Count - 1 do
-        CObjeto(lstObjetos[i]).Desenhar(imgTela, 0, ScrollBarY.Position * 32);
+      //for i := 0 to lstObjetos.Count - 1 do
+      //  CObjeto(lstObjetos[i]).Desenhar(imgTela, 0, ScrollBarY.Position * 32);
+    end;
+  end;
+
+  //Se estiver editando os Objetos
+  if (sbtCenario.Down) and (itmExibirCenario.Checked) then
+  begin
+    //Se clicar o botão direito, abre o PopUp
+    if Button = mbRight then
+    begin
+      for i := lstCenario.Count - 1 downto 0 do
+        if CObjeto(lstCenario[i]).Colisao(X, Y + (ScrollBarY.Position * 32)) then
+        begin
+          //O Tag do PopUp indica o indice do objeto a ser alterado
+          popObjetos.Tag := i;
+          popObjetos.Popup(Mouse.CursorPos.X, Mouse.CursorPos.Y);
+          Break;
+        end;
+    end else
+    begin
+      //Procura o centro do objeto
+      objPincel.x := x - (objPincel.L div 2);
+      objPincel.y := y + (ScrollBarY.Position * 32) - (objPincel.A div 2);
+
+      //Cria o objeto novo e adiciona na lista
+      objNovo := CObjeto.Create;
+      objNovo.Iniciar(objPincel);
+      objNovo.Desenhar(imgTela, 0, ScrollBarY.Position * 32);
+      lstCenario.Add(objNovo);
     end;
   end;
 
@@ -642,12 +722,12 @@ begin
   //Se clicar o botão esquerdo
   if (ssLeft in Shift) then
   begin
-    //Atribui o conteudo do Pincel ao ladrilho no Mapa
-    mapFundo.Ladrilho[lad_x, lad_y + ScrollBarY.Position] := ladPincel;
-    mapFundo.Ladrilho[lad_x, lad_y + ScrollBarY.Position].X := lad_x * 32;
-    mapFundo.Ladrilho[lad_x, lad_y + ScrollBarY.Position].Y := (lad_y + ScrollBarY.Position) * 32;
-    //Desenha na tela o ladrilho corrente
-    imgTela.Canvas.Draw(lad_x * 32, lad_y * 32, ladPincel.Bitmap);
+      //Atribui o conteudo do Pincel ao ladrilho no Mapa
+      mapFundo.Ladrilho[lad_x, lad_y + ScrollBarY.Position] := ladPincel;
+      mapFundo.Ladrilho[lad_x, lad_y + ScrollBarY.Position].X := lad_x * 32;
+      mapFundo.Ladrilho[lad_x, lad_y + ScrollBarY.Position].Y := (lad_y + ScrollBarY.Position) * 32;
+      //Desenha na tela o ladrilho corrente
+      imgTela.Canvas.Draw(lad_x * 32, lad_y * 32, ladPincel.Bitmap);
   end;
 
 end;
@@ -660,13 +740,21 @@ end;
 
 procedure TfrmZeus.itmObjetosExcluirClick(Sender: TObject);
 begin
-  lstObjetos.Delete(popObjetos.Tag);
+  if sbtCenario.Down then
+    lstCenario.Delete(popObjetos.Tag)
+  else
+    lstObjetos.Delete(popObjetos.Tag);
+
   RedesenhaMapa;
 end;
 
 procedure TfrmZeus.itmObjetosPropriedadesClick(Sender: TObject);
 begin
-  frmPropObj.Objeto := CObjeto(lstObjetos[popObjetos.Tag]);
+  if sbtCenario.Down then
+    frmPropObj.Objeto := CObjeto(lstCenario[popObjetos.Tag])
+  else
+    frmPropObj.Objeto := CObjeto(lstObjetos[popObjetos.Tag]);
+
   frmPropObj.ShowModal;
   RedesenhaMapa;
 end;
@@ -676,14 +764,14 @@ begin
   DesenharPrevisao(ladPincel.Bitmap);
 end;
 
-procedure TfrmZeus.sbtAliensClick(Sender: TObject);
+procedure TfrmZeus.sbtObjetosClick(Sender: TObject);
 begin
   DesenharPrevisao(objPincel.Bitmap);
 end;
 
 procedure TfrmZeus.imgPrevisaoClick(Sender: TObject);
 begin
-  if sbtAliens.Down then
+  if sbtObjetos.Down then
   begin
     frmPropObj.Objeto := objPincel;
     frmPropObj.ShowModal;
@@ -700,7 +788,18 @@ begin
     Exit;
 
   objPincel.Iniciar(CObjeto(tvObjetos.Selected.Data));
+
+  if objPincel.Tipo = 3 then
+    sbtCenario.Down := true
+  else
+    sbtObjetos.Down := true;
+
   DesenharPrevisao(objPincel.Bitmap);
+end;
+
+procedure TfrmZeus.itmAtualizarTelaClick(Sender: TObject);
+begin
+  RedesenhaMapa;
 end;
 
 procedure TfrmZeus.itmSobreClick(Sender: TObject);

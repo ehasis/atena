@@ -16,6 +16,9 @@
 *  Henrique em 09/04/2003
 *	- Cabeçalhos separados em arquivos diferentes
 *
+*  Henrique em 03/07/2003
+*	- Incluido classe GABarraProgresso
+*
 *------------------------------------------------------------*/
 #ifndef GALIB_H_INCLUIDO
 #define GALIB_H_INCLUIDO
@@ -26,17 +29,13 @@
 //#pragma warning (disable : 4786)
 //#endif
 
-#include <allegro.h>
-#include <winalleg.h>
-#include <string>
-#include <vector>
-
 //Allegro Font
 #include "../alfont/alfont.h"
 
 #include "gascript.h"
 #include "gaconfig.h"
 #include "gadados.h"
+#include "gabarra.h"
 
 #endif
 

@@ -71,6 +71,9 @@ typedef enum
 class CAlien : public CInimigo
 {
 public:
+	CAlien();
+	~CAlien();
+
 	virtual void Iniciar(TObjeto &obj);
 	virtual void Finalizar();
 
@@ -86,6 +89,7 @@ protected:
 	int m_flag_x;
 	int m_flag_y;
 	int m_pos_sombra;
+	BITMAP *m_sombra;
 };
 #endif
 

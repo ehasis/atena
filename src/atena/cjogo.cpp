@@ -16,7 +16,6 @@
 #include "atena.h"
 #include "cmenu.h"
 #include "cfilme.h"
-#include "cexplosao.h"
 
 //----- EM TESTE
 volatile int contador;
@@ -78,7 +77,7 @@ void CJogo::CarregarConfiguracao()
 	m_tela.SetarVsync(m_cfg.ObterBool("video", "vsyc"));
 	m_tela.SetarSuavizar(m_cfg.ObterBool("video", "suavizar"));
 	m_tela.SetarTransBlender(0, 0, 0, 96);
-	CExplosao::Ativo(m_cfg_particulas);
+	m_tela.SetarExibirParticulas(m_cfg_particulas);
 }
 
 //------------------------------------------------------------
@@ -94,7 +93,8 @@ void CJogo::Iniciar()
 	srand(1);
 	text_mode(-1);
 	clear_keybuf();
-	m_cfg.SetarArquivo("atena.ini");
+	
+	m_cfg.Abrir("atena.ini");
 	CarregarConfiguracao();
 
 	m_dados.Abrir(ARQUIVO_ATENA_DAT);
@@ -114,34 +114,38 @@ void CJogo::IniciarPartida()
 	char arquivo_selecionado[256], m_caminho[256];
 
 	// Código provisório para selecionar as fases
-	show_mouse(screen);
-	position_mouse(320, 240);
-	get_executable_name(arquivo_selecionado, sizeof(arquivo_selecionado));
-	nome_comprimento = strlen(arquivo_selecionado);
-	strncpy(m_caminho, arquivo_selecionado, nome_comprimento - 8);
-	strcpy(m_caminho, "fases//");
-	strcpy(arquivo_selecionado, m_caminho);
 
-	if(file_select_ex("Selecione o m_arquivo do mapa:", arquivo_selecionado, "map", sizeof(arquivo_selecionado), 400, 300))
+	if (m_cfg.ObterBool("jogo", "abrirfase"))
 	{
-		//unscare_mouse();
+		show_mouse(screen);
+		position_mouse(320, 240);
+		get_executable_name(arquivo_selecionado, sizeof(arquivo_selecionado));
+		nome_comprimento = strlen(arquivo_selecionado);
+		strncpy(m_caminho, arquivo_selecionado, nome_comprimento - 8);
+		strcpy(m_caminho, "fases//");
+		strcpy(arquivo_selecionado, m_caminho);
+
+		if(!file_select_ex("Selecione o m_arquivo do mapa:", arquivo_selecionado, "map", sizeof(arquivo_selecionado), 400, 300))
+		{
+			m_estado = eExibirMenuPrincipal;
+			return;
+		}
 		strcat(m_caminho, get_filename(arquivo_selecionado));
 		show_mouse(NULL);
-		textout_centre(screen, font, "aguarde, carregando mapa...", SCREEN_W/2, SCREEN_H/2, makecol(255,255,0));
-		m_fase.Iniciar(m_caminho, 96, 0, 544, 480);
 	}
 	else
 	{
-	    m_estado = eExibirMenuPrincipal;
-		return;
+		strcpy(m_caminho, "fases//fase.map");
 	}
+
+	textout_centre(screen, font, "aguarde, carregando a fase...", SCREEN_W/2, SCREEN_H/2, makecol16(255,255,0));
+	m_fase.Iniciar(m_caminho, 96, 0, 544, 480);
+
 
 	if (m_cfg_musica)
 	{
 		play_midi(m_dados.Midi(MID_FUNDO1), 1);
 	}
-
-	CExplosao::Iniciar(ARENA_L, ARENA_A, m_cfg_particulas);
 
 	alfont_set_font_size(m_dados.Font(LUCON), 10);
 }
@@ -149,65 +153,38 @@ void CJogo::IniciarPartida()
 //------------------------------------------------------------
 void CJogo::ExecutarPartida()
 {
-    const int linha = 270;
-    char bff[101];
-    
-	//FONT *fonte = m_dados.Font(TAHOMA7);
-	ALFONT_FONT *fonte = m_dados.Font(LUCON);
+    char bff[32];
 
-    if (!m_fase.Atualizar(1))
-    {
-        m_estado = eFinalizarPartida;
-        return;
-    }
-    
+	//Em Teste
+	static loc_quadro = 0;
+	if (++loc_quadro > 5)
+	{
+		loc_quadro = 0;
+	}
+
+	if (!m_fase.Atualizar(1))
+	{
+		m_estado = eFinalizarPartida;
+		return;
+	}
+
+	if (m_cfg_efeitos)
+	{
+		m_fase.Sonorizar();
+	}
+
 	m_tela.Limpar();
-	m_fase.Desenhar(m_tela);
-	CExplosao::Desenhar(m_tela);
-	m_fase.Sonorizar();
-
 	m_tela.MaskedBlit(m_dados.Bitmap(PAINEL), eCamadaFundo);
-	m_tela.Escrever("[Informacoes]",    10, linha - 220, makecol(0, 255, 0), fonte);
-	m_tela.Escrever("Isto e um teste",  10, linha - 200, makecol(0, 255, 0), fonte);
-	m_tela.Escrever("para saber se",    10, linha - 190, makecol(0, 255, 0), fonte);
-	m_tela.Escrever("o texto fica bom", 10, linha - 180, makecol(0, 255, 0), fonte);
-	m_tela.Escrever("nesta posicao",    10, linha - 170, makecol(0, 255, 0), fonte);
-
-	// Display 
-	// Nave
-	m_tela.Escrever("[Nave]", 10, linha + 10, makecol(0, 255, 0), fonte);
-	
-	//sprintf(bff, "Energia:%3i", m_fase.ObterNave().ObterEnergia());
-	//m_tela.Escrever(bff, 20, linha + 20, makecol(0, 255, 0), fonte);
-	barra_progresso_atena2(m_tela, 10, linha + 23, 76, m_fase.ObterNave().ObterEnergia());
-	
-	//sprintf(bff, "Casco  :%3i", m_fase.ObterNave().ObterCasco());
-	//m_tela.Escrever(bff, 20, linha + 30, makecol(0, 255, 0), fonte);
-	barra_progresso_atena2(m_tela, 10, linha + 33, 76, m_fase.ObterNave().ObterCasco());
-
-	// Arma esquerda
-	m_tela.Escrever("[Arma Esquerda]", 10, linha + 50, makecol(0, 255, 0), fonte);
-	
-	sprintf(bff, "Energia:%3i", m_fase.ObterNave().ObterArmas().Obter(1).ObterEnergia());
-	m_tela.Escrever(bff, 20, linha + 60, makecol(0, 255, 0), fonte);
-
-	// Arma centro
-	m_tela.Escrever("[Arma Centro]", 10, linha + 80, makecol(0, 255, 0), fonte);
-	sprintf(bff, "Energia:%3i", m_fase.ObterNave().ObterArmas().Obter(2).ObterEnergia());
-	m_tela.Escrever(bff, 20, linha + 90, makecol(0, 255, 0), fonte);
-
-	m_tela.Escrever("[Arma Direita]", 10, linha + 110, makecol(0, 255, 0), fonte);
-	sprintf(bff, "Energia:%3i", m_fase.ObterNave().ObterArmas().Obter(3).ObterEnergia());
-	m_tela.Escrever(bff, 20, linha + 120, makecol(0, 255, 0), fonte);
-	/**/
+	m_tela.Blit(m_dados.Bitmap(PREVISAO), eCamadaFundo, loc_quadro * 72, 0, 12, 202, 72, 72);
+	m_fase.Desenhar(m_tela);
 
 	// Calculo de FPS
 	sprintf(bff, "FPS:%i", CalcularFPS());
-	m_tela.Escrever(bff, 580, 472, makecol(0, 255, 0), fonte);
+	m_tela.Escrever(bff, 590, 472, makecol16(0, 255, 0), m_dados.Font(LUCON));
 
 	m_tela.AtualizarNaTela();
 	
-	if (m_cfg_velocidade > 0) rest(m_cfg_velocidade);
+	//if (m_cfg_velocidade > 0) rest(m_cfg_velocidade);
 }
 
 //------------------------------------------------------------
@@ -215,7 +192,6 @@ void CJogo::FinalizarPartida()
 {
 	stop_midi();
 	m_fase.Finalizar();
-	CExplosao::Desligar();
 }
 
 
@@ -291,8 +267,8 @@ void CJogo::ExibirMenuPrincipal()
 	//Propriedades do Menu
 	menu.SetarFonte(m_dados.Font(BNKGOTHM))
 		.SetarTamanhoFonte(48)
-		.SetarCorTexto(makecol(0,0,255))
-		.SetarCorSelecao(makecol(255,255,0))
+		.SetarCorTexto(makecol16(0,0,255))
+		.SetarCorSelecao(makecol16(255,255,0))
 		.SetarAlinhamento(eAlinharCentro)
 		.SetarX(SCREEN_W/2)
 		.SetarY(100);
@@ -346,12 +322,13 @@ void CJogo::ExibirMenuConfiguracao()
 	bool sair = false;
 
 	CMenuH m;
-	CConfig m_cfg("atena.ini");
+	GAConfig m_cfg;
+	m_cfg.Abrir("atena.ini");
 
 	m.SetarFonte(m_dados.Font(LUCON))
 	 .SetarTamanhoFonte(18)
-	 .SetarCorTexto(makecol(0,0,255))
-	 .SetarCorSelecao(makecol(255,255,0))
+	 .SetarCorTexto(makecol16(0,0,255))
+	 .SetarCorSelecao(makecol16(255,255,0))
 	 .SetarAlinhamento(eAlinharEsquerda)
 	 .SetarX(50)
 	 .SetarY(80)

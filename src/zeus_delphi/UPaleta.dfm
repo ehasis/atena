@@ -1,8 +1,8 @@
 object frmPaleta: TfrmPaleta
-  Left = 596
-  Top = 159
-  Width = 129
-  Height = 294
+  Left = 542
+  Top = 161
+  Width = 165
+  Height = 268
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSizeToolWin
   Caption = 'Paleta'
@@ -20,8 +20,8 @@ object frmPaleta: TfrmPaleta
   object imgLadrilhos: TImage
     Left = 4
     Top = 29
-    Width = 96
-    Height = 480
+    Width = 320
+    Height = 320
     OnMouseDown = imgLadrilhosMouseDown
   end
   object bvlLadrilhos: TShape
@@ -35,7 +35,7 @@ object frmPaleta: TfrmPaleta
     Visible = False
   end
   object btnAbrirLadrilhos: TSpeedButton
-    Left = 78
+    Left = 114
     Top = 4
     Width = 23
     Height = 22
@@ -54,7 +54,7 @@ object frmPaleta: TfrmPaleta
   object cboLadrilhos: TComboBox
     Left = 4
     Top = 4
-    Width = 71
+    Width = 109
     Height = 22
     Style = csOwnerDrawFixed
     ItemHeight = 16

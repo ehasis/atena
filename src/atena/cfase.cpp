@@ -11,8 +11,20 @@
 
 #include "time.h"
 #include "erro.h"
-#include "funcoes.h"
 
+#define ASSINATURA	"ATENA"
+#define VERSAO		0x0100
+
+
+//Informações sobre o arquivo de Mapa
+struct TMapa
+{
+	char	assinatura[16];
+	int		versao;
+	char	nome[16];
+	char	descricao[256];
+	int		numero_ojetos;
+};
 	
 
 //------------------------------------------------------------
@@ -36,33 +48,52 @@ void CFase::Iniciar(char arquivo_fase[], int x1_destino, int y1_destino, int lar
 	CArma::CarregarArquivoDados(ARQUIVO_ARMAS_DAT);
 	CBonus< CNave >::CarregarArquivoDados(ARQUIVO_BONUS_DAT);
 
-	/* Executa a leitura do m_arquivo da m_fase
-	para a variavel local ladrilhos */
-	if((arquivo_map = fopen(m_arquivo_fase, "rb")) != NULL)
+	//Executa a leitura do m_arquivo da m_fase
+	if((arquivo_map = fopen(m_arquivo_fase, "rb")) == NULL)
 	{
-		fseek(arquivo_map, 0 * sizeof(TLadrilho), SEEK_SET);
-		fread(&ladrilhos, sizeof(TLadrilho), MAPA_TOTAL_LADRILHOS, arquivo_map);
-	}
-	else
       return;
+	}
 
+	//faz a leitura da assinatura do mapa
+	/*
+	TMapa		mapa;
+	fseek(arquivo_map, 0 * sizeof(TMapa), SEEK_SET);
+	fread(&mapa, sizeof(TMapa), 1, arquivo_map);
+	if (strcmp(mapa.assinatura, ASSINATURA) != 0
+	|| mapa.versao != VERSAO)
+	{
+		Erro("Mapa invalido.", 0);
+	}
+	/**/
+
+	//faz a leitura dos ladrilhos
+	fseek(arquivo_map, 0 * sizeof(TLadrilho), SEEK_SET);
+	fread(&ladrilhos, sizeof(TLadrilho), MAPA_TOTAL_LADRILHOS, arquivo_map);
+	m_fundo.Iniciar(ladrilhos, 0, 0, MAPA_LARGURA_LADRILHOS, MAPA_ALTURA_LADRILHOS, LADRILHO_LARGURA, LADRILHO_ALTURA, m_x1_destino, m_y1_destino, m_largura_destino, m_altura_destino);
+
+	//faz a leitura dos objetos
 	while(!feof(arquivo_map))
 	{
 		if(fread(&objeto, sizeof(TObjeto), 1, arquivo_map) == 1)
 		{
-			if(objeto.tipo == eAlien)
+			if (objeto.tipo == eCenario)
+			{
+				m_fundo.AdicionarCenario(objeto);
+			}
+			else
+			if (objeto.tipo == eAlien)
 			{
 				m_aliens.Adicionar();
 				m_aliens.Obter().Iniciar(objeto);
 			}
 			else
-			if(objeto.tipo == eConstrucao)
+			if (objeto.tipo == eConstrucao)
 			{
 				m_construcoes.Adicionar();
 				m_construcoes.Obter().Iniciar(objeto);
 			}
 			else
-			if(objeto.tipo == eVeiculo)
+			if (objeto.tipo == eVeiculo)
 			{
 				m_veiculos.Adicionar();
 				m_veiculos.Obter().Iniciar(objeto);
@@ -76,9 +107,6 @@ void CFase::Iniciar(char arquivo_fase[], int x1_destino, int y1_destino, int lar
 	}
 
 	fclose(arquivo_map);
-
-	// Inicia o fundo com os dados lidos do m_arquivo
-	m_fundo.Iniciar(ladrilhos, 0, 0, MAPA_LARGURA_LADRILHOS, MAPA_ALTURA_LADRILHOS, LADRILHO_LARGURA, LADRILHO_ALTURA, m_x1_destino, m_y1_destino, m_largura_destino, m_altura_destino);
 	
 	m_naves.AdicionarFim();
 	m_naves.Obter().Iniciar(eAtena_01, 284, 6300);
@@ -93,21 +121,6 @@ void CFase::Iniciar(char arquivo_fase[], int x1_destino, int y1_destino, int lar
 	/**/
 	m_bonus.Iniciar(eBonusEnergiaTotal, 284, 5900, &m_naves);
 
-	/*
-	// TESTE
-	Log("Filme");
-	strcpy(copia_arquivo_fase, m_arquivo_fase);
-	nome_arquivo = strrchr(copia_arquivo_fase, '/');
-	ext_arquivo  = strrchr(nome_arquivo, '.');
-	strcpy(ext_arquivo, ".txt");
-	strcpy(arquivo_filme, "filmes");
-	strcat(arquivo_filme, nome_arquivo);
-	Log(arquivo_filme);
-	if (exists(arquivo_filme))
-		filme.Executar(arquivo_filme);
-    /**/
-
-	Log("[FIM]:CFase::Iniciar();");
 }
 
 
@@ -256,14 +269,6 @@ bool CFase::Atualizar(int fundo_pixels)
 		m_y1_fonte + m_altura_destino
 	};
 
-	/*
-	area.x1 = m_x1_fonte;
-	area.y1 = m_y1_fonte;
-	area.x2 = m_x1_fonte + m_largura_destino;
-	area.y2 = m_y1_fonte + m_altura_destino;
-
-	/**/
-
 	Rolar(eCima, fundo_pixels);
 
 	//if(m_chefe.ObterAtivo) m_chefe.DecY(fundo_pixels);
@@ -271,17 +276,17 @@ bool CFase::Atualizar(int fundo_pixels)
 	do
 	{
 		m_naves.Obter().DecY(fundo_pixels);
-		obj_aliens = m_aliens.ObterMaisProximo(m_naves.Obter().ObterX(), m_naves.Obter().ObterY()).RetornarObjetoAvancado();
+		obj_aliens = m_aliens.ObterMaisProximo(m_naves.Obter().ObterX(), m_naves.Obter().ObterY()).ObterObjetoAvancado();
 		m_naves.Obter().Atualizar(area, obj_aliens);
 	} while(m_naves.MoverProximo());
 
-	m_chefe.Atualizar(area, m_naves.Obter().RetornarObjetoAvancado());
+	m_chefe.Atualizar(area, m_naves.Obter().ObterObjetoAvancado());
 
-	m_aliens.Atualizar(area, m_naves.Obter().RetornarObjetoAvancado());
+	m_aliens.Atualizar(area, m_naves.Obter().ObterObjetoAvancado());
 
-	m_construcoes.Atualizar(area, m_naves.Obter().RetornarObjetoAvancado());
+	m_construcoes.Atualizar(area, m_naves.Obter().ObterObjetoAvancado());
 
-	m_veiculos.Atualizar(area, m_naves.Obter().RetornarObjetoAvancado());
+	m_veiculos.Atualizar(area, m_naves.Obter().ObterObjetoAvancado());
 
 	m_bonus.Atualizar(area);
 
@@ -369,6 +374,7 @@ void CFase::ChecarColisaoTirosDaNave()
 //------------------------------------------------------------
 void CFase::ChecarColisaoNaNave()
 {
+	CObjetoAvancado *obj;
 
 	if(m_aliens.MoverPrimeiro())
 	{
@@ -376,7 +382,7 @@ void CFase::ChecarColisaoNaNave()
 		{
 			if(m_aliens.Obter().ObterStatus() != eInimigoInativo
 			&& m_aliens.Obter().ObterStatus() != eInimigoExplosao
-			&& m_naves.Colidir(m_aliens.Obter().ObterRect(), 1))
+			&& m_naves.Colidir(m_aliens.Obter().ObterRect(), m_aliens.Obter().ObterEnergia()))
 				m_aliens.Obter().SetarStatus(eInimigoExplosao);
 
 			if(m_aliens.Obter().ObterArmas().Obter().ObterTiros().MoverPrimeiro())
@@ -386,7 +392,8 @@ void CFase::ChecarColisaoNaNave()
 					if(m_aliens.Obter().ObterArmas().Obter().ObterTiros().Obter().ObterStatus() == eTiroNormal)
 					{
 						// Tiros aliens colidem na nave
-						if(m_naves.Obter().Colidir(m_aliens.Obter().ObterArmas().Obter().ObterTiros().Obter().ObterRect(), 1))
+						obj = m_aliens.Obter().ObterArmas().Obter().ObterTiros().Obter().ObterObjetoAvancado();
+						if(m_naves.Obter().Colidir(obj->ObterRect(), obj->ObterEnergia()))
 							m_aliens.Obter().ObterArmas().Obter().ObterTiros().Obter().SetarStatus(eTiroExplosao);
 					}
 
@@ -406,7 +413,8 @@ void CFase::ChecarColisaoNaNave()
 					if(m_construcoes.Obter().ObterArmas().Obter().ObterTiros().Obter().ObterStatus() == eTiroNormal)
 					{
 						// Tiros construções colidem na nave
-						if(m_naves.Obter().Colidir(m_construcoes.Obter().ObterArmas().Obter().ObterTiros().Obter().ObterRect(), 1))
+						obj = m_construcoes.Obter().ObterArmas().Obter().ObterTiros().Obter().ObterObjetoAvancado();
+						if(m_naves.Obter().Colidir(obj->ObterRect(), obj->ObterEnergia()))
 							m_construcoes.Obter().ObterArmas().Obter().ObterTiros().Obter().SetarStatus(eTiroExplosao);
 					}
 				} while(m_construcoes.Obter().ObterArmas().Obter().ObterTiros().MoverProximo());
@@ -423,7 +431,7 @@ void CFase::ChecarColisaoNaNave()
 			// Veiculos colidem com a nave
 			if(m_veiculos.Obter().ObterStatus() != eInimigoExplosao
 			&& m_veiculos.Obter().ObterStatus() != eInimigoInativo
-			&& m_naves.Obter().Colidir(m_veiculos.Obter().ObterRect(), 1))
+			&& m_naves.Obter().Colidir(m_veiculos.Obter().ObterRect(), m_veiculos.Obter().ObterEnergia()))
 				m_veiculos.Obter().SetarStatus(eInimigoExplosao);
 
   
@@ -434,7 +442,8 @@ void CFase::ChecarColisaoNaNave()
 					if(m_veiculos.Obter().ObterArmas().Obter().ObterTiros().Obter().ObterStatus() == eTiroNormal)
 					{
 						// Tiros veiculos colidem na nave
-						if(m_naves.Obter().Colidir(m_veiculos.Obter().ObterArmas().Obter().ObterTiros().Obter().ObterRect(), 1))
+						obj = m_veiculos.Obter().ObterArmas().Obter().ObterTiros().Obter().ObterObjetoAvancado();
+						if(m_naves.Obter().Colidir(obj->ObterRect(), obj->ObterEnergia()))
 							m_veiculos.Obter().ObterArmas().Obter().ObterTiros().Obter().SetarStatus(eTiroExplosao);
 					}
 				} while(m_veiculos.Obter().ObterArmas().Obter().ObterTiros().MoverProximo());

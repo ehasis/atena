@@ -10,6 +10,10 @@
 #include <fstream.h>
 #include "galib.h"
 
+#define CODIGO_INICIO 1000
+#define CODIGO_FIM    1001
+
+
 //------------------------------------------------------------
 GAScript::GAScript()
 : m_evento(0)
@@ -23,16 +27,10 @@ GAScript::GAScript(GAEventoScript *evento)
 }
 
 //------------------------------------------------------------
-GAScript::GAScript(GAEventoScript *evento, LISTASTRING comandos)
-: m_evento(evento), m_comandos(comandos)
-{
-}
-
-//------------------------------------------------------------
-GAScript::GAScript(GAEventoScript *evento, const std::string *comandos, int numero)
+GAScript::GAScript(GAEventoScript *evento, const VETORPALAVRA &palavras)
 : m_evento(evento)
 {
-	FixarComandos(comandos, numero);
+	FixarPalavras(palavras);
 }
 
 //------------------------------------------------------------
@@ -42,11 +40,11 @@ void GAScript::FixarEvento(GAEventoScript *evento)
 }
 
 //------------------------------------------------------------
-void GAScript::FixarComandos(const std::string *comandos, int numero)
+void GAScript::FixarPalavras(const VETORPALAVRA &palavras)
 {
-	const std::string *final = comandos + numero;
-	m_comandos.resize(numero);
-	std::copy(comandos, final, m_comandos.begin());
+	m_palavras = palavras;
+	m_palavras.push_back(GAPalavra(CODIGO_INICIO, "inicio"));
+	m_palavras.push_back(GAPalavra(CODIGO_FIM, "fim"));
 }
 
 //------------------------------------------------------------
@@ -54,7 +52,7 @@ void GAScript::Carregar(const char *arquivo)
 {
 	const int NUM_CARACTERES = 512;
 	char linha[NUM_CARACTERES];
-	GATradutor tradutor(m_comandos);
+	GATradutor tradutor(m_palavras);
 	ifstream arq(arquivo);
 
 	while (!arq.eof())
@@ -62,8 +60,7 @@ void GAScript::Carregar(const char *arquivo)
 		arq.getline(linha, NUM_CARACTERES);
 		if (tradutor.Traduzir(linha))
 		{
-			//mudar isto depois
-			m_instrucoes.push_back(GAInstrucao(tradutor.Comando(), tradutor.Parametros()));
+			m_instrucoes.push_back(tradutor.Instrucao());
 		}
 	}
 	arq.close();
@@ -73,12 +70,26 @@ void GAScript::Carregar(const char *arquivo)
 void GAScript::Executar()
 {
 	int indice;
-	LISTAINSTRUCAO::iterator itr = m_instrucoes.begin();
+	bool iniciou = false;
+
+	VETORINSTRUCAO::iterator itr = m_instrucoes.begin();
 	for (indice = 0; itr != m_instrucoes.end(); ++itr, ++indice)
 	{
-		if (!m_evento->ExecutarInstrucao(itr->Comando(), itr->Parametros()))
+		switch (itr->Comando())
 		{
+		case CODIGO_INICIO:
+			iniciou = true;
 			break;
+
+		case CODIGO_FIM:
+			return;
+
+		default:
+			if (iniciou)
+			{
+				if (!m_evento->ExecutarInstrucao(itr->Comando(), itr->Parametros()))
+					break;
+			}
 		}
 	}
 }

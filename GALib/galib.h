@@ -10,6 +10,9 @@
 *   - Implementado manipulação de script, com as classes:
 *	  GAInstrucao, GATradutor, GAScript e GAEventoScript
 *
+*  Henrique em 14/07/2002
+*	- Adicionado sobrecarga do operador [] na classe GADados
+*
 *------------------------------------------------------------*/
 #ifndef GALIB_H_INCLUIDO
 #define GALIB_H_INCLUIDO
@@ -39,6 +42,8 @@ public:
 
 	void *Obter(int indice);
 	void *Obter(const char *nome);
+	void *operator[](int indice);
+	void *operator[](const char *nome);
 
 	BITMAP *ObterBitmap(int indice);
 	BITMAP *ObterBitmap(const char *nome);
@@ -93,7 +98,25 @@ private:
 // Manipulação de Script
 //------------------------------------------------------------
 
-typedef std::vector<std::string> LISTASTRING;
+
+//------------------------------------------------------------
+// Classe de Palavra Reservada e Codigo
+//------------------------------------------------------------
+class GAPalavra
+{
+public:
+	GAPalavra(int codigo, std::string palavra)
+		: m_codigo(codigo), m_palavra(palavra) { }
+
+	int Codigo() const			{ return m_codigo; }
+	std::string Palavra() const { return m_palavra; }
+
+private:
+	int	m_codigo;
+	std::string m_palavra;
+};
+
+typedef std::vector<GAPalavra> VETORPALAVRA;
 
 //------------------------------------------------------------
 // Classe da Instrucao
@@ -114,35 +137,34 @@ private:
 	int m_comando;
 	std::string m_parametros;
 };
-typedef std::vector<GAInstrucao> LISTAINSTRUCAO;
-
+typedef std::vector<GAInstrucao> VETORINSTRUCAO;
 
 //------------------------------------------------------------
 // Classe do Tradutor
 //------------------------------------------------------------
+
 class GATradutor
 {
 public:
-	GATradutor(const LISTASTRING &comandos);
-	GATradutor(const std::string *comandos, int numero);
+	GATradutor(const VETORPALAVRA &palavras);
 
 public:
 	bool Traduzir(const std::string &linha);
 
 public:
-	int Comando() const;
+	int Codigo() const;
 	std::string Parametros() const;
 	GAInstrucao Instrucao() const;
 
 private:
 	bool PularEspacos(const std::string &linha);
-	bool ProcurarComando(const std::string &linha);
-	bool ValidarComando(const std::string &palavra);
+	bool ProcurarPalavra(const std::string &linha);
+	bool ValidarPalavra(const std::string &palavra);
 
 private:
-	int	m_posicao, m_comando;
+	int	m_posicao, m_codigo;
 	std::string m_parametros;
-	LISTASTRING m_comandos;
+	VETORPALAVRA m_palavras;
 };
 
 //------------------------------------------------------------
@@ -162,12 +184,11 @@ class GAScript
 public:
 	GAScript();
 	GAScript(GAEventoScript *evento);
-	GAScript(GAEventoScript *evento, LISTASTRING comandos);
-	GAScript(GAEventoScript *evento, const std::string *comandos, int numero);
+	GAScript(GAEventoScript *evento, const VETORPALAVRA &palavras);
 
 public:
 	void FixarEvento(GAEventoScript *evento);
-	void FixarComandos(const std::string *comandos, int numero);
+	void FixarPalavras(const VETORPALAVRA &palavras);
 	void Carregar(const char *arquivo);
 	virtual void Executar();
 
@@ -176,8 +197,8 @@ public:
 
 private:
 	GAEventoScript *m_evento;
-	LISTAINSTRUCAO 	m_instrucoes;
-	LISTASTRING 	m_comandos;
+	VETORINSTRUCAO 	m_instrucoes;
+	VETORPALAVRA 	m_palavras;
 };
 
 #endif

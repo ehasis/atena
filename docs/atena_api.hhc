@@ -96,6 +96,10 @@
 			<param name="Name" value="GADados">
 			<param name="Local" value="GADados.html">
 			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="GAScript">
+			<param name="Local" value="GAScript.html">
+			</OBJECT>
 	</UL>
 </UL>
 </BODY></HTML>

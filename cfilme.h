@@ -18,28 +18,14 @@
 #include <allegro.h>
 #include "galib.h"
 
-enum EOPCodeFilme
-{
-	op_txt = 0,
-	op_cls,
-	op_dat,
-	op_mid,
-	op_wav,
-	op_bmp,
-	op_seg,
-	op_fim,
-	total_opcodes
-};
-
 class CFilme: public GAEventoScript
 {
 public:
 	CFilme();
 	~CFilme();
 
+	bool Escrever(const char *texto);
 	void Executar(const char *arquivo);
-	void Escrever(const char *texto);
-
 	virtual int ExecutarInstrucao(int cmd, const std::string &par);
 
 private:

@@ -5,24 +5,23 @@
 ;
 ;************************************************************
 
+inicio
+
 cls
 
 dat filmes/abertura.dat
-mid ABERTURA
 
-bmp MULHER_01
+mid MID_ABERTURA
+
+bmp BMP_ABERTURA
 txt ATENA
 seg 5
-
-bmp MULHER_02
 txt Desenvolvido por
 seg 3
-
-bmp MULHER_01
 txt GA Entretenimento
 seg 3
 
-bmp MULHER_02
+bmp MULHER_01
 txt Programacao:
 seg 3
 
@@ -32,18 +31,18 @@ seg 2
 txt Edison Henrique Andreassy
 seg 2
 
-bmp MULHER_01
+bmp MULHER_02
 txt Historia:
 seg 3
 
 txt Vinicius
 seg 2
 
-bmp MULHER_02
+bmp BMP_ABERTURA
 txt Artes Graficas:
 seg 3
 
-txt Cíntia Kimura
+txt Cintia Kimura
 seg 2
 
 txt Diego Giacomelli
@@ -73,13 +72,13 @@ seg 2
 
 
 bmp MULHER_02
-txt Puxa vida, que legal, sempre quiz programar os creditos!
+txt Puxa vida, que legal, sempre quiz programar os creditos...
 seg 4
 
-txt Agora me sinto realizado!
+txt Agora me sinto realizado...
 seg 3
 
-txt Este negocio de programacao de jogos eh muito legal!
+txt Este negocio de programacao de jogos eh muito legal...
 seg 4
 
 txt Recomendo!
@@ -88,18 +87,22 @@ seg 2
 txt Tenho agora um recadinho para todos os brasileiros...
 seg 4
 
-txt BRASIL! PENTACAMPEAO!! WOOHOOO!!
+txt BRASIL!!!! PENTACAMPEAO!!! UUUOOOOOOHHHHOOOOOOOOO!!!
 seg 5
 
-txt Hehehehehehehehe
+txt Hehehehehehehehe :)
 seg 2
 
 txt O papo esta bom, mas acho que voce quer jogar, nao eh?
-seg 4
+seg 2
 
-txt Entao tchau! :-*
-seg 4
 
 mid .
+seg 1
+bmp BMP_ABERTURA
+wav WAV_ABERTURA
+txt Entao tchau! :)
+seg 6
+
 
 fim

@@ -9,31 +9,39 @@ Classe para manipulação de filmes.
 <p>
 <font size="+1"><b>Metodos:</b></font>
 <table border="1" width="100%">
- <tr><td>Iniciar</td><td>Inicializa o objeto e carrega o arquivo texto do filme (verificar <a href="#observacoes">observações</a>).</td></tr>
- <tr><td>Executar</td><td>Executa o filme.</td></tr>
- <tr><td>Finalizar</td><td>Descarrega o objeto da memória.</td></tr>
+ <tr><td>Executar</td><td>Executa o script de filme passado como parametro.</td></tr>
 </table>
 </p>
 
 <p>
 <a name="observacoes"></a>
 <font size="+1"><b>Observações:</b></font>
-O arquivo texto passado como parâmetro possui algum algumas
-especificações próprias, sendo elas previamente definidas como:<br>
-Linha 1: Caminho completo do arquivo de dados<br>
-Linha 2: Nome do objeto que representa um arquivo de música .MID<br>
-Demais Linhas: Conteúdo do filme no formato [imagem;segundos;legenta]
+O arquivo script passado como parâmetro possui modo de 
+interpretação próprio, sendo definidos como:<br>
+<br>
+Intruções do script<br>
+cls - limpa a tela<br>
+dat - carrega um arquivo .dat<br>
+mid - toca um midi<br>
+bmp - mostra um bitmap<br>
+txt - escreve um texto<br>
+seg - aguarta n segundos<br>
+fim - finaliza a execucao do script<br>
+<br>
+Operadores<br>
+; - Comentarios<br>
+. - Cancela uma instrucao<br>
 </p>
 <p>
 <font size="+1"><b>Exemplo:</b></font>
 <pre>
 ------ abertura.txt --------
-filmes/abertura.dat
-abertura
-quadro1;5;ATENA
-quadro2;7;No ano de 2073, uma grande disputa de poder...
-.
-.
+cls
+dat filmes/abertura.dat
+mid ABERTURA
+bmp MULHER_01
+txt Este texto sera exibido na tela
+fim
 ----------------------------
 </pre>
 </p>

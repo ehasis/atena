@@ -7,9 +7,20 @@
 *
 *------------------------------------------------------------*/
 
-#include <string.h>
 #include "cfilme.h"
 #include "galib.h"
+
+enum EOPCodeFilme
+{
+	op_txt = 0,
+	op_cls,
+	op_dat,
+	op_mid,
+	op_wav,
+	op_bmp,
+	op_seg
+};
+
 
 //------------------------------------------------------------
 CFilme::CFilme()
@@ -25,28 +36,24 @@ CFilme::~CFilme()
 //------------------------------------------------------------
 void CFilme::Executar(const char *arquivo)
 {
-	m_dados.Fechar();
 
-	//Tem que ser a mesma ordem do enum
-	std::string comandos[] =
-	{
-		"txt",
-		"cls",
-		"dat",
-		"mid",
-		"wav",
-		"bmp",
-		"seg",
-		"fim"
-	};
+	VETORPALAVRA lista;
 
-	GAScript script(this, comandos, total_opcodes);
+	lista.push_back(GAPalavra(op_txt, "txt"));
+	lista.push_back(GAPalavra(op_cls, "cls"));
+	lista.push_back(GAPalavra(op_dat, "dat"));
+	lista.push_back(GAPalavra(op_mid, "mid"));
+	lista.push_back(GAPalavra(op_wav, "wav"));
+	lista.push_back(GAPalavra(op_bmp, "bmp"));
+	lista.push_back(GAPalavra(op_seg, "seg"));
+
+	GAScript script(this, lista);
 	script.Carregar(arquivo);
 	script.Executar();
 }
 
 //------------------------------------------------------------
-void CFilme::Escrever(const char *texto)
+bool CFilme::Escrever(const char *texto)
 {
 	int i;
 	int coluna = 0;
@@ -73,9 +80,16 @@ void CFilme::Escrever(const char *texto)
 
 		coluna++;
 		
-		if (!keypressed())
+
+		if (keypressed())
+		{
+			if (key[KEY_ESC])
+				return false;
+		}
+		else
 			rest(25);
 	}
+	return true;
 }
 
 //------------------------------------------------------------
@@ -84,13 +98,14 @@ int CFilme::ExecutarInstrucao(int cmd, const std::string &par)
 	if (key[KEY_ESC])
 	{
 		stop_midi();
-		return false;
+		return FALSE;
 	}
 
 	switch (cmd)
 	{
 	case op_txt:
-		Escrever(par.c_str());
+		if (!Escrever(par.c_str()))
+			return FALSE;
 		break;
 
 	case op_cls:
@@ -110,6 +125,7 @@ int CFilme::ExecutarInstrucao(int cmd, const std::string &par)
 		break;
 
 	case op_wav:
+		play_sample(m_dados.ObterSample(par.c_str()), 100, 128, 1000, 0);
 		break;
 
 	case op_bmp:
@@ -120,23 +136,23 @@ int CFilme::ExecutarInstrucao(int cmd, const std::string &par)
 		{
 			int i;
 			int segundos = atoi(par.c_str());
-			//clear_keybuf();		
-			for (i = 0; i < segundos; i++)
+			for (i = 0; i < segundos * 2; i++)
 			{
-				if (key[KEY_ESC]) break;
-				if (key[KEY_SPACE])
+				if (keypressed())
 				{
-					rest(1000);
+					if (key[KEY_ESC])
+					{
+						stop_midi();
+						return FALSE;
+					}
+					clear_keybuf();
 					break;
 				}
 				else
-					rest(1000);
+					rest(500);
 			}
 		}
 		break;
-	
-	case op_fim:
-		return FALSE;
 	}
 	return TRUE;
 }

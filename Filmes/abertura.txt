@@ -4,29 +4,39 @@
 ; Script para o Filme de Abertura
 ;
 ;************************************************************
-; Intruções sobre este script
+; Intruções padrões
 ;
+; ;      - Comentarios
+; inicio - ponto de inicializacao para a interpretação
+; fim    - finaliza a execucao do script
+;
+; Instruções personalizadas
+;
+; .   - Cancela uma instrucao (só no mid por enquanto)
+; bmp - mostra um bitmap
 ; cls - limpa a tela
 ; dat - carrega um arquivo .dat
 ; mid - toca um midi
-; bmp - mostra um bitmap
-; txt - escreve um texto
 ; seg - aguarta n segundos
-; fim - finaliza a execucao do script
-;
-; Operadores
-; ; - Comentarios
-; . - Cancela uma instrucao
+; txt - escreve um texto
+; wav - toca um som
 ;
 ;************************************************************
+
+inicio
 
 cls
 
 dat filmes/abertura.dat
-mid ABERTURA
+
+bmp BMP_ABERTURA
+wav WAV_ABERTURA
+seg 6
+
+mid MID_ABERTURA
 
 bmp MULHER_01
-txt - ATENA -
+txt ATENA
 seg 3
 txt Desenvolvido por
 seg 3

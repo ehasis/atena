@@ -1,0 +1,55 @@
+<html>
+<body>
+
+<font size="+2">Classe <b>GAScript</b></font>
+<p>
+<font size="+1"><b>Descrição:</b><br></font>
+Classe para interpretação de scripts.
+</p>
+<p>
+<font size="+1"><b>Construtores:</b></font>
+<table border="1" width="100%">
+ <tr><td>GAScript</td><td>Além do construtor padrão, há também mais 2 tipos, com ponteiros para para uma classe de eventos e lista de palavras reservadas.</td></tr>
+</table>
+</p>
+
+<p>
+<font size="+1"><b>Métodos:</b></font>
+<table border="1" width="100%">
+ <tr><td>FixarEvento</td><td>Define a classe da qual contém um método manipulador de eventos, sendo GAEventoScript::ExecutarInstrucao.</td></tr>
+ <tr><td>FixarPalavras</td><td>Define a lista de de instruções a serem traduzidas pelo interpretador.</td></tr>
+ <tr><td>Carregar</td><td>Carrega o arquivo de script.</td></tr>
+ <tr><td>Executar</td><td>Executa as instruções do script.</td></tr>
+</table>
+</p>
+
+<p>
+<font size="+1"><b>Observações:</b></font><br>
+Para utilizar o interpretador de script, a classe que o contém deverá
+ser derivada da classe virtual GAEventoScript, da qual contém o método
+ExecutarInstrucao.
+</p>
+<p>
+O interpretador de script possui já duas palavras chaves reservadas,
+sendo elas <b>iniciar</b> (cod: 1000) e <b>fim</b> (cod: 1001). Das quais
+servem para devinir o ponto de interpretação e de finalização. Nota-se
+que a partir de 1000 os códigos relacionados as palavras chave estarão
+reservados para futuras implementações.
+</p>
+<p>
+<font size="+1"><b>Exemplo:</b></font>
+<pre>
+VETORPALAVRA lista;
+
+lista.push_back(GAPalavra(1, "limpar"));
+lista.push_back(GAPalavra(2, "escrever"));
+lista.push_back(GAPalavra(3, "desenhar"));
+
+GAScript script(this, lista);
+script.Carregar("teste.gas");
+script.Executar();
+</pre>
+</p>
+
+</body>
+</html>

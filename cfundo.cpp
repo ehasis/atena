@@ -4,134 +4,245 @@
 *  Nome: Edison Henrique Andreassy
 *  Data: quarta-feira, 10 de outubro de 2001
 *
-*  
+*  Henrique em 23/01/2002
+*  - Modificado metodo Desligar();
 *
 *------------------------------------------------------------*/
 
-#include <stdio.h>
-#include <allegro.h>
+
 #include "cfundo.h"
+
 //------------------------------------------------------------
-void CFundo::Iniciar(char *fase)
+int CFundo::Iniciar(TLadrilho _mapa_ladrilhos[MAPA_LARGURA_LADRILHOS][MAPA_ALTURA_LADRILHOS], int _x_fonte, int _y_fonte, int _mapa_largura_ladrilhos, int _mapa_altura_ladrilhos, int _ladrilho_largura, int _ladrilho_altura, int _x_destino, int _y_destino, int _largura_destino, int _altura_destino)
 {
-	FILE *f;
-	int x, y;
-	int n = 0;
-	char arq[50];
+   register int x, y, i;
+   int quant_bmp = 0, flag_load = FALSE;
 
-	n_ladrilhos = 0;
+   x_fonte					= _x_fonte;
+   y_fonte					= _y_fonte;
+   mapa_largura_ladrilhos	= _mapa_largura_ladrilhos;
+   mapa_altura_ladrilhos	= _mapa_altura_ladrilhos;
+   ladrilho_largura			= _ladrilho_largura;
+   ladrilho_altura			= _ladrilho_altura;
+   x_destino				= _x_destino;
+   y_destino				= _y_destino;
+   largura_destino			= _largura_destino;
+   altura_destino			= _altura_destino;
 
-	visivel_x1 = 0;
-    visivel_x2 = SCREEN_W;
-	visivel_y1 = cont1 = MAPA_ALTURA - SCREEN_H;
-    visivel_y2 = cont2 = MAPA_ALTURA;
+   /* Cria o bitmap com o tamanho total do mapa */
+   fundo_screen = create_bitmap(_largura_destino, _altura_destino);
+   /* Loop para inicializar cada CLadrilho do fundo */
+   for (x = 0; x < _mapa_largura_ladrilhos; x++)
+   {
+      for (y = 0; y < _mapa_altura_ladrilhos; y++)
+      {
+         /* Se o ladrilho não for válido, obtem o ladrilho
+         padrão */
+		 //if(_mapa_ladrilhos[x][y].bmp_x < 0 || _mapa_ladrilhos[x][y].bmp_y < 0 || _mapa_ladrilhos[x][y].bmp_x > SCREEN_W || _mapa_ladrilhos[x][y].bmp_y > SCREEN_H)
+		 if(_mapa_ladrilhos[x][y].bmp_x < 0 || _mapa_ladrilhos[x][y].bmp_y < 0 || _mapa_ladrilhos[x][y].bmp_x > 640 || _mapa_ladrilhos[x][y].bmp_y > 480)
+         {
+            _mapa_ladrilhos[x][y].bmp_x = 0;
+            _mapa_ladrilhos[x][y].bmp_y = 0;
+            _mapa_ladrilhos[x][y].x =  x * 32;
+            _mapa_ladrilhos[x][y].y =  y * 32;
+			_mapa_ladrilhos[x][y].h_flip = FALSE;
+			_mapa_ladrilhos[x][y].v_flip = FALSE;
+			_mapa_ladrilhos[x][y].rotacao = 0;
+            strcpy(_mapa_ladrilhos[x][y].arquivo_bmp, "fases\\novo.bmp");
+         }
 
-	ry1 = -1;
-	ry2 = -2;
-	ry3 = -3;
+         /* Loop para verificar se o bitmap do ladrilho
+         já foi alocado ou não */
+         flag_load = TRUE;
+         for(i = 0; i < quant_bmp && i < ARQUIVOS_BMP_QUANT; i++)
+         {
+            if((strcmp(bmp_arquivos[i].arquivo_bmp, _mapa_ladrilhos[x][y].arquivo_bmp) == 0))
+            {
+               flag_load = FALSE;
+               break;
+            }
+         }
 
-	// cria bitmap com o tamanho da tela mais o tamanho de um ladrilho para cada lado
-    tela = create_bitmap(SCREEN_W + (LADRILHO_LARGURA * 2), SCREEN_H + (LADRILHO_ALTURA * 2) );
-	
-	// abertura do bitmap com os ladrilhos
-	sprintf(arq, "fases//%s.bmp", fase);
-	data = load_bmp(arq, NULL);
-	
-	// abertura do arquivo de mapa
-	sprintf(arq, "fases//%s.map", fase);
-	f = fopen(arq, "r");
-	fscanf(f, "%4d", &n_ladrilhos);
+         /* Se o bitmap para o ladrilho ainda
+         não foi alocado, faz a alocação */
+         if(flag_load == TRUE)
+         {
+            strcpy(bmp_arquivos[quant_bmp].arquivo_bmp, _mapa_ladrilhos[x][y].arquivo_bmp);
+            bmp_arquivos[quant_bmp].bmp_bmp = load_bmp(bmp_arquivos[quant_bmp].arquivo_bmp, NULL);
+            i = quant_bmp;
+            quant_bmp++;
+         }
+         /* Inicia e pinta no bitmap do fundo
+         o ladrilho corrente */
+         mapa_ladrilho[x][y].Iniciar(_mapa_ladrilhos[x][y], ladrilho_largura, ladrilho_altura, bmp_arquivos[i].bmp_bmp);
+      }
+   }
+   return TRUE;
+}
 
-	for (y = 0; y < MAPA_ALTURA_LADRILHOS; y++)
+//------------------------------------------------------------ 
+void CFundo::Desenhar(BITMAP * _bmp_destino, int _x_fonte, int _y_fonte)
+{ 
+	register int x, y; 
+	int lim_x1, lim_y1, lim_x2, lim_y2; 
+
+	x_fonte = _x_fonte; 
+	y_fonte = _y_fonte; 
+	lim_x1  = x_fonte / LADRILHO_LARGURA; 
+	lim_x2  = (x_fonte + largura_destino) / LADRILHO_LARGURA + 1; 
+	lim_y1  = y_fonte / LADRILHO_ALTURA; 
+	lim_y2  = (y_fonte + altura_destino) / LADRILHO_ALTURA + 1; 
+
+	for (x = lim_x1; x < lim_x2 && x < MAPA_LARGURA_LADRILHOS; x++) 
+	{ 
+		for (y = lim_y1; y < lim_y2 && y < MAPA_ALTURA_LADRILHOS; y++) 
+		{ 
+			mapa_ladrilho[x][y].Desenhar(_bmp_destino); 
+		} 
+	} 
+} 
+
+//------------------------------------------------------------
+/*
+Movimenta o fundo o na direcao indicada e pela quantidade
+informada em pixels.
+Retorna TRUE se for possível rolar o fundo senão retorna
+FALSE
+*/
+int CFundo::Rolar(EDirecao _direcao, int _pixels)
+{
+	switch(_direcao)
 	{
-		for (x = 0; x < MAPA_LARGURA_LADRILHOS; x++)
+		case eCima:
+			if((y_fonte - _pixels) > 0)
+				y_fonte -= _pixels;
+            else
+            if(y_fonte == 0)
+                     return FALSE;
+                  else
+                     y_fonte = 0;
+
+                  break;
+
+      case eDireita: if((x_fonte + largura_destino + _pixels) < MAPA_LARGURA)
+                     x_fonte += _pixels;
+                  else
+                  if(x_fonte + largura_destino == MAPA_LARGURA)
+                     return FALSE;
+                  else
+                     x_fonte = MAPA_LARGURA - largura_destino;
+                  break;
+
+      case eBaixo:   if((y_fonte + altura_destino + _pixels) < MAPA_ALTURA)
+                     y_fonte += _pixels;
+                  else
+                  if(y_fonte + altura_destino == MAPA_ALTURA)
+                     return FALSE;
+                  else
+                     y_fonte = MAPA_ALTURA - altura_destino;
+                  break;
+
+      case eEsquerda:   if((x_fonte - _pixels) > 0)
+                     x_fonte -= _pixels;
+                  else
+                  if(x_fonte == 0)
+                     return FALSE;
+                  else
+                     x_fonte = 0;
+                  break;
+	}
+    return TRUE;
+}
+
+
+//------------------------------------------------------------
+CLadrilho CFundo::ObterLadrilho(int _x, int _y)
+{
+	return mapa_ladrilho[_x][_y];
+}
+
+
+//------------------------------------------------------------
+void CFundo::SetarLadrilho(int _x, int _y, CLadrilho _ladrilho)
+{
+	mapa_ladrilho[_x][_y] = _ladrilho;
+}
+
+
+//------------------------------------------------------------
+void CFundo::SetarTLadrilho(int _x, int _y, TLadrilho _ladrilho)
+{
+   mapa_ladrilho[_x][_y].SetarTLadrilho(_ladrilho);
+}
+
+
+//------------------------------------------------------------
+BITMAP *CFundo::ObterFundo_screen(void)
+{
+   return (BITMAP *)fundo_screen;
+}
+
+
+//------------------------------------------------------------
+int CFundo::ObterX_fonte(void)
+{
+   return x_fonte;
+}
+
+
+//------------------------------------------------------------
+int CFundo::ObterY_fonte(void)
+{
+   return y_fonte;
+}
+
+
+//------------------------------------------------------------
+int CFundo::ObterX_destino(void)
+{
+   return x_destino;
+}
+
+
+//------------------------------------------------------------
+int CFundo::ObterY_destino(void)
+{
+   return y_destino;
+}
+
+
+//------------------------------------------------------------
+void CFundo::SalvarFundo(char *_fase)
+{
+   register int x, y;
+   TLadrilho ladrilho;
+   FILE *arquivo;
+
+   if((arquivo = fopen(_fase, "wb")) != NULL)
+   {
+      for(x = 0; x < mapa_largura_ladrilhos; x++)
+         for(y = 0; y < mapa_altura_ladrilhos; y++)
+         {
+            ladrilho = mapa_ladrilho[x][y].ObterTLadrilho();
+            fwrite(&ladrilho, sizeof(TLadrilho), 1, arquivo);
+         }
+      fclose(arquivo);
+   }
+
+}
+
+
+//------------------------------------------------------------
+void CFundo::Desligar(void)
+{
+	register int x, y;
+	
+	for (x = 0; x < mapa_largura_ladrilhos; x++)
+	{
+		for (y = 0; y < mapa_altura_ladrilhos; y++)
 		{
-			fscanf(f, "%3d", &n);
-			mapa_ladrilho[x][y] = n - 1;
+			mapa_ladrilho[x][y].Desligar();
 		}
 	}
-	fclose(f);
-}
-
-//------------------------------------------------------------
-void CFundo::Desenhar(BITMAP *bmp)
-{
-    int x, y;
-    int offset_visivel_x1;
-    int offset_visivel_y1;
-    int ladrilho_visivel_x1;
-    int ladrilho_visivel_y1;
-    int ladrilho_visivel_x2;
-    int ladrilho_visivel_y2;
-
-    ladrilho_visivel_x1 = visivel_x1 / LADRILHO_LARGURA;
-    ladrilho_visivel_y1 = visivel_y1 / LADRILHO_ALTURA;
-	offset_visivel_x1   = visivel_x1 % LADRILHO_LARGURA;
-    offset_visivel_y1   = visivel_y1 % LADRILHO_ALTURA;
-
-    ladrilho_visivel_x2 = visivel_x2 / LADRILHO_LARGURA;
-    if (visivel_x2 % LADRILHO_LARGURA)
-        ladrilho_visivel_x2++;
-
-    ladrilho_visivel_y2 = visivel_y2 / LADRILHO_ALTURA;
-    if (visivel_y2 % LADRILHO_ALTURA)
-        ladrilho_visivel_y2++;
-
-	for (y = ladrilho_visivel_y1; y < ladrilho_visivel_y2; y++)
-	{
-        for (x = ladrilho_visivel_x1; x < ladrilho_visivel_x2; x++)
-		{
-			/*-------------------------------------------
-				Explicando este emaranhado de código:
-				blit(fonte do conjunto de ladrilhos,
-					 destino,
-					 posição x da fonte (coluna),
-					 posição y da fonte (linha),
-					 destino em x,
-					 destino em y,
-					 altura do ladrilho,
-					 largura do ladrilho
-					);
-			-------------------------------------------*/
-
-			blit(data, tela,
-				(mapa_ladrilho[x][y] % n_ladrilhos) * LADRILHO_LARGURA,
-				(mapa_ladrilho[x][y] / n_ladrilhos) * LADRILHO_ALTURA,
-				(x - ladrilho_visivel_x1) * LADRILHO_LARGURA,
-                (y - ladrilho_visivel_y1) * LADRILHO_ALTURA,
-                LADRILHO_LARGURA, LADRILHO_ALTURA);
-		}
-	}
-	
-	blit(tela, bmp, offset_visivel_x1, offset_visivel_y1, 0, 0, SCREEN_W, SCREEN_H);
-	//masked_blit((BITMAP *)data[ESTRELAS2].dat, bmp, 0, 0, 0, ry2 - SCREEN_W, SCREEN_W, SCREEN_H);
-	//masked_blit((BITMAP *)data[ESTRELAS2].dat, bmp, 0, 0, 0, ry2,       SCREEN_W, SCREEN_H);
-
-}
-
-//------------------------------------------------------------
-void CFundo::Atualizar()
-{
-	ry1 += 1;
-	//ry2 += 2;
-	//ry3 += 3;
-	
-	if (ry1 >= 480) ry1 = 0;
-	//if (ry2 >= 480) ry2 = 0;
-	//if (ry3 >= 480) ry3 = 0;
-
-	if (visivel_y1 > 0)
-    {
-		cont1 -= 1;//0.5;
-		cont2 -= 1;//0.5;
-		visivel_y1 = cont1;
-        visivel_y2 = cont2;
-    }
-}
-
-//------------------------------------------------------------
-void CFundo::Desligar()
-{
-	destroy_bitmap(tela);
-	destroy_bitmap(data);
+	destroy_bitmap(fundo_screen);
 }

@@ -1,10 +1,10 @@
-/* Allegro datafile object indexes, produced by grabber v3.9.38 (WIP), MSVC */
+/* Allegro datafile object indexes, produced by grabber v3.9.40 (CVS), MSVC */
 /* Datafile: d:\DEV\Atena\alien.dat */
-/* Date: Fri Oct 19 08:26:05 2001 */
+/* Date: Tue Dec 11 11:57:06 2001 */
 /* Do not hand edit! */
 
-#define ALIEN_2                          0        /* BMP  */
-#define ALIEN_EXPLOSAO                   1        /* BMP  */
-#define ALIEN_NORMAL                     2        /* BMP  */
-#define ALIEN_SOMBRA                     3        /* BMP  */
+#define ALIEN_1                          0        /* BMP  */
+#define ALIEN_2                          1        /* BMP  */
+#define ALIEN_2_SOMBRA                   2        /* BMP  */
+#define ALIEN_EXPLOSAO                   3        /* BMP  */
 

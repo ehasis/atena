@@ -4,7 +4,9 @@
 *  Nome: Edison Henrique Andreassy
 *  Data: quarta-feira, 5 de setembro de 2001
 *
-*  
+*  Henrique em 22/01/2002
+*  - Modificado AtualizarGraficos() para utilizar stretch
+*    se a resolucao nao for 640x480
 *
 *------------------------------------------------------------*/
 
@@ -13,20 +15,21 @@
 #include "objgraf.h"
 
 static BITMAP *bmp_buffer;
+static int executar_vsync;
 
 /* Inicializacao do motor grafico */
 void IniciarGraficos()
 {
-	set_trans_blender(0, 0, 0, 128);
-	bmp_buffer = create_bitmap(640, 480);
+	set_trans_blender(0, 0, 0, 96);
+	bmp_buffer = create_system_bitmap(640, 480);
 	clear(screen);
+	executar_vsync = get_config_int("video", "vsyc", 1);
 }
 
 /* Desligamento do motor grafico */
 void DesligarGraficos()
 {
 	//Destruicao do motor
-	fade_out(5);
 	destroy_bitmap(bmp_buffer);
 }
 
@@ -34,6 +37,12 @@ void DesligarGraficos()
 void AtualizarGraficos()
 {
 	DesenharObjetos(bmp_buffer);
-	vsync();
-	blit(bmp_buffer, screen, 0, 0, 0, 0, 640, 480);
+	
+	if (executar_vsync)
+		vsync();
+	
+	if (SCREEN_W == 640)
+		blit(bmp_buffer, screen, 0, 0, 0, 0, 640, 480);
+	else
+		stretch_blit(bmp_buffer, screen, 0, 0, 640, 480, 0, 0, SCREEN_W, SCREEN_H);
 }

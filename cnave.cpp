@@ -4,7 +4,7 @@
 *  Nome: Edison Henrique Andreassy
 *  Data: terça-feira, 18 de setembro de 2001
 *
-*  
+*
 *
 *------------------------------------------------------------*/
 
@@ -12,26 +12,26 @@
 #include "datnave.h"
 #include "datalien.h"
 #include "cnave.h"
-#include "centrada.h"
 
 //------------------------------------------------------------
 // constructor
 CNave::CNave()
 {
-	x = 300;
-	y = 380;
-	l = 50;
-	a = 90;
+	x = 320;
+	y = 6300;
+	largura = 72;
+	altura = 90;
 	vi = 12;
 	vx = 0;
 	vy = 0;
 
-	atirar	= 0;
-	pontos	= 0;
-	energia = 100;
-	casco	= 100;
-	status	= eNaveNormal;
-	tempo	= 0;
+	atirar	  = 0;
+	pontos	  = 0;
+	energia   = 100;
+	casco	  = 100;
+	status	  = eNaveNormal;
+	tempo	  = 2;
+	tipo_tiro = 0;
 }
 
 
@@ -50,6 +50,7 @@ void CNave::Desligar()
 // metodo para desenhar o objeto
 void CNave::Desenhar(BITMAP *bmp)
 {
+	tiros.DesenharTodos(bmp);
 	switch(status)
 	{
 	case eNaveEscudo:
@@ -57,10 +58,10 @@ void CNave::Desenhar(BITMAP *bmp)
 		status = eNaveNormal;
 
 	case eNaveNormal:
-		draw_trans_sprite(bmp, (BITMAP *)data[SOMBRA].dat, x+50, y+70);
-		draw_sprite(bmp, (BITMAP *)data[NORMAL].dat, x, y);
+		masked_blit((BITMAP *)data[SOMBRA].dat, bmp, tempo * (largura / 1.5), 0, x + 50, y + 50, (largura / 1.5), (altura / 1.5));
+		masked_blit((BITMAP *)data[NORMAL].dat, bmp, tempo * largura, 0, x, y, largura, altura);
 		break;
-	
+
 	case eNaveExplosao:
 
 	case eNaveRenacer:
@@ -71,36 +72,96 @@ void CNave::Desenhar(BITMAP *bmp)
 
 //------------------------------------------------------------
 // metodo para atualizacao do objeto
-void CNave::Atualizar(TEntrada &valor)
+void CNave::Atualizar(int _x1, int _y1, int _x2, int _y2)
 {
+	TEntrada valor;
+	
+	valor.a = valor.b = valor.c = valor.x = valor.y = 0; 
+
 	atirar = 0;
 
+	/* Leitura das Teclas */
+	if (key[KEY_UP])		valor.y--;
+	if (key[KEY_DOWN])		valor.y++;
+	if (key[KEY_LEFT])		valor.x--;
+	if (key[KEY_RIGHT])		valor.x++;
+	if (key[KEY_SPACE])		valor.a = 1;
+	if (key[KEY_MINUS_PAD]) valor.b = 1; 
+	if (key[KEY_PLUS_PAD])  valor.c = 1; 
+
 	if (status == eNaveRenacer) status = eNaveNormal;
-	
+
 	/* se estiver normal */
 	if (status == eNaveNormal)
 	{
-		
+
 		/* com incercia */
-		if(valor.y >  0) vy =  vi;
-		if(valor.y <  0) vy = -vi;
-		if(valor.y == 0) vy /= 2;
+		switch (valor.y)
+		{
+		case -1:
+			vy = -vi;
+			y += vy;
+			break;
+		case 0:
+			vy /= 2;
+			if (vy < 0) y -= abs(vy);
+			else        y += vy;
+			break;
+		case 1:
+			vy =  vi;
+			y += vy;
+			break;
+		}
 		
-		if(valor.x >  0) vx =  vi;
-		if(valor.x <  0) vx = -vi;
-		if(valor.x == 0) vx /= 2;
+		switch (valor.x)
+		{
+		case -1:
+			vx = -vi;
+			x += vx;
+			tempo = tempo > 0 ?tempo - 1 :0;
+			break;
+		case 0:
+			vx /= 2;
+			if (vx < 0) x -= abs(vx);
+			else        x += vx;
+			if(tempo != 2)
+			{
+				tempo = tempo > 2 ? tempo - 1 :tempo + 1;
+			}
+			break;
+		case 1:
+			vx =  vi;
+			x += vx;
+			tempo = tempo = tempo < 4 ?tempo + 1 : 4;
+			break;
+		}
 
-		y += vy;
-		x += vx;
+		/* Testa os limites da tela */
+		if (y < _y1) y = _y1;
+		if (y + altura > _y2) y = _y2 - altura;
 
-		if (y < 0) y = 0;
-		if (y + a > 479) y = 478 - a;
+		if (x < _x1) x = _x1;
+		if (x + largura > _x2) x = _x2 - largura;
+	
 
-		if (x < 0) x = 0;
-		if (x + l > 639) x = 639 - l;
+		/* Troca a arma selecionada */
+		if(valor.b && tipo_tiro > 0)
+		{
+			tipo_tiro--;
+		}
+		else 
+		if(valor.c && tipo_tiro < 4)
+		{
+			tipo_tiro++;
+		}
 
-		atirar = valor.a;
-		
+		/* Atira */
+		if(valor.a)
+		{
+			tiros.Adicionar((ETiroTipo)tipo_tiro , x + (largura / 2), y);
+		}
+		tiros.AtualizarTodos(0, 0, 640, 0, _x1, _y1, _x2,  _y2);
+
 		if (casco <= 0)
 		{
 			status = eNaveExplosao;
@@ -125,14 +186,15 @@ void CNave::Atualizar(TEntrada &valor)
 		}
 	}
 
-	tempo++;
+
+	/*tempo++;
 	if (tempo == 15)
 	{
 		tempo = 0;
-		
+
 		if (energia < 100)
 			energia++;
-	}
+	}*/
 }
 
 //------------------------------------------------------------
@@ -160,53 +222,52 @@ void CNave::IncEnergia(int valor)
 		energia += valor;
 }
 
-//------------------------------------------------------------
-void CAlien::SetArquivoDat(DATAFILE *arquivo)
-{
-	data = arquivo;
-}
 
 //------------------------------------------------------------
-void CAlien::Desligar()
+void CNave::TocarSom(void)
 {
-	unload_datafile(data);
+	tiros.TocarSomTodos();
 }
+
 
 //------------------------------------------------------------
-void CAlien::Desenhar(BITMAP *bmp)
+CTiro *CNave::ObterTiros(void)
 {
-
-	switch(status)
-	{
-	//case eAlienEscudo:
-		//draw_sprite(bmp, (BITMAP *)data[ALIEN_ESCUDO].dat, x, y);	
-		//status = eAlienNormal;
-	case eAlienNormal:
-		draw_trans_sprite(bmp, (BITMAP *)data[ALIEN_SOMBRA].dat, x+50, y+70);
-		draw_sprite(bmp, (BITMAP *)data[ALIEN_2].dat, x, y);
-		break;
-	
-	case eAlienExplosao:
-		masked_blit((BITMAP *)data[ALIEN_EXPLOSAO].dat, bmp, 250-(((tempo * 2) - ((tempo * 2)%10)) * 5), 0, x, y, 50, 50);
-		break;
-	}
+	return &tiros;
 }
+
 
 //------------------------------------------------------------
-void CAlien::Atualizar()
+int CNave::ObterPontos(void)
 {
-	if (status == eAlienNormal || status == eAlienEscudo)
-	{
-		if (x < -l) status = eAlienInativo;
-		y += vi;
-	}
-	
-	if (status == eAlienExplosao)
-	{
-		tempo--;
-		if (tempo <= 0)
-		{
-			status = eAlienInativo;
-		}
-	}
+	return pontos;
 }
+
+
+//------------------------------------------------------------
+void CNave::IncPontos(int _incremento)
+{
+	pontos += _incremento;
+}
+
+
+//------------------------------------------------------------
+int CNave::ObterCasco(void)
+{
+	return casco;
+}
+
+
+//------------------------------------------------------------
+int CNave::ObterEnergia(void)
+{
+	return energia;
+}
+
+
+//------------------------------------------------------------
+int CNave::ObterStatus(void)
+{
+	return status;
+}
+

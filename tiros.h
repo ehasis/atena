@@ -1,0 +1,18 @@
+/* Allegro datafile object indexes, produced by grabber v3.9.37 (CVS), djgpp */
+/* Datafile: c:\INFORM~2\DESENV~1\PESSOAIS\PROJET~1\FONTE\TIROS.DAT */
+/* Date: Mon Jan 21 09:54:08 2002 */
+/* Do not hand edit! */
+
+#define _00_BMP_TIRO_CERRA               0        /* BMP  */
+#define _00_WAV_TIRO_CERRA               1        /* SAMP */
+#define _01_BMP_TIRO_FOGO                2        /* BMP  */
+#define _01_WAV_TIRO_FOGO                3        /* SAMP */
+#define _02_BMP_TIRO_LASER_VERMELHO      4        /* BMP  */
+#define _02_WAV_TIRO_LASER_VERMELHO      5        /* SAMP */
+#define _03_BMP_TIRO_LASER_VERDE         6        /* BMP  */
+#define _03_WAV_TIRO_LASER_VERDE         7        /* SAMP */
+#define _04_BMP_TIRO_BOLA                8        /* BMP  */
+#define _04_WAV_TIRO_BOLA                9        /* SAMP */
+#define _05_BMP_TIRO_MISSIL              10       /* BMP  */
+#define _05_WAV_TIRO_MISSIL              11       /* SAMP */
+

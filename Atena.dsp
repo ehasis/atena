@@ -54,6 +54,7 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /machine:I386
 # ADD LINK32 alleg.lib /nologo /subsystem:windows /machine:I386
+# SUBTRACT LINK32 /incremental:yes /debug
 
 !ELSEIF  "$(CFG)" == "Atena - Win32 Debug"
 
@@ -81,6 +82,7 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
 # ADD LINK32 alleg.lib /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
+# SUBTRACT LINK32 /incremental:no
 
 !ENDIF 
 
@@ -97,7 +99,23 @@ SOURCE=.\abertura.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\calien.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\cfase.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\cfundo.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\cladrilho.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\cmenu.cpp
 # End Source File
 # Begin Source File
 
@@ -109,7 +127,7 @@ SOURCE=.\cobjeto.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\entrada.cpp
+SOURCE=.\ctiro.cpp
 # End Source File
 # Begin Source File
 
@@ -145,15 +163,23 @@ SOURCE=.\abertura.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\atena.h
+SOURCE=.\calien.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\centrada.h
+SOURCE=.\cfase.h
 # End Source File
 # Begin Source File
 
 SOURCE=.\cfundo.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\cladrilho.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\cmenu.h
 # End Source File
 # Begin Source File
 
@@ -165,11 +191,7 @@ SOURCE=.\cobjeto.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\datnave.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\entrada.h
+SOURCE=.\ctiro.h
 # End Source File
 # Begin Source File
 

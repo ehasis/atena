@@ -4,7 +4,8 @@
 *  Nome: Edison Henrique Andreassy
 *  Data: quarta-feira, 5 de setembro de 2001
 *
-*  
+*  Henrique em 31/10/2001
+*   - Adicionada novas variaveis de controle de laço
 *
 *------------------------------------------------------------*/
 
@@ -12,7 +13,8 @@
 #define vglobal_h_incluido
 
 extern int final_jogo;
-extern struct TEntrada entrada1;
-extern struct TEntrada entrada2;
+extern int final_partida;
+extern int final_fase;
+extern volatile int contador;
 
 #endif

@@ -1,0 +1,81 @@
+<html>
+<body>
+
+<font size="+2">Classe <b>CObjetoBasico</b></font>
+<p>
+<font size="+1"><b>Descrição:</b><br></font>
+Classe base dos objetos
+</p>
+
+<p>
+<font size="+1"><b>Propriedades:</b></font>
+<table border="1" width="100%">
+ <tr><td>ObterRect</td><td>Obtém o retantulo do objeto.</td></tr>
+ <tr><td>SetarX</td><td>Define a posição X (esquerda).</td></tr>
+ <tr><td>ObterX</td><td>Retorna a posição X (esquerda).</td></tr>
+ <tr><td>ObterPMX</td><td>Retorna a posição MX.</td></tr>
+ <tr><td>ObterX2</td><td>Retorna a X2.</td></tr>
+ <tr><td>SetarY</td><td>Define a posição Y (topo).</td></tr>
+ <tr><td>ObterY</td><td>Retorna a posição Y (topo).</td></tr>
+ <tr><td>ObterPMY</td><td>Retorna posição MY.</td></tr>
+ <tr><td>ObterY2</td><td>Retorna Y2.</td></tr>
+ <tr><td>SetarLargura</td><td>Define a largura do objeto.</td></tr>
+ <tr><td>ObterLargura</td><td>Retorna a largura do objeto.</td></tr>
+ <tr><td>SetarAltura</td><td>Define a altura do objeto.</td></tr>
+ <tr><td>ObterAltura</td><td>Retorna a altura do objeto.</td></tr>
+</table>
+</p>
+
+<p>
+<font size="+1"><b>Metodos:</b></font>
+<table border="1" width="100%">
+ <tr><td>Iniciar</td><td>Inicializa as variaves do objeto, como posição e tamanho.</td></tr>
+ <tr><td>ChecarColisaoY</td><td>Checa a colisão com o objeto ou área passada como parametro.</td></tr>
+ <tr><td>RetornarObjetoBasico</td><td>Retorna o objeto.</td></tr>
+ <tr><td>IncY</td><td>Incrementa posição y.</td></tr>
+ <tr><td>DecY</td><td>Decrementa posição y.</td></tr>
+ <tr><td>IncX</td><td>Incrementa posição x.</td></tr>
+ <tr><td>DecX</td><td>Decrementa posição x.</td></tr>
+</table>
+</p>
+
+<font size="+2">Classe <b>CObjeto</b></font>
+<p>
+<font size="+1"><b>Descrição:</b><br></font>
+Objeto derivado de CObjetoBasico com algumas melhorias.
+</p>
+
+<p>
+<font size="+1"><b>Propriedades:</b></font>
+<table border="1" width="100%">
+ <tr><td>SetarAngulo</td><td>Define o Angulo.</td></tr>
+ <tr><td>ObterAngulo</td><td>Retorna o Angulo.</td></tr>
+</table>
+</p>
+
+
+<font size="+2">Classe <b>CObjetoAvancado</b></font>
+<p>
+<font size="+1"><b>Descrição:</b><br></font>
+Objeto derivado de CObjeto com algumas melhorias
+</p>
+
+<p>
+<font size="+1"><b>Propriedades:</b></font>
+<table border="1" width="100%">
+ <tr><td>SetarAtivo</td><td>Define se o objeto está ativo.</td></tr>
+ <tr><td>ObterAtivo</td><td>Retorna se o objeto está ativo.</td></tr>
+ <tr><td>ObterVisivel</td><td>Retorna se o objeto está visível.</td></tr>
+</table>
+</p>
+
+<p>
+<font size="+1"><b>Metodos:</b></font>
+<table border="1" width="100%">
+ <tr><td>DesenharExplosao</td><td>Desenha um efeito de explosão.</td></tr>
+ <tr><td>RetornarObjetoAvancado</td><td>Retorna um ponteiro do objeto.</td></tr>
+</table>
+</p>
+
+</body>
+</html>

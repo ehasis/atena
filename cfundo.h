@@ -7,12 +7,12 @@
 *  Alterações:
 *  Diego Giacomelli em 19/10/2001
 *   - Reformulação dos métodos existentes na classe para
-*     trabalhar com arquivo binário;
+*     trabalhar com m_arquivo binário;
 *   - Inserção das enum EDirecao e TBmp;
 *   - Implementação dos métodos Rolar, ObterLadrilho,
 *     SetarLadrilho, SetarTLadrilho, ObterFundo_screen,
-*     ObterX_fonte, ObterY_fonte, ObterX_destino,
-*     ObterY_destino e SalvarFundo;
+*     ObterXFonte, ObterYFonte, ObterXDestino,
+*     ObterYDestino e SalvarFundo;
 *
 *  Diego Giacomelli em 07/01/2002
 *   - Alteração do nome do método Colisão para ChecarColisao
@@ -21,6 +21,16 @@
 *  Diego Giacomelli em 27/01/2002
 *   - Alterada a alocação dos bitmaps dos ladrilhos de vetor para
 *	  lista encadeada;
+*
+*  Diego Giacomelli em 13/02/2002
+*   - Alterado o método Desenhar para aceitar CTela e
+*     posicionamento relativo;
+*
+*  Diego Giacomelli em 08/03/2002
+*   - Retirado o membro de dado fundo_screen (obsoleto);
+*   - Retirados os métodos ObterFundo_screen, ObterXFonte,
+*     ObterYFonte, ObterXDestino, ObterYDestino, SetarTLadrilho
+*     (obsoletos);
 *------------------------------------------------------------*/
 
 
@@ -55,11 +65,11 @@ typedef enum
 
 
 // Estrutura para os nodos de bmp relacionados aos ladrilhos
-typedef struct _TBmp
+typedef struct TBmp
 {
 	char arquivo_bmp[32];
 	BITMAP *bmp_bmp;
-	struct _TBmp *p_TBmp;
+	struct TBmp *p_TBmp;
 
 } TBmp;
 
@@ -69,35 +79,27 @@ typedef struct _TBmp
 class CFundo
 {
 public:
-	int Iniciar(TLadrilho _mapa_ladrilhos[MAPA_LARGURA_LADRILHOS][MAPA_ALTURA_LADRILHOS], int _x_fonte, int _y_fonte, int _mapa_largura_ladrilhos, int _mapa_altura_ladrilhos, int _ladrilho_largura, int _ladrilho_altura, int _x_destino, int _y_destino, int _largura_destino, int _altura_destino);
-	void Desenhar(CTela &_tela, int _x_real, int _y_real);;
-	int Rolar(EDirecao _direcao, int _pixels);
-	void Atualizar(void);
-	CLadrilho ObterLadrilho(int _x, int _y);
-	void SetarLadrilho(int _x, int _y, TLadrilho _ladrilho, BITMAP *_bmp_fonte);
-	void SetarTLadrilho(int _x, int _y, TLadrilho _ladrilho);
-	BITMAP *ObterFundo_screen(void);
-	int ObterX_fonte(void);
-	int ObterY_fonte(void);
-	int ObterX_destino(void);
-	int ObterY_destino(void);
-	void SalvarFundo(char *_fase);
-	void Desligar(void);
-
+	int Iniciar(TLadrilho mapa_ladrilhos[MAPA_LARGURA_LADRILHOS][MAPA_ALTURA_LADRILHOS], int x_fonte, int y_fonte, int mapa_largura_ladrilhos, int mapa_altura_ladrilhos, int ladrilho_largura, int ladrilho_altura, int x_destino, int y_destino, int m_largura_destino, int m_altura_destino);
+	void Desenhar(CTela & tela, int x_real, int y_real);;
+	int Rolar(EDirecao direcao, int pixels);
+	void Atualizar();
+	CLadrilho ObterLadrilho(int x, int y);
+	void SetarLadrilho(int x, int y, TLadrilho ladrilho, BITMAP * bmp_fonte);
+	void SalvarFundo(char * fase);
+	void Finalizar();
 private:
-	TBmp *bmp_arquivos;
-	BITMAP *fundo_screen;
-	int x_fonte;
-	int y_fonte;
-	int mapa_largura_ladrilhos;
-	int mapa_altura_ladrilhos;
-	int ladrilho_largura;
-	int ladrilho_altura;
-	int x_destino;
-	int y_destino;
-	int largura_destino;
-	int altura_destino;
-	CLadrilho mapa_ladrilho[MAPA_LARGURA_LADRILHOS][MAPA_ALTURA_LADRILHOS];
+	TBmp *m_bmp_arquivos;
+	int m_x_fonte;
+	int m_y_fonte;
+	int m_mapa_largura_ladrilhos;
+	int m_mapa_altura_ladrilhos;
+	int m_ladrilho_largura;
+	int m_ladrilho_altura;
+	int m_x_destino;
+	int m_y_destino;
+	int m_largura_destino;
+	int m_altura_destino;
+	CLadrilho m_mapa_ladrilho[MAPA_LARGURA_LADRILHOS][MAPA_ALTURA_LADRILHOS];
 };
 
 #endif

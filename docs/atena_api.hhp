@@ -1,0 +1,12 @@
+[OPTIONS]
+Compatibility=1.1 or later
+Compiled file=atena_api.chm
+Contents file=atena_api.hhc
+Default topic=atena_api.html
+Display compile progress=No
+Index file=atena_api.hhk
+Language=0x416 Português (Brasil)
+
+
+[INFOTYPES]
+

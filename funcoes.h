@@ -13,17 +13,23 @@
 *  Henrique em 02/02/2002
 *   - Implementação da função SuavizarBitmap()
 *
-*
+*  Diego em 13/02/2002
+*   - Alterados as procedures de barras de progresso para
+*     aceitar CTela;
 *------------------------------------------------------------*/
 
 #ifndef funcoes_h_incluido
 #define funcoes_h_incluido
 
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <allegro.h>
 #include "ctela.h"
 
-void barra_progresso_atena(CTela &_tela, int x, int y, int l, int percent);
-void barra_progresso_atena2(CTela &_tela, int x, int y, int l, int percent);
-void barra_progresso_zeus(CTela &_tela, int x1, int y1, int x2, int y2, int maximo, int valor_anterior, int valor_atual, int cor);
+void barra_progresso_atena(CTela & tela, int x, int y, int l, int percent);
+void barra_progresso_atena2(CTela & tela, int x, int y, int l, int percent);
+void barra_progresso_zeus(CTela & tela, int x1, int y1, int x2, int y2, int maximo, int valor_anterior, int valor_atual, int cor);
 void escrever(BITMAP *bmp, const char *str, int x, int y, int cor);
 void escrever(BITMAP *bmp, const char *str, int x, int y, int cor, int cor_sombra);
 void SuavizarBitmap(BITMAP *bmp);

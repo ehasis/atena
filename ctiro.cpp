@@ -4,9 +4,6 @@
 *  Nome: Diego Giacomelli
 *  Data: terça-feira, 13 de janeiro de 2002
 *
-*  Diego em 13/02/2002
-*   - Alterado os métodos Desenhar e DesenharTodos para aceitar
-*     CTela e posicionamento relativo;
 *
 *------------------------------------------------------------*/
 
@@ -15,312 +12,340 @@
 #include <allegro.h>
 #include "erro.h"
 #include "ctiro.h"
+#include <math.h>
 
 
 //------------------------------------------------------------
 // Membros static
-DATAFILE *CTiro::dat_arquivo = NULL;
+DATAFILE *CTiro::m_dat_arquivo = NULL;
 
 
 //------------------------------------------------------------
-// Construtor
-CTiro::CTiro(void)
+void CTiro::CarregarArquivoDados(DATAFILE * dat_arquivo)
 {
-	p_tiro = NULL;
+	Log("CTiro::CarregarArquivoDados();");
+	if(m_dat_arquivo) DescarregarArquivoDados();
+	m_dat_arquivo = dat_arquivo;
 }
 
 
 //------------------------------------------------------------
-void CTiro::Iniciar(ETiroTipo _tipo, int _x, int _y, CObjeto * const _alvo)
+void CTiro::DescarregarArquivoDados()
 {
-	tipo = _tipo;
-	x = _x;
-	y = _y;
-	alvo = _alvo;
-	dir_x = 0;
-	dir_y = 0;
-	flag_x = 0;
-	flag_y = 0;
-	cont = 0;
-	quadro = 0;
-	tocar_som = TRUE;
-	status = eTiroNormal;
+	Log("CTiro::DescarregarArquivoDados();");
+	unload_datafile(m_dat_arquivo);
+	m_dat_arquivo = NULL;
+}
 
-	switch(tipo)
-	{	
+//------------------------------------------------------------
+// Construtor
+CTiro::CTiro()
+{
+	m_p_tiro = NULL;
+}
+
+
+//------------------------------------------------------------
+void CTiro::Iniciar(ETiro tipo, int x, int y, CObjetoAvancado * const alvo)
+{
+	m_tipo		= tipo;
+	m_x			= x;
+	m_y			= y;
+	m_alvo		= alvo;
+	m_dir_x		= 0;
+	m_dir_y		= 0;
+	m_flag_x		= 0;
+	m_flag_y		= 0;
+	m_cont		= 0;
+	m_quadro		= 0;
+	m_tocar_som	= 1;
+	m_status		= eTiroNormal;
+	m_ativo		= 1;
+	m_visivel	= 1;
+	m_objeto	= eTiro;
+
+	switch(m_tipo)
+	{
 		// Tiro alien
 		case eTiroCerra:
-			largura = 18;
-			altura  = 16;
-			dir_x	= 0;
-			dir_y	= 1;
+			m_largura = 18;
+			m_altura  = 16;
+			m_dir_x	= 0;
+			m_dir_y	= 1;
+			m_velocidade = 4;
 			break;
 
 		case eTiroBola:
-			largura = 5;
-			altura  = 5;
-			cont    = 5;
-			dir_x   = 1;
-			dir_y	= 1;
+			m_largura = 5;
+			m_altura  = 5;
+			m_cont    = 5;
+			m_dir_x   = 1;
+			m_dir_y	= 1;
+			m_velocidade = 4;
 			break;
 
 		// Tiro nave
 		case eTiroLaserVermelho:
-			largura = 10;
-			altura  = 50;
+			m_largura = 10;
+			m_altura  = 50;
+			m_velocidade = 100;
 			break;
 
 		case eTiroLaserVerde:
-			largura = 72;
-			altura  = 100;
+			m_largura = 72;
+			m_altura  = 100;
+			m_velocidade = 100;
 			break;
 
 		case eTiroFogoTeleguiado:
-			largura = 10;
-			altura  = 8;
+			m_largura = 10;
+			m_altura  = 8;
+			m_velocidade = 25;
 			break;
 
 		// Tiro construcao
 		case eTiroFogo:
-			largura = 10;
-			altura  = 8;
-			dir_x	= 0;
-			dir_y	= 0;
+			m_largura = 10;
+			m_altura  = 8;
+			m_dir_x	= 0;
+			m_dir_y	= 0;
+			m_velocidade = 4;
 			break;
 
 	}
-	x = _x - (largura / 2);
+	m_x = x - (m_largura / 2);
 }
 
 
 
 //------------------------------------------------------------
-void CTiro::Adicionar(ETiroTipo _tipo, int _x, int _y, CObjeto * const _alvo)
+void CTiro::Adicionar(ETiro tipo, int x, int y, CObjetoAvancado * const alvo)
 {
 	CTiro *aux;
 
-    for(aux = this; aux->p_tiro; aux = aux->p_tiro);
+    for(aux = this; aux->m_p_tiro; aux = aux->m_p_tiro);
 
-	aux->p_tiro = new CTiro;
+	aux->m_p_tiro = new CTiro;
 	/*
-	if(!aux->p_tiro)
+	if(!aux->m_p_tiro)
 	{
 		Erro("Código do erro:", "0500");
 	}
 	*/
-	aux->p_tiro->Iniciar(_tipo, _x, _y, _alvo);
+	aux->m_p_tiro->Iniciar(tipo, x, y, alvo);
 }
 
 
 //------------------------------------------------------------
-void CTiro::Atualizar(CObjeto * const _alvo)
+void CTiro::Atualizar(CObjetoAvancado * const alvo)
 {
-	switch(tipo)
+	Log("CTiro::Atualizar();");
+	switch(m_tipo)
 	{
-    		case eTiroCerra: 
-			if(!dir_x)
+    		case eTiroCerra:
+			if(!m_dir_x)
 			{
-				if(alvo->ObterX() != x)
+				if(m_alvo->ObterX() != m_x)
 				{
-					dir_x = alvo->ObterX() >= x ? 1 : -1;
+					m_dir_x = m_alvo->ObterX() >= m_x ? 1 : -1;
 				}
 			}
-	
-			x += dir_x * altura;
-			y += dir_y * altura;
-			quadro = quadro == 3 ? 0 : quadro + 1;
+
+			m_x += m_dir_x * m_velocidade;
+			m_y += m_dir_y * m_velocidade;
+			m_quadro = m_quadro == 3 ? 0 : m_quadro + 1;
 			break;
-		
+
 		case eTiroBola:
-			if(cont == 5)
+			if(m_cont == 5)
 			{
-				dir_x = dir_x * -1;
-				cont = 0;
+				m_dir_x = m_dir_x * -1;
+				m_cont = 0;
 			}
 
-			cont++;
-			x += dir_x * altura;		 
-       		y += dir_y * (altura * 2);
+			m_cont++;
+			m_x += m_dir_x * m_velocidade * 2;
+       		m_y += m_dir_y * m_velocidade;
 			break;
 
 		case eTiroLaserVermelho:
 		case eTiroLaserVerde:
-			y += -1 * 100;
+			m_y += -1 * m_velocidade;
 			break;
 
 		case eTiroFogoTeleguiado:
-			if(!alvo || !alvo->Obter_visivel())
+			if(!m_alvo || !m_alvo->ObterVisivel())
 			{
-				alvo = _alvo;
-				dir_y = -1;
+				m_alvo = alvo;
+				m_dir_y = -1;
 			}
-			
-			if(alvo)
+
+			if(m_alvo)
 			{
 				// Coordenada x
-				if(alvo->ChecarColisaoX(x,  x + largura))
+				if(m_alvo->ChecarColisaoX(m_x,  m_x + m_largura))
 				{
-					dir_x = 0;
+					m_dir_x = 0;
 				}
-				else if(x > alvo->ObterX())
+				else if(m_x > m_alvo->ObterX())
 				{
-					dir_x = -1;
+					m_dir_x = -1;
 				}
 				else
 				{
-					dir_x = 1;
+					m_dir_x = 1;
 				}
 
 				// Coordenada y
-				if(alvo->ChecarColisaoY(y,  y + altura))
+				if(m_alvo->ChecarColisaoY(m_y,  m_y + m_altura))
 				{
-					dir_y = 0;
+					m_dir_y = 0;
 				}
-				else if(y > alvo->ObterY())
+				else if(m_y > m_alvo->ObterY())
 				{
-					dir_y = -1;
+					m_dir_y = -1;
 				}
-				else 
+				else
 				{
-					dir_y = 1;
+					m_dir_y = 1;
 				}
 			}
-			
-			x += dir_x * 30;
-			y += dir_y * 30;
 
-			quadro = quadro == 2 ? 0 : quadro + 1;
+			m_x += m_dir_x * m_velocidade;
+			m_y += m_dir_y * m_velocidade;
+
+			m_quadro = m_quadro == 2 ? 0 : m_quadro + 1;
 			break;
-	
-		case eTiroFogo: 
-			if(!dir_x)
+
+		case eTiroFogo:
+			if(!m_dir_x)
 			{
-				if(alvo->ObterX() != x)
+				if(m_alvo->ObterX() != m_x)
 				{
-					dir_x = alvo->ObterX() >= x ? 1 : -1;
+					m_dir_x = m_alvo->ObterX() >= m_x ? 1 : -1;
 				}
-				if(alvo->ObterY() != y)
+				if(m_alvo->ObterY() != m_y)
 				{
-					dir_y = alvo->ObterY() >= y ? 1 : -1;
+					m_dir_y = m_alvo->ObterY() >= m_y ? 1 : -1;
 				}
 
 			}
-			
-			x += dir_x * 15;
-			y += dir_y * 20;
-			quadro = quadro == 2 ? 0 : quadro + 1;
+
+			m_x += m_dir_x * m_velocidade;
+			m_y += m_dir_y * m_velocidade;
+			m_quadro = m_quadro == 2 ? 0 : m_quadro + 1;
 			break;
 	}
 }
 
 
 //------------------------------------------------------------
-void CTiro::AtualizarTodos(TRect _area, CObjeto * const _alvo)
+void CTiro::AtualizarTodos(TRect area, CObjetoAvancado * const alvo)
 {
+	Log("CTiro::AtualizarTodos();");
 	CTiro *aux, *del;
 
-	for(aux = this; aux->p_tiro;)
+	for(aux = this; aux->m_p_tiro;)
 	{
-		if(aux->p_tiro->ChecarColisao(_area)
-		&& aux->p_tiro->status != eTiroExplosao	)
+		if(aux->m_p_tiro->ChecarColisao(area)
+		&& aux->m_p_tiro->m_status != eTiroExplosao	)
 		{
-			//Log("Atualizando tiro ...");
-			aux->p_tiro->Atualizar(_alvo);
-			aux->p_tiro->ativo = TRUE;
-			//Log("Tiro ativo ...");
-			aux = aux->p_tiro;
+			aux->m_p_tiro->Atualizar(alvo);
+			aux->m_p_tiro->m_ativo = 1;
+			aux = aux->m_p_tiro;
 		}
 		else
 		{
-			//Log("Excluindo tiro ...");
-			del = aux->p_tiro;
-			aux->p_tiro = aux->p_tiro->p_tiro;
+			del = aux->m_p_tiro;
+			aux->m_p_tiro = aux->m_p_tiro->m_p_tiro;
 			delete del;
-			//Log("Tiro Excluido ...");
 		}
 	}
 }
 
 //------------------------------------------------------------
-void CTiro::Desenhar(CTela &_tela, int _x_real, int _y_real)
+void CTiro::Desenhar(CTela & tela, int x_real, int y_real)
 {
 
-	switch(status)
+	switch(m_status)
 	{
 		case eTiroNormal:
-			_tela.MaskedBlit((BITMAP *)dat_arquivo[tipo * 2].dat, eCamadaEfeitos, largura * quadro, 0, x - _x_real, y - _y_real, largura, altura);
+			tela.MaskedBlit((BITMAP *)m_dat_arquivo[m_tipo * 2].dat, eCamadaEfeitos, m_largura * m_quadro, 0, m_x - x_real, m_y - y_real, m_largura, m_altura);
+			
 			break;
 
 		case eTiroExplosao:
-			DesenharExplosao(_tela, _x_real, _y_real, x + (largura/2), y + (altura/2), (quadro * 3) + (largura / 2), 250);
+			DesenharExplosao(tela, x_real, y_real, m_x + (m_largura/2), m_y + (m_altura/2), (m_quadro * 3) + (m_largura / 2), 250);
 		break;
 	}
 }
 
 
 //------------------------------------------------------------
-void CTiro::DesenharTodos(CTela &_tela, int _x_real, int _y_real)
+void CTiro::DesenharTodos(CTela & tela, int x_real, int y_real)
 {
+	Log("[INICIO]:CTiro::DesenharTodos();");
 	CTiro *aux;
 
-	for(aux = p_tiro; aux; aux = aux->p_tiro)
+	for(aux = m_p_tiro; aux; aux = aux->m_p_tiro)
 	{
-		if(aux->ativo)
+		if(aux->m_ativo)
 		{
-			aux->Desenhar(_tela, _x_real, _y_real);
+			aux->Desenhar(tela, x_real, y_real);
 		}
 	}
+	Log("[FIM]:CTiro::DesenharTodos();");
 }
 
 
 //------------------------------------------------------------
-int CTiro::VerificarExisteTiros(void)
+int CTiro::VerificarExisteTiros()
 {
-	if(p_tiro) return TRUE;
-	return FALSE;
+	if(m_p_tiro) return 1;
+	return 0;
 }
 
 
 //------------------------------------------------------------
-int CTiro::ChecarColisaoTiros(TRect _obj)
+int CTiro::ChecarColisaoTiros(TRect obj)
 {
 	CTiro *aux;
 
-	for(aux = p_tiro; aux; aux = aux->p_tiro)
+	for(aux = m_p_tiro; aux; aux = aux->m_p_tiro)
 	{
-		if(aux->ChecarColisao(_obj))
+		if(aux->ChecarColisao(obj))
 		{
-			return TRUE;
+			return 1;
 		}
 	}
-	return FALSE;
+	return 0;
 }
 
 
 //------------------------------------------------------------
-void CTiro::Sonorizar(void)
+void CTiro::Sonorizar()
 {
-	if(tocar_som && status == eTiroNormal)
+	if(m_tocar_som && m_status == eTiroNormal)
 	{
-		stop_sample((SAMPLE *)dat_arquivo[(tipo * 2) + 1].dat);
-		play_sample((SAMPLE *)dat_arquivo[(tipo * 2) + 1].dat, 128, 128, 1000, 0);
-		tocar_som = FALSE;
+		stop_sample((SAMPLE *)m_dat_arquivo[(m_tipo * 2) + 1].dat);
+		play_sample((SAMPLE *)m_dat_arquivo[(m_tipo * 2) + 1].dat, 100, 128, 1000, 0);
+		m_tocar_som = 0;
 	}
-	else if(status == eTiroExplosao)
+	else if(m_status == eTiroExplosao)
 	{
-		play_sample((SAMPLE *)dat_arquivo[WAV_TIRO_EXPLOSAO].dat, 128, 128, 1000, 0);
+		play_sample((SAMPLE *)m_dat_arquivo[WAV_TIRO_EXPLOSAO].dat, 100, 128, 1000, 0);
 	}
 }
 
 
 //------------------------------------------------------------
-void CTiro::SonorizarTodos(void)
+void CTiro::SonorizarTodos()
 {
 	CTiro *aux;
 
-	for(aux = p_tiro; aux; aux = aux->p_tiro)
+	for(aux = m_p_tiro; aux; aux = aux->m_p_tiro)
 	{
-		if(aux->ativo)
+		if(aux->m_ativo)
 		{
 			aux->Sonorizar();
 		}
@@ -329,21 +354,51 @@ void CTiro::SonorizarTodos(void)
 
 
 //------------------------------------------------------------
-void CTiro::SetarStatus(EStatusTiro _status)
+void CTiro::SetarStatus(EStatusTiro status)
 {
-	status = _status;
+	m_status = status;
 }
 
 //------------------------------------------------------------
-void CTiro::Desligar(void)
+void CTiro::Finalizar()
 {
+	Log("CTiro::Finalizar();");
+
 	CTiro *aux, *del;
 
-	for(aux = p_tiro; aux;)
+	for(aux = m_p_tiro; aux;)
 	{
 		del = aux;
-		aux = aux->p_tiro;
+		aux = aux->m_p_tiro;
 		delete del;
 	}
+	m_p_tiro = NULL;
 }
 
+
+//------------------------------------------------------------
+CObjetoAvancado *CTiro::ObterMaisProximo(int x, int y)
+{
+	CTiro *aux;
+	int menor_distancia = 999;
+	int distancia;
+	CObjetoAvancado *obj;
+
+	obj = NULL;
+	if(m_p_tiro)
+	{
+		for(aux = m_p_tiro; aux; aux = aux->m_p_tiro)
+		{
+			if(aux->m_visivel)
+			{
+				distancia = sqrt(pow(x - aux->m_x, 2) + pow(y - aux->m_y, 2));
+				if(distancia < menor_distancia)
+				{
+					menor_distancia = distancia;
+					obj = aux->RetornarObjetoAvancado();
+				}
+			}
+		}
+	}
+	return obj;
+}

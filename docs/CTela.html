@@ -1,0 +1,43 @@
+<html>
+<body>
+
+<font size="+2">Classe <b>CTela</b></font>
+<p>
+<font size="+1"><b>Descrição:</b><br></font>
+Classe para manipulação da tela, possui camadas e melhoramentos de imagem
+</p>
+
+<p>
+<font size="+1"><b>Propriedades:</b></font>
+<table border="1" width="100%">
+ <tr><td>SetarVsync</td><td>Define a utilização da sincronização vertical.</td></tr>
+ <tr><td>SetarSuavizar</td><td>Define a utilização da suavização de bitmap (antialiasing).</td></tr>
+ <tr><td>SetarEscreverSombra</td><td>Define a utilização da escrita com sombra.</td></tr>
+ <tr><td>SetarModoGrafico</td><td>Define o modo gráfico e a resolução da tela.</td></tr>
+ <tr><td>SetarTransBlender</td><td>Define os valores para serem utilizado com as rotinas de transparência.</td></tr>
+</table>
+</p>
+
+<p>
+<font size="+1"><b>Metodos:</b></font>
+<table border="1" width="100%">
+ <tr><td>Iniciar</td><td>Inicializa a tela e suas variaveis.</td></tr>
+ <tr><td>Atualizar</td><td>Monta as camadas e atualiza no bitmap passado como parametro.</td></tr>
+ <tr><td>AtualizarNaTela</td><td>Monta as camadas e atualiza no vídeo.</td></tr>
+ <tr><td>Limpar</td><td>Limpa uma determinada camada se informado algum parametro, caso contrário limpa todas.</td></tr>
+ <tr><td>Finalizar</td><td>Finaliza todos os objetos pertencentes a classe.</td></tr>
+ <tr><td>Blit</td><td>Copia uma região de um bitmap para a camada especificada.</td></tr>
+ <tr><td>MaskedBlit</td><td>O mesmo que Blit, só que com cor mascarada.</td></tr>
+ <tr><td>DrawSprite</td><td>Desenha um bitmap na camada especificada.</td></tr>
+ <tr><td>DrawTransSprite</td><td>Desenha um bitmap transparente na camada especificada de acordo com os valores definidos em SetTransBlender.</td></tr>
+ <tr><td>Rect</td><td>Desenha um retangulo na camada especificada.</td></tr>
+ <tr><td>RectFill</td><td>Desenha um retangulo preenchido na camada especificada.</td></tr>
+ <tr><td>PutPixel</td><td>Desenha um pixel na camada especificada.</td></tr>
+ <tr><td>RotateSprite</td><td>Desenha um bitmap  na camada especificada rotacionando de acordo com os parametros especificados.</td></tr>
+ <tr><td>Escrever</td><td>Escreve um texto em uma camada.</td></tr>
+ <tr><td>RetornarCamada</td><td>Retorna o bitmap associado a uma camada.</td></tr>
+</table>
+</p>
+
+</body>
+</html>

@@ -4,8 +4,12 @@
 *  Nome: Diego Giacomelli
 *  Data: sábado, 27 de janeiro de 2002
 *
+*  Diego em 13/02/2002
+*   - Alterado os métodos Desenhar e DesenharTodos para aceitar
+*     CTela e posicionamento relativo;
 *
-*
+*  Diego Giacomelli em 05/03/2002
+*   - Alterada herânça para CObjetoAvancado
 *------------------------------------------------------------*/
 
 
@@ -42,43 +46,41 @@ enum EStatusConstrucao
 
 //------------------------------------------------------------
 // Classe para as construções
-class CConstrucao : public CObjeto
+class CConstrucao : public CObjetoAvancado
 {
 public:
-	CConstrucao(void);
-	static void Carregar_dat_arquivo(DATAFILE * _dat_arquivo){dat_arquivo = _dat_arquivo;}
-	static void Descarregar_dat_arquivo(void){unload_datafile(dat_arquivo);}
-	static int ObterNumeroConstrucoes(void) { return num_construcoes; };
-	void Iniciar(int _tipo, int _x, int _y);
-	void Desenhar(CTela &_tela, int _x_real, int _y_real);;
-	void DesenharTodos(CTela &_tela, int _x_real, int _y_fase);
-	void Atualizar(TRect _area, CObjeto * const _alvo);
-	void AtualizarTodos(TRect _area, CObjeto * const _alvo);
-	void Desligar(void);
-	void Adicionar(int _tipo, int _x, int _y);
-	int ObterTipo(void);
-	void SalvarConstrucao(char *_fase);
-	void Excluir(int _tipo, int _x, int _y);
-	void Excluir(int _x1, int _y1, int _x2, int _y2);
-	int ChecarColisaoConstrucoes(int _x1, int _y1, int _x2, int _y2);
-	void Sonorizar(void);
-	void SonorizarTodos(void);
-	void SetarStatus(EStatusConstrucao _status);
-	EStatusConstrucao ObterStatus(void);
-	int ObterEnergia(void);
-	void DecEnergia(int _decremento);
-	CTiro *ObterTiros(void);
+	CConstrucao();
+	static void CarregarArquivoDados(DATAFILE * dat_arquivo);
+	static void DescarregarArquivoDados();
+	static int ObterNumeroConstrucoes() { return m_num_construcoes; };
+	void Iniciar(int tipo, int x, int y);
+	void Desenhar(CTela & tela, int x_real, int y_real);;
+	void DesenharTodos(CTela & tela, int x_real, int y_fase);
+	void Atualizar(TRect area, CObjetoAvancado * const alvo);
+	void AtualizarTodos(TRect area, CObjetoAvancado * const alvo);
+	void Finalizar();
+	void Adicionar(int tipo, int x, int y);
+	int ObterTipo();
+	void SalvarConstrucao(char * fase);
+	void Excluir(int tipo, int x, int y);
+	void Excluir(int x1, int y1, int x2, int y2);
+	int ChecarColisaoConstrucoes(int x1, int y1, int x2, int y2);
+	void Sonorizar();
+	void SonorizarTodos();
+	void SetarStatus(EStatusConstrucao status);
+	EStatusConstrucao ObterStatus();
+	int ObterEnergia();
+	void DecEnergia(int decremento);
+	CTiro *ObterTiros();
 
-	CConstrucao *p_construcao;	   		// Ponteiro para o proximo nodo da lista
+	CConstrucao *m_p_construcao;	   		// Ponteiro para o proximo nodo da lista
 private:
-	int tipo; //eConstrucao
-	int energia;
-	int quadro;
-	int atirar;
-	EStatusConstrucao status;
-	static DATAFILE *dat_arquivo;
-	static int num_construcoes;
-	CTiro tiros;
+	int m_tipo; //eConstrucao
+	int m_atirar;
+	EStatusConstrucao m_status;
+	static DATAFILE *m_dat_arquivo;
+	static int m_num_construcoes;
+	CTiro m_tiros;
 };
 
 #endif

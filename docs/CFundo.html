@@ -1,0 +1,29 @@
+<html>
+<body>
+
+<font size="+2">Classe <b>CFundo</b></font>
+<p>
+<font size="+1"><b>Descrição:</b><br></font>
+Classe para manipulação de fundos. Trabalha com mapas de ladrilhos.
+</p>
+
+<p>
+<font size="+1"><b>Propriedades:</b></font>
+<table border="1" width="100%">
+ <tr><td>ObterLadrilho</td><td>Retorna o ladrilho dos subscritos _x e _y.</td></tr>
+ <tr><td>SetarLadrilho</td><td>Seta o ladrilho dos subscritos _x e _y.</td></tr>
+</table>
+</p>
+
+<p>
+<font size="+1"><b>Metodos:</b></font>
+<table border="1" width="100%">
+ <tr><td>Iniciar</td><td>Executa a leitura dos ladrilhos do fundo no arquivo de fase para a matriz. Aloca memória para todos os bmp's utilizados pelos ladrilhos do fundo.</td></tr>
+ <tr><td>Desenhar</td><td>Calcula os subscritos dos limites da área vísivel do fundo e desenha os ladrilhos que estão entre estes limites.</td></tr>
+ <tr><td>SalvarFundo</td><td>Salva todos os ladrilhos do fundo no arquivo especificado.</td></tr>
+ <tr><td>Finalizar</td><td>Libera a memória dos bmp's alocadas para os ladrilhos e finaliza todos os ladrilhos.</td></tr>
+</table>
+</p>
+
+</body>
+</html>

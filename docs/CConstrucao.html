@@ -1,0 +1,46 @@
+<html>
+<body>
+
+<font size="+2">Classe <b>CConstrucao</b></font>
+<p>
+<font size="+1"><b>Descrição:</b><br></font>
+Classe derivada de CObjetoAvancado, serve para manipulação
+das construções do jogo. Tais objtos ficam estaticos na fase.
+</p>
+
+<p>
+<font size="+1"><b>Propriedades:</b></font>
+<table border="1" width="100%">
+ <tr><td>SetarStatus</td><td>Seta o status da construção.</td></tr>
+ <tr><td>ObterTipo</td><td>Retorna o tipo da construcao.</td></tr>
+ <tr><td>ObterStatus</td><td>Retorna o status do objeto.</td></tr>
+ <tr><td>ObterEnergia</td><td>Retorna a energia.</td></tr>
+ <tr><td>ObterTiros</td><td>Retorna um ponteiro do tipo CTiro para o objeto tiros da construção.</td></tr>
+ <tr><td>ObterNumeroConstrucoes</td><td>Retorna o número de construções adicionadas.</td></tr>
+</table>
+</p>
+
+<p>
+<font size="+1"><b>Metodos:</b></font>
+<table border="1" width="100%">
+ <tr><td>CConstrucao</td><td>Seta como NULL o ponteiro para o próximo nodo da lista.</td></tr>
+ <tr><td>CarregarArquivoDados</td><td>Método static para alocar o arquivo de dados que será usado por todos os objetos da classe.</td></tr>
+ <tr><td>DescarregarArquivoDados</td><td>Método desaloca a memória do arquivo de dados da classe.</td></tr>
+ <tr><td>Iniciar</td><td>Seta as variáveis conforme o tipo da construção.</td></tr>
+ <tr><td>Desenhar</td><td>Desenha a construção segundo o seu status e após chama o metódo para desenhar todos os tiros da construcao corrente.</td></tr>
+ <tr><td>DesenharTodos</td><td>Chama o método Desenhar para todos as construções que estão ativos.</td></tr>
+ <tr><td>Atualizar</td><td>Executa a alteração do status da construcao e após chama o método para atualizar todos os tiros da mesma.</td></tr>
+ <tr><td>AtualizarTodos</td><td>Chama Atualizar para todos as construções que colidirem com a área informada e que ainda estão ativas.</td></tr>
+ <tr><td>Finalizar</td><td>Libera a memória de todos as construções alocadas e tb chama o método de finalização dos tiros de cada construção.</td></tr>
+ <tr><td>Adicionar</td><td>Aloca memória para o nova construção e a insere no fim da lista encadeada.</td></tr>
+ <tr><td>SalvarConstrucao</td><td>Salva todos as construções da lista no final do arquivo informada, utilizando a estrutura TObjeto.</td></tr>
+ <tr><td>Excluir</td><td>Exclui da lista encadeada todas as construções que corresponderem as especificações. </td></tr>
+ <tr><td>ChecarColisaoConstrucoes</td><td>Retorna verdadeiro se alguma construção está colidindo com a área informada.</td></tr>
+ <tr><td>Sonorizar</td><td>Sonoriza a construção com o som correspondente ao seu status e chama o método de sonorização dos seus tiros.</td></tr>
+ <tr><td>SonorizarTodos</td><td>Chama o método Sonorizar para todo o construcao ativo.</td></tr>
+ <tr><td>DecEnergia</td><td>Decrementa a energia pelo valor informado.</td></tr>
+</table>
+</p>
+
+</body>
+</html>

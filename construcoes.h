@@ -9,6 +9,7 @@
 #define _03_CONSTRUCAO_TORRE_CANHAO      3        /* BMP  */
 #define _04_CONSTRUCAO_CASTELO           4        /* BMP  */
 #define _05_CONSTRUCAO_MINA              5        /* BMP  */
-#define CONSTRUCAO_EXPLOSAO              6        /* BMP  */
-#define WAV_CONSTRUCAO_EXPLOSAO          7        /* SAMP */
+#define _CONSTRUCAO_EXPLOSAO              6        /* BMP  */
+#define _WAV_CONSTRUCAO_EXPLOSAO          7        /* SAMP */
+
 

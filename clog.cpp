@@ -10,25 +10,25 @@
 #include <allegro.h>
 #include "clog.h"
 
-BITMAP *CLog::bmp_log = NULL;
-int CLog::visivel = 0;
+BITMAP *CLog::m_bmp_log = NULL;
+int CLog::m_visivel = 0;
 
 void CLog::Iniciar()
 {
-	bmp_log = create_bitmap(640, 100);
+	m_bmp_log = create_bitmap(640, 100);
 }
 
 void CLog::Desligar()
 {
-	destroy_bitmap(bmp_log);
+	destroy_bitmap(m_bmp_log);
 }
 
-void CLog::LogXX(const char *_texto)
+void CLog::LogXX(const char * texto)
 {
-	blit(bmp_log, bmp_log, 0, 0, 0, -10, bmp_log->w, bmp_log->h);
-	rectfill(bmp_log, 0, bmp_log->h - 10, bmp_log->w, bmp_log->h, 0);
-	textout(bmp_log, font, _texto, 10, bmp_log->h - 10, makecol(255,255,255));
-	if (visivel)
+	blit(m_bmp_log, m_bmp_log, 0, 0, 0, -10, m_bmp_log->w, m_bmp_log->h);
+	rectfill(m_bmp_log, 0, m_bmp_log->h - 10, m_bmp_log->w, m_bmp_log->h, 0);
+	textout(m_bmp_log, font, texto, 10, m_bmp_log->h - 10, makecol(255,255,255));
+	if (m_visivel)
 	{
 		Desenhar(screen);
 	}
@@ -36,15 +36,15 @@ void CLog::LogXX(const char *_texto)
 
 void CLog::Desenhar(BITMAP *bmp)
 {
-	draw_sprite(bmp, bmp_log, 0, 0);
+	draw_sprite(bmp, m_bmp_log, 0, 0);
 }
 
-void CLog::SetarVisivel(int _visivel)
+void CLog::SetarVisivel(int visivel)
 {
-	visivel = _visivel;
+	m_visivel = visivel;
 }
 
 int CLog::Visivel()
 {
-	return visivel;
+	return m_visivel;
 }

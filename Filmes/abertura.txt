@@ -1,0 +1,68 @@
+;************************************************************
+; Atena
+;
+; Script para o Filme de Abertura
+;
+;************************************************************
+; Intruções sobre este script
+;
+; cls - limpa a tela
+; dat - carrega um arquivo .dat
+; mid - toca um midi
+; bmp - mostra um bitmap
+; txt - escreve um texto
+; seg - aguarta n segundos
+; fim - finaliza a execucao do script
+;
+; Operadores
+; ; - Comentarios
+; . - Cancela uma instrucao
+;
+;************************************************************
+
+cls
+
+dat filmes/abertura.dat
+mid ABERTURA
+
+bmp MULHER_01
+txt - ATENA -
+seg 3
+txt Desenvolvido por
+seg 3
+txt GA Entretenimentos
+seg 3
+
+;************************************************************
+
+bmp MULHER_02
+txt No ano de 2073, uma grande disputa de poder comeca a pertubar a balanca de poderes da galaxia Afrone.
+seg 7
+
+bmp MULHER_01
+txt No planeta chamado Cibele, e realizado uma das mais importantes reunioes ja realizadas.
+seg 6
+
+bmp MULHER_02
+txt Erebo, lider do imperio Anteros deseja explorar o mineral Vita Tiberium, encontrado em todos os planetas da Galaxia, porem o conselho do planeta, nao se mostrava muito a favor.
+seg 9
+
+bmp MULHER_01
+txt Vita Tiberium pode ser usado como fonte de energia para fazer armas de poder inigualavel, porem esta energia e a força vital de todos os planetas.
+seg 7
+
+bmp MULHER_02
+txt Sem este mineral, os planetas simplesmente morreriam.
+seg 4
+
+bmp MULHER_01
+txt Apos dias de discussao, a ideia de Erebo foi recusada, em vista, a destruicao eminente e lhe foi avisado que qualquer tentativa contraria seria punida.
+seg 8
+
+bmp MULHER_02
+txt Erebo se calou, e no mais profundo segredo, continuou com suas ideias para a exploracao do Vita Tiberium, organizando a maior frota estrelar jamais vista.
+seg 9
+
+mid .
+
+fim

@@ -1,0 +1,43 @@
+<html>
+<body>
+
+<font size="+2">Classe <b>CArma</b></font>
+<p>
+<font size="+1"><b>Descrição:</b><br></font>
+Classe derivada de CObjetoAvancado, serve para a manipulação de todo
+o tipo de arma do jogo. Como da nave do jogoador, naves inimigas, torres, etc.
+</p>
+
+<p>
+<font size="+1"><b>Construtores:</b></font>
+<table border="1" width="100%">
+ <tr><td>CArma</td><td>Construtor padrão, para possibilitar a utilização da mesma em um template.</td></tr>
+</table>
+</p>
+
+<p>
+<font size="+1"><b>Propriedades:</b></font>
+<table border="1" width="100%">
+ <tr><td>ObterTipo</td><td>Retorna uma enumaração do tipo EArma, que corresponde ao tipo da arma.</td></tr>
+ <tr><td>ObterTiros</td><td>Retorna uma referência a variável que armazena o CTiro da arma.</td></tr>
+ <tr><td>SetarStatus</td><td>Seta o status da arma pelo status informado.</td></tr>
+ <tr><td>ObterStatus</td><td>Retorna uma enumeração do tipo EStatusArma.</td></tr>
+</table>
+</p>
+
+<p>
+<font size="+1"><b>Métodos:</b></font>
+<table border="1" width="100%">
+ <tr><td>CarregarArquivoDados</td><td>Método static para alocar o arquivo de dados que será usado por todos os objetos da classe.</td></tr>
+ <tr><td>DescarregarArquivoDados</td><td>Método desaloca a memória do arquivo de dados da classe.</td></tr>
+ <tr><td>Iniciar</td><td>Seta as variáveis conforme o tipo da arma.</td></tr>
+ <tr><td>Desenhar</td><td>Desenha a arma conforme o status e invoca o método desenhar os seus tiros.</td></tr>
+ <tr><td>Atualizar</td><td>Executa a movimentação e alteração do status da arma e chama o método atualizar dos tiros.</td></tr>
+ <tr><td>Sonorizar</td><td>Sonoriza a arma conforme o seu status e chama o método Sonorizar dos seus tiros.</td></tr>
+ <tr><td>Finalizar</td><td>Chama o método Finalizar dos tiros para liberar a memória aloacada por eles.</td></tr>
+ <tr><td>Atirar</td><td>Adicionar tiros para o alvo informado.</td></tr>
+</table>
+</p>
+
+</body>
+</html>

@@ -9,10 +9,32 @@
 *   - Alteração do nome do método Colisão para ChecarColisao
 *     para adaptar-se aos padrões de nomenclatura;
 *
+*  Henrique em 25/01/2002
+*   - Implementado metodo DesenharExplosao()
+*
+*  Diego Diego Giacomelli em 13/02/2002
+*   - Alterado os métodos Desenhar e DesenharTodos para aceitar
+*     CTela e posicionamento relativo;
+*
 *  Diego Giacomelli em 14/01/2002
 *   - Implementado o método ObterMaisProximo;
 *
-*------------------------------------------------------------*/
+*  Diego Giacomelli em 28/02/2002
+*   - Retirado o membro de dados angulo, pois agora ele é herdado
+*     do CObjeto;
+*
+*  Diego Giacomelli em 05/03/2002
+*   - Alterada herânça para CObjetoAvancado
+*
+*  Diego Giacomelli em 23/06/2002
+*	- Inserido controle para diretivas ZEUS e ATENA em Iniciar();
+*
+*  Diego Giacomelli em 26/06/2002
+*	- Inserido o membro de dados m_pos_sombra;
+*	- Criado o método ChecarColisaoSombra para que as sombras das 
+*	  naves apareçam e desapareçam corretamente da tela;
+*
+-----------------------------------------------------------*/
 
 
 #ifndef calien_h_incluido
@@ -46,47 +68,53 @@ enum EStatusAlien
 
 //------------------------------------------------------------
 // Classe para as naves aliens
-class CAlien : public CObjeto
+class CAlien : public CObjetoAvancado
 {
 public:
-	CAlien(void);
-	static void Carregar_dat_arquivo(DATAFILE * _dat_arquivo){dat_arquivo = _dat_arquivo;}
-	static void Descarregar_dat_arquivo(void){unload_datafile(dat_arquivo);}
-	static int ObterNumeroAliens(void) { return num_aliens; };
-	void Iniciar(int _tipo, int _x, int _y);
-	void Desenhar(CTela &_tela, int _x_real, int _y_real);
-	void DesenharTodos(CTela &_tela, int _x_real, int _y_fase);
-	void Atualizar(TRect _area, CObjeto * const _alvo);
-	void AtualizarTodos(TRect _area, CObjeto * const _alvo);
-	void Desligar(void);
-	void Adicionar(int _tipo, int _x, int _y);
-	int ObterTipo(void);
-	void SalvarAlien(char *_fase);
-	void Excluir(int _tipo, int _x, int _y);
-	void Excluir(int _x1, int _y1, int _x2, int _y2);
-	int ChecarColisaoAliens(int _x1, int _y1, int _x2, int _y2);
-	int ChecarColisaoAliens(void);
-	void Sonorizar(void);
-	void SonorizarTodos(void);
-	void SetarStatus(EStatusAlien _status);
-	EStatusAlien ObterStatus(void);
-	int ObterEnergia(void);
-	void DecEnergia(int _decremento);
-	CTiro *ObterTiros(void);
-	CObjeto *ObterMaisProximo(int _x, int _y);
+	CAlien();
+	static void CarregarArquivoDados(DATAFILE * dat_arquivo);
+	static void DescarregarArquivoDados();
+	static int ObterNumeroAliens() { return m_num_aliens; };
+	void Iniciar(int tipo, int x, int y);
+	void Desenhar(CTela & tela, int x_real, int y_real);
+	void DesenharTodos(CTela & tela, int x_real, int y_fase);
+	void Atualizar(TRect area, CObjetoAvancado * const alvo);
+	void AtualizarTodos(TRect area, CObjetoAvancado * const alvo);
+	void Finalizar();
+	void Adicionar(int tipo, int x, int y);
+	int ObterTipo();
+	void SalvarAlien(char * fase);
+	void Excluir(int tipo, int x, int y);
+	void Excluir(int x1, int y1, int x2, int y2);
+	int ChecarColisaoAliens(int x1, int y1, int x2, int y2);
+	int ChecarColisaoAliens(TRect ret);
+	int ChecarColisaoAliens();
+	void Sonorizar();
+	void SonorizarTodos();
+	void SetarStatus(EStatusAlien status);
+	EStatusAlien ObterStatus();
+	int ObterEnergia();
+	void DecEnergia(int decremento);
+	CTiro *ObterTiros();
+	CObjetoAvancado *ObterMaisProximo(int x, int y);
+	int ChecarColisaoSombra(TRect area);
 
-	CAlien *p_alien;	// Ponteiro para o proximo nodo da lista
-private:
-	int tipo; //eAlien
-	int energia;
-	int quadro;
-	int atirar;
-	int velocidade;
-	EStatusAlien status;
-	static DATAFILE *dat_arquivo;
-	static int num_aliens;
-	CTiro tiros;
-	int dir_x;
-	int dir_y;
+	CAlien *m_p_alien;	// Ponteiro para o proximo nodo da lista
+
+protected:
+	int m_tipo; //eAlien
+	int m_atirar;
+	int m_velocidade;
+	EStatusAlien m_status;
+	static DATAFILE *m_dat_arquivo;
+	static int m_num_aliens;
+	CTiro m_tiros;
+	int m_dir_x;
+	int m_dir_y;
+	int m_dir_r;		// Direção da rotação
+	int m_tempo;
+	int m_flag_x;
+	int m_flag_y;
+	int m_pos_sombra;
 };
 #endif

@@ -1,0 +1,42 @@
+<html>
+<body>
+
+<font size="+2">Classe <b>CFilme</b></font>
+<p>
+<font size="+1"><b>Descrição:</b><br></font>
+Classe para manipulação de filmes.
+</p>
+<p>
+<font size="+1"><b>Metodos:</b></font>
+<table border="1" width="100%">
+ <tr><td>Iniciar</td><td>Inicializa o objeto e carrega o arquivo texto do filme (verificar <a href="#observacoes">observações</a>).</td></tr>
+ <tr><td>Executar</td><td>Executa o filme.</td></tr>
+ <tr><td>Finalizar</td><td>Descarrega o objeto da memória.</td></tr>
+</table>
+</p>
+
+<p>
+<a name="observacoes"></a>
+<font size="+1"><b>Observações:</b></font>
+O arquivo texto passado como parâmetro possui algum algumas
+especificações próprias, sendo elas previamente definidas como:<br>
+Linha 1: Caminho completo do arquivo de dados<br>
+Linha 2: Nome do objeto que representa um arquivo de música .MID<br>
+Demais Linhas: Conteúdo do filme no formato [imagem;segundos;legenta]
+</p>
+<p>
+<font size="+1"><b>Exemplo:</b></font>
+<pre>
+------ abertura.txt --------
+filmes/abertura.dat
+abertura
+quadro1;5;ATENA
+quadro2;7;No ano de 2073, uma grande disputa de poder...
+.
+.
+----------------------------
+</pre>
+</p>
+
+</body>
+</html>

@@ -8,9 +8,24 @@
 *  Diego Giacomelli em 19/09/2001
 *  	- Adicionada sombra à nave Alien no método Desenhar;
 *
-*  Diego em 24/01/2002
+*  Diego Giacomelli em 24/01/2002
 *  	- Criado o método Iniciar;
+*   - Retirado o método SetArquivoDat (obsoleto);
 *
+*  Diego Giacomelli em 05/03/2002
+*   - Alterada herânça para CObjetoAvancado
+*
+*  Diego Giacomelli em 01/05/2002
+*   - Inseridos membros de dados m_dx e m_dy;
+*
+*  Diego Giacomelli em 26/06/2002
+*	- Implementação do método ObterArmas;
+*
+*  Diego Giacomelli em 06/07/2002
+*	- Alterado TEntrada para suportar duas armas na nave;
+*	- Utilizando polimorfismo nos métodos IncX, DecX, IncY, DecY
+*     para garantir que quando a nave se movimentar suas armas se
+*	  movimentarão juntas;
 *------------------------------------------------------------*/
 
 #ifndef cnave_h_incluido
@@ -18,6 +33,7 @@
 
 #include "cobjeto.h"
 #include "ctiro.h"
+#include "ccolecaoarma.h"
 
 enum EStatusNave
 {
@@ -31,37 +47,44 @@ struct TEntrada
 {
 	int x, y;
 	int a, b, c;
+	bool arma_esquerda, arma_centro, arma_direita;
 };
 
-class CNave: public CObjeto
+class CNave: public CObjetoAvancado
 {
 public:
-	void Iniciar(void);
+	void Iniciar();
 	void DecEnergia(int valor);
 	void IncEnergia(int valor);
-	void Atualizar(TRect _area, CObjeto * const _alvo);
-	void Desenhar(CTela &_tela, int _x_real, int _y_real);;
-	void Desligar(void);
-	void Sonorizar(void);
-	CTiro *ObterTiros(void);
-	int ObterPontos(void);
-	void IncPontos(int _incremento);
-	int ObterCasco(void);
-	int ObterEnergia(void);
-	int ObterStatus(void);
+	void Atualizar(TRect area, CObjetoAvancado * const alvo);
+	void Desenhar(CTela & tela, int x_real, int y_real);;
+	void Finalizar();
+	void Sonorizar();
+	CTiro *ObterTiros();
+	int ObterPontos();
+	void IncPontos(int incremento);
+	int ObterCasco();
+	int ObterStatus();
+	CColecaoArma & ObterArmas();
+	void SetarX(int x);			
+	void IncX(int incremento);
+	void DecX(int decremento);
+	void SetarY(int y);
+	void IncY(int incremento);
+	void DecY(int decremento);
 
 private:
-	DATAFILE *dat_arquivo;
-	CTiro tiros;
-	int energia;
-	int quadro;
-	int pontos;
-	int casco;
-	int atirar;
-	int tipo_tiro;
-	EStatusNave status;
-	int turbina;
-	float vi, vx, vy;
+	DATAFILE *m_dat_arquivo;
+	CColecaoArma m_armas;
+	CTiro m_tiros;
+	int m_pontos;
+	int m_casco;
+	int m_atirar;
+	int m_tipo_tiro;
+	EStatusNave m_status;
+	int m_turbina;
+	float m_vi, m_vx, m_vy;
+	int m_dx, m_dy;
 
 };
 

@@ -1,0 +1,43 @@
+<html>
+<body>
+
+<font size="+2">Classe <b>CFase</b></font>
+<p>
+<font size="+1"><b>Descrição:</b><br></font>
+Classe para a manipulação de fases, é dentro desta classe que todos os objetos do jogo estão presentes
+</p>
+
+<p>
+<font size="+1"><b>Propriedades:</b></font>
+<table border="1" width="100%">
+ <tr><td>SetarArquivoFase</td><td>Seta o nome do arquivo da fase.</td></tr>
+ <tr><td>SetarLadrilho</td><td>Seta o ladrilho dos subscritos correspondentes através dos parâmetros informados.</td></tr>
+ <tr><td>ObterLadrilho</td><td>Retorna o objeto CLadrilho correspondente as subscritos _x e _y.</td></tr>
+ <tr><td>ObterAliens</td><td>Retorna o valor da variável aliens.</td></tr>
+ <tr><td>ObterConstrucoes</td><td>Retorna o valor da variável construcoes.</td></tr>
+ <tr><td>ObterX1Fonte</td><td>Retorna a coordenada x do ponto mais esquerda da área visível da fase.</td></tr>
+ <tr><td>ObterY1Fonte</td><td>Retorna a coordenada y do ponto mais acima da área visível da fase.</td></tr>
+</table>
+</p>
+
+<p>
+<font size="+1"><b>Metodos:</b></font>
+<table border="1" width="100%">
+ <tr><td>Iniciar</td><td>Lê os objetos do arquivo de fase, inicializando cada objeto.</td></tr>
+ <tr><td>Desenhar</td><td>Chama os métodos de desenho de cada objeto para serem desenhados no objeto da classe CTela.</td></tr>
+ <tr><td>Rolar</td><td>Executa o rolamento do fundo da fase na direção e quantidade de pixels informados.</td></tr>
+ <tr><td>SalvarFase</td><td>Chama os métodos de gravação em arquivo dos objetos contidos na fase.</td></tr>
+ <tr><td>Finalizar</td><td>Finaliza todos os objetos através da chamada dos métodos finalizar de cada um.</td></tr>
+ <tr><td>AdicionarAlien</td><td>Adiciona um objeto CAlien do tipo informado e nas coordenadas _x e _y.</td></tr>
+ <tr><td>AdicionarConstrucao</td><td>Adiciona um objeto CConstrucao do tipo informado e nas coordenadas _x e _y.</td></tr>
+ <tr><td>ExcluirAliens</td><td>Exclui todos os aliens que colidirem com o retângulo formado pelas coordenadas informadas.</td></tr>
+ <tr><td>ExcluirConstrucoes</td><td>Exclui todos as construcoes que colidirem com o retângulo formado pelas coordenadas informadas.</td></tr>
+ <tr><td>Atualizar</td><td>Rola o fundo o número de pixels informado, chama o método atualizar de cada objeto da fase. Retorna verdadeiro se a fase foi atualizada e falso caso contrário.</td></tr>
+ <tr><td>Sonorizar</td><td>Sonoriza a fase através da chamada dos métodos Sonorizar ou SonorizarTodos dos objetos pertecentes a ela.</td></tr>
+ <tr><td>ChecarColisaoAliens</td><td>Retorna verdadeiro se algum alien colidir com a área informada.</td></tr>
+ <tr><td>ChecarColisaoConstrucoes</td><td>Retorna verdadeiro se alguma construcao colidir com a área informada.</td></tr>
+</table>
+</p>
+
+</body>
+</html>

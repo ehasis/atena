@@ -4,9 +4,6 @@
 *  Nome: Edison Henrique Andreassy
 *  Data: terça-feira, 22 de setembro de 2001
 *
-*  Diego em 13/02/2002
-*   - Alterado o método DesenharExplosao para aceitar CTela e
-*     posicionamento relativo;
 *
 *------------------------------------------------------------*/
 
@@ -14,15 +11,25 @@
 #include <allegro.h>
 #include "cobjeto.h"
 
+//------------------------------------------------------------
+// CObjetoBasico
+//------------------------------------------------------------
+void CObjetoBasico::Iniciar(int x, int y, int largura, int altura)
+{
+	m_x = x;
+	m_y = y;
+	m_largura = largura;
+	m_altura = altura;
+}
 
 //------------------------------------------------------------
 // retorna se ha colisao com o objeto passado como parametro
-int CObjeto::ChecarColisao(TRect _rect)
+int CObjetoBasico::ChecarColisao(TRect rect)
 {
-	if ((x + largura < _rect.x1)
-	||  (y + altura  < _rect.y1)
-	||  (x           > _rect.x2)
-	||  (y           > _rect.y2))
+	if ((m_x + m_largura < rect.x1)
+	||  (m_y + m_altura  < rect.y1)
+	||  (m_x           > rect.x2)
+	||  (m_y           > rect.y2))
 	{
 		return FALSE;
 	}
@@ -32,12 +39,12 @@ int CObjeto::ChecarColisao(TRect _rect)
 	}
 }
 
-int CObjeto::ChecarColisao(int _x1, int _y1, int _x2, int _y2)
+int CObjetoBasico::ChecarColisao(int x1, int y1, int x2, int y2)
 {
-	if ((x + largura < _x1)
-	||  (y + altura  < _y1)
-	||  (x           > _x2)
-	||  (y           > _y2))
+	if ((m_x + m_largura < x1)
+	||  (m_y + m_altura  < y1)
+	||  (m_x           > x2)
+	||  (m_y           > y2))
 	{
 		return FALSE;
 	}
@@ -47,12 +54,12 @@ int CObjeto::ChecarColisao(int _x1, int _y1, int _x2, int _y2)
 	}
 }
 
-int CObjeto::ChecarColisao(int _x, int _y)
+int CObjetoBasico::ChecarColisao(int x, int y)
 {
-	if ((x + largura < _x)
-	||  (y + altura  < _y)
-	||  (x           > _x)
-	||  (y           > _y))
+	if ((m_x + m_largura < x)
+	||  (m_y + m_altura  < y)
+	||  (m_x           > x)
+	||  (m_y           > y))
 	{
 		return FALSE;
 	}
@@ -63,10 +70,10 @@ int CObjeto::ChecarColisao(int _x, int _y)
 }
 
 //------------------------------------------------------------
-int CObjeto::ChecarColisaoX(int _x1, int _x2)
+int CObjetoBasico::ChecarColisaoX(int x1, int x2)
 {
-	if ((x + largura < _x1)
-	||  (x           > _x2))
+	if ((m_x + m_largura < x1)
+	||  (m_x           > x2))
 	{
 		return FALSE;
 	}
@@ -78,10 +85,10 @@ int CObjeto::ChecarColisaoX(int _x1, int _x2)
 
 
 //------------------------------------------------------------
-int CObjeto::ChecarColisaoY(int _y1, int _y2)
+int CObjetoBasico::ChecarColisaoY(int y1, int y2)
 {
-	if ((y + altura < _y1)
-	||  (y          > _y2))
+	if ((m_y + m_altura < y1)
+	||  (m_y          > y2))
 	{
 		return FALSE;
 	}
@@ -93,164 +100,222 @@ int CObjeto::ChecarColisaoY(int _y1, int _y2)
 
 //------------------------------------------------------------
 // retorna os vertices do retangulo do objeto
-TRect CObjeto::ObterRect(void)
+TRect CObjetoBasico::ObterRect()
 {
 	TRect ret;
 
-	ret.x1 = x;
-	ret.y1 = y;
-	ret.x2 = x + largura;
-	ret.y2 = y + altura;
+	ret.x1 = m_x;
+	ret.y1 = m_y;
+	ret.x2 = m_x + m_largura;
+	ret.y2 = m_y + m_altura;
 
 	return ret;
 }
 
 
 //------------------------------------------------------------
-void CObjeto::SetarX(int _x)
+void CObjetoBasico::SetarX(int x)
 {
-	x = _x;
+	m_x = x;
 }
 
 
 //------------------------------------------------------------
-int CObjeto::ObterX(void)
+int CObjetoBasico::ObterX()
 {
-	return x;
+	return m_x;
 }
 
 
 //------------------------------------------------------------
-int CObjeto::ObterPMX(void)
+int CObjetoBasico::ObterPMX()
 {
-	return (x + largura / 2);
+	return (m_x + m_largura / 2);
 }
 
 
 //------------------------------------------------------------
-int CObjeto::ObterX2(void)
+int CObjetoBasico::ObterX2()
 {
-	return (x + largura);
+	return (m_x + m_largura);
 }
 
 //------------------------------------------------------------
-void CObjeto::IncX(int _incremento)
+void CObjetoBasico::IncX(int incremento)
 {
-	x += _incremento;
-}
-
-
-//------------------------------------------------------------
-void CObjeto::DecX(int _decremento)
-{
-	x -= _decremento;
+	m_x += incremento;
 }
 
 
 //------------------------------------------------------------
-void CObjeto::SetarY(int _y)
+void CObjetoBasico::DecX(int decremento)
 {
-	y = _y;
+	m_x -= decremento;
 }
 
 
 //------------------------------------------------------------
-int CObjeto::ObterY(void)
+void CObjetoBasico::SetarY(int y)
 {
-	return y;
+	m_y = y;
 }
 
 
 //------------------------------------------------------------
-int CObjeto::ObterPMY(void)
+int CObjetoBasico::ObterY()
 {
-	return (y + altura / 2);
+	return m_y;
 }
 
 
 //------------------------------------------------------------
-int CObjeto::ObterY2(void)
+int CObjetoBasico::ObterPMY()
 {
-	return (y + altura);
+	return (m_y + m_altura / 2);
 }
 
 
 //------------------------------------------------------------
-void CObjeto::IncY(int _incremento)
+int CObjetoBasico::ObterY2()
 {
-	y += _incremento;
+	return (m_y + m_altura);
 }
 
 
 //------------------------------------------------------------
-void CObjeto::DecY(int _decremento)
+void CObjetoBasico::IncY(int incremento)
 {
-	y -= _decremento;
+	m_y += incremento;
 }
 
 
 //------------------------------------------------------------
-void CObjeto::SetarLargura(int _largura)
+void CObjetoBasico::DecY(int decremento)
 {
-	largura = _largura;
+	m_y -= decremento;
 }
 
 
 //------------------------------------------------------------
-int CObjeto::ObterLargura(void)
+void CObjetoBasico::SetarLargura(int largura)
 {
-	return largura;
+	m_largura = largura;
 }
 
 
 //------------------------------------------------------------
-void CObjeto::SetarAltura(int _altura)
+int CObjetoBasico::ObterLargura()
 {
-	altura = _altura;
+	return m_largura;
 }
 
 
 //------------------------------------------------------------
-int CObjeto::ObterAltura(void)
+void CObjetoBasico::SetarAltura(int altura)
 {
-	return altura;
+	m_altura = altura;
 }
 
 
 //------------------------------------------------------------
-void CObjeto::DesenharExplosao(CTela &_tela, int _x_real, int _y_fase, int _x, int _y, int _raio, int _num_particulas)
+int CObjetoBasico::ObterAltura()
 {
-	int ex, ey, ei;
-
-	for (ei = 0; ei < _num_particulas; ei++)
-	{
-		ex = (rand() % (_raio * 2)) - _raio;
-		ey = (rand() % (_raio * 2)) - _raio;
-
-		if ((ex * ex) + (ey * ey) <= _raio * _raio)
-		{
-			_tela.PutPixel(eCamadaEfeitos, ex + _x - _x_real, ey + _y - _y_fase, makecol(255,rand()%255,0));
-		}
-	}
+	return m_altura;
 }
 
-
 //------------------------------------------------------------
-CObjeto *CObjeto::RetornarObjeto(void)
+CObjetoBasico *CObjetoBasico::RetornarObjetoBasico()
 {
 	return (CObjeto *)this;
 }
 
 
 //------------------------------------------------------------
-int CObjeto::Obter_ativo(void)
+// CObjeto
+//------------------------------------------------------------
+int CObjeto::ObterAngulo()
 {
-	return ativo;
+	return m_angulo;
+}
+
+void CObjeto::SetarAngulo(int angulo)
+{
+	m_angulo = angulo;
 }
 
 
 //------------------------------------------------------------
-int CObjeto::Obter_visivel(void)
+// CObjetoAvancado
+//------------------------------------------------------------
+void CObjetoAvancado::DesenharExplosao(CTela &m_tela, int x_real, int y_real, int x, int y, int raio, int num_particulas)
 {
-	return visivel;
+	int ex, ey, ei;
+
+	for (ei = 0; ei < num_particulas; ei++)
+	{
+		ex = (rand() % (raio * 2)) - raio;
+		ey = (rand() % (raio * 2)) - raio;
+
+		if ((ex * ex) + (ey * ey) <= raio * raio)
+		{
+			m_tela.PutPixel(eCamadaEfeitos, ex + x - x_real, ey + y - y_real, makecol(255,rand()%255,0));
+		}
+	}
 }
+
+
+//------------------------------------------------------------
+void CObjetoAvancado::SetarAtivo(int ativo)
+{
+	m_ativo = ativo;
+}
+
+
+//------------------------------------------------------------
+int CObjetoAvancado::ObterAtivo()
+{
+	return m_ativo;
+}
+
+
+//------------------------------------------------------------
+int CObjetoAvancado::ObterVisivel()
+{
+	return m_visivel;
+}
+
+
+//------------------------------------------------------------
+void CObjetoAvancado::SetarVisivel(int visivel)
+{
+	m_visivel = visivel;
+}
+
+
+//------------------------------------------------------------
+CObjetoAvancado *CObjetoAvancado::RetornarObjetoAvancado()
+{
+	return (CObjetoAvancado *)this;
+}
+
+
+//------------------------------------------------------------
+int CObjetoAvancado::ObterEnergia() 
+{
+	return m_energia;
+}
+
+
+//------------------------------------------------------------
+void CObjetoAvancado::IncEnergia(int incremento)
+{
+	m_energia += incremento;
+}
+
+
+//------------------------------------------------------------
+void CObjetoAvancado::DecEnergia(int decremento)
+{
+	m_energia -= decremento;
+}
+

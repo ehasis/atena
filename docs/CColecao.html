@@ -1,0 +1,53 @@
+<html>
+<body>
+
+<font size="+2">Classe <b>CColecao</b></font>
+<p>
+<font size="+1"><b>Descrição:</b><br></font>
+Esta clase implementa uma lista duplamente encadeada, com possibilidades
+de inserção, consulta e exclusão de itens em qualquer posição da lista.
+<p>
+<font size="+1"><b>Construtores:</b></font>
+<table border="1" width="100%">
+ <tr><td>CColecao</td><td>Seta para NULL todos os ponteiros e inicializa variáveis restantes.</td></tr>
+</table>
+</p>
+
+<p>
+<font size="+1"><b>Propriedades:</b></font>
+<table border="1" width="100%">
+ <tr><td>Obter</td><td>Retorna o item da posição atual da lista.</td></tr>
+ <tr><td>Obter(int indice)</td><td>Retorna o item da posição informada, está posição torna-se a posição corrente da lista.</td></tr>
+ <tr><td>ObterIndice</td><td>Retorna o indice do item atual.</td></tr>
+ <tr><td>ObterQuantidade</td><td>Retorna a quantidade de itens inseridos na lista.</td></tr>
+</table>
+</p>
+
+<p>
+<font size="+1"><b>Métodos:</b></font>
+<table border="1" width="100%">
+ <tr><td>Adicionar</td><td>Adiciona o valor informado na posição corrente da lista.</td></tr>
+ <tr><td>Adicionar(..., int indice)</td><td>Adiciona o item na posição informado, está posição torna-se a posição corrente da lista.</td></tr>
+ <tr><td>AdicionarInicio</td><td>Adiciona o item na primeira posição da lista, está posição torna-se a posição corrente da lista.</td></tr>
+ <tr><td>AdicionarFim</td><td>Adiciona o item no fim da lista, está posição torna-se a posição corrente da lista.</td></tr>
+ <tr><td>Mover</td><td>Move-se para o item do índice informado.</td></tr>
+ <tr><td>MoverPrimeiro</td><td>Move-se para o primeiro item da lista.</td></tr>
+ <tr><td>MoverUltimo</td><td>Move-se para o último item da lista.</td></tr>
+ <tr><td>MoverAnterior</td><td>Move-se para o item anterior ao item atual da lista.</td></tr>
+ <tr><td>MoverProximo</td><td>Move-se para o proximo item depois do item atual da lista.</td></tr>
+ <tr><td>Remover</td><td>Remove o item corrente da lista.</td></tr>
+ <tr><td>Remover(int indice)</td><td>Remove o item do indice informado.</td></tr>
+ <tr><td>RemoverInicio</td><td>Remove o primeiro item da lista.</td></tr>
+ <tr><td>RemoverFim</td><td>Remove o último item da lista.</td></tr>
+ <tr><td>RemoverTodos</td><td>Remove todos os itens existentes na lista.</td></tr>
+</table>
+</p>
+
+<p>
+<font size="+1"><b>Observações:</b><br></font>
+Por ser um template, pode armazenar qualquer tipo de dado, sendo que este tipo de dado 
+necessita apenas ter um <i>constructor default</i> e também um <i>destructor default</i>.</p>
+</p>
+
+</body>
+</html>

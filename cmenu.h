@@ -5,7 +5,7 @@
 *  Data: quinta-feira, 19 de julho de 2001
 *
 *  Henrique em 21/02/2002
-*   - Adicionado possibilidade alinhamento
+*   - Adicionado possibilidade m_alinhamento
 *   - Adicionado propriedades
 *
 *------------------------------------------------------------*/
@@ -13,8 +13,9 @@
 #ifndef cmenu_h_incluido
 #define cmenu_h_incluido
 
-#define NUMERO_OPCOES_MENU 20
+#define NUMERO_ITENS 30
 
+//------------------------------------------------------------
 enum EAlinhamentoMenu
 {
 	eAlinharEsquerda,
@@ -22,42 +23,48 @@ enum EAlinhamentoMenu
 	eAlinharCentro
 };
 
+//------------------------------------------------------------
 class CMenuH
 {
 public:
 	//Constructor/Destructor
 	CMenuH();
-	CMenuH(FONT *_fonte, int _cor_texto, int _cor_selecao);
-	CMenuH(FONT *_fonte, int _cor_texto, int _cor_selecao, int _x, int _y);
+	CMenuH(FONT * fonte, int cor_texto, int cor_selecao);
+	CMenuH(FONT * fonte, int cor_texto, int cor_selecao, int x, int y);
 	~CMenuH();
-	
+
 	//Propriedades
-	void SetarAlinhamento(EAlinhamentoMenu _alinhamento);
-	void SetarFonte(FONT *_fonte);
-	void SetarCorTexto(int _cor_texto);
-	void SetarCorSelecao(int _cor_selecao);
-	void SetarX(int _x);
-	void SetarY(int _y);
-	void SetarTexto(int _indice, const char *_texto);
-	void SetarNumeroItens(int _numero_itens);
+	void SetarAlinhamento(EAlinhamentoMenu alinhamento);
+	void SetarFonte(FONT * fonte);
+	void SetarCorTexto(int cor_texto);
+	void SetarCorSelecao(int cor_selecao);
+	void SetarX(int x);
+	void SetarY(int y);
+	void SetarTexto(int indice, const char * texto);
+	void SetarNumeroItens(int numero_itens);
 
 	//Metodos
-	void Adicionar(const char *_texto);
+	void Adicionar(const char * texto);
+	void Adicionar(const char * texto, int linha, int coluna);
+
 	int Executar();
 
 private:
-	FONT *fonte;
-	BITMAP *cp_screen, *bmp_menu;
-	char menu[NUMERO_OPCOES_MENU][80];
-	int x, y;
-	int num_itens;
-	int pos_atual;
-	int largura, altura;
-	int cor_texto, cor_selecao;
-	EAlinhamentoMenu alinhamento;
-	
+	int m_x, m_y;
+	int m_num_itens;
+	int m_pos_atual;
+	int m_largura, m_altura;
+	int m_cor_texto, m_cor_selecao;
+	int m_altura_caractere;
+	char m_item[NUMERO_ITENS][80];
+	EAlinhamentoMenu m_alinhamento;
+
+	FONT *m_fonte;
+	BITMAP *m_cp_screen, *m_bmp_menu;
+
+
 	//Metodos
-	void Escrever(BITMAP *_bmp, char *_texto, int _linha, int _cor);
+	void Escrever(BITMAP * bmp, const char * texto, int linha, int cor);
 };
 
 #endif

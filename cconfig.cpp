@@ -15,78 +15,110 @@
 //------------------------------------------------------------
 CConfig::CConfig()
 {
+	/*
 	SetarArquivo("config.ini");
 	SetarSecao("config");
+	*/
 }
 
 //------------------------------------------------------------
-CConfig::CConfig(const char *_arquivo)
+CConfig::CConfig(const char * arquivo)
 {
-	SetarArquivo(_arquivo);
+	SetarArquivo(arquivo);
 	SetarSecao("config");
 }
 
 //------------------------------------------------------------
-void CConfig::SetarArquivo(const char *_arquivo)
+void CConfig::SetarArquivo(const char * arquivo)
 {
-	sprintf(arquivo, _arquivo);
-	set_config_file(arquivo);
+	sprintf(m_arquivo, arquivo);
+	set_config_file(m_arquivo);
 }
 
 //------------------------------------------------------------
-void CConfig::SetarSecao(const char *_secao)
+void CConfig::SetarSecao(const char * secao)
 {
-	sprintf(secao, _secao);
+	sprintf(m_secao, secao);
 }
 
 //------------------------------------------------------------
-int CConfig::ObterInt(const char *_chave, int _padrao)
+int CConfig::ObterInt(const char * chave, int padrao)
 {
-	return get_config_int(secao, _chave, _padrao);
+	return get_config_int(m_secao, chave, padrao);
 }
 
 //------------------------------------------------------------
-int CConfig::ObterInt(const char *_secao, const char *_chave, int _padrao)
+int CConfig::ObterInt(const char * secao, const char * chave, int padrao)
 {
-	SetarSecao(_secao);
-	return get_config_int(secao, _chave, _padrao);
+	SetarSecao(secao);
+	return get_config_int(m_secao, chave, padrao);
 }
 
 //------------------------------------------------------------
-const char *CConfig::ObterStr(const char *_chave, const char *_padrao)
+bool CConfig::ObterBool(const char * chave, bool padrao)
 {
-	return get_config_string(secao, _chave, _padrao);
+	if (get_config_int(m_secao, chave, (padrao ? 1: 0)))
+	{
+		return true;
+	}
+	return false;
 }
 
 //------------------------------------------------------------
-const char *CConfig::ObterStr(const char *_secao, const char *_chave, const char *_padrao)
+bool CConfig::ObterBool(const char * secao, const char * chave, bool padrao)
 {
-	SetarSecao(_secao);
-	return get_config_string(secao, _chave, _padrao);
+	SetarSecao(secao);
+	return ObterBool(chave, padrao);
 }
 
 //------------------------------------------------------------
-void CConfig::SetarInt(const char *_chave, int _valor)
+const char *CConfig::ObterStr(const char * chave, const char * padrao)
 {
-	set_config_int(secao, _chave, _valor);
+	return get_config_string(m_secao, chave, padrao);
 }
 
 //------------------------------------------------------------
-void CConfig::SetarInt(const char *_secao, const char *_chave, int _valor)
+const char *CConfig::ObterStr(const char * secao, const char * chave, const char * padrao)
 {
-	SetarSecao(_secao);
-	set_config_int(secao, _chave, _valor);
+	SetarSecao(secao);
+	return get_config_string(m_secao, chave, padrao);
 }
 
 //------------------------------------------------------------
-void CConfig::SetarStr(const char *_chave, const char *_valor)
+void CConfig::SetarInt(const char * chave, int valor)
 {
-	set_config_string(secao, _chave, _valor);
+	set_config_int(m_secao, chave, valor);
 }
 
 //------------------------------------------------------------
-void CConfig::SetarStr(const char *_secao, const char *_chave, const char *_valor)
+void CConfig::SetarInt(const char * secao, const char * chave, int valor)
 {
-	SetarSecao(_secao);
-	set_config_string(secao, _chave, _valor);
+	SetarSecao(secao);
+	set_config_int(m_secao, chave, valor);
+}
+
+//------------------------------------------------------------
+void CConfig::SetarStr(const char * chave, const char * valor)
+{
+	set_config_string(m_secao, chave, valor);
+}
+
+//------------------------------------------------------------
+void CConfig::SetarStr(const char * secao, const char * chave, const char * valor)
+{
+	SetarSecao(secao);
+	set_config_string(m_secao, chave, valor);
+}
+
+//------------------------------------------------------------
+void CConfig::SetarBool(const char * chave, bool valor)
+{
+	set_config_int(m_secao, chave, (valor ? 1: 0));
+}
+
+//------------------------------------------------------------
+void CConfig::SetarBool(const char * secao, const char * chave, bool valor)
+{
+	SetarSecao(secao);
+	SetarBool(chave, valor);
 }

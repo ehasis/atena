@@ -53,8 +53,8 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /machine:I386
-# ADD LINK32 alleg.lib /nologo /subsystem:windows /machine:I386
-# SUBTRACT LINK32 /incremental:yes /debug
+# ADD LINK32 galib/galib.lib alleg.lib /nologo /subsystem:windows /machine:I386
+# SUBTRACT LINK32 /incremental:yes /debug /force
 
 !ELSEIF  "$(CFG)" == "Atena - Win32 Debug"
 
@@ -71,7 +71,7 @@ LINK32=link.exe
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /GZ /c
 # ADD CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /GZ /c
-# SUBTRACT CPP /WX
+# SUBTRACT CPP /WX /Fr
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x416 /d "_DEBUG"
@@ -81,8 +81,8 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 alleg.lib /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
-# SUBTRACT LINK32 /incremental:no
+# ADD LINK32 galib/galibd.lib alleg.lib /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
+# SUBTRACT LINK32 /profile /pdb:none /incremental:no /map /nodefaultlib
 
 !ENDIF 
 
@@ -95,11 +95,15 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=.\abertura.cpp
+SOURCE=.\calien.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\calien.cpp
+SOURCE=.\carma.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ccolecaoarma.cpp
 # End Source File
 # Begin Source File
 
@@ -115,7 +119,15 @@ SOURCE=.\cfase.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\cfilme.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\cfundo.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\cjogo.cpp
 # End Source File
 # Begin Source File
 
@@ -155,19 +167,7 @@ SOURCE=.\funcoes.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\graficos.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\jogo.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\main.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\nucleo.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -175,11 +175,19 @@ SOURCE=.\nucleo.cpp
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=.\abertura.h
+SOURCE=.\calien.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\calien.h
+SOURCE=.\carma.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ccolecao.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ccolecaoarma.h
 # End Source File
 # Begin Source File
 
@@ -195,7 +203,15 @@ SOURCE=.\cfase.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\cfilme.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\cfundo.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\cjogo.h
 # End Source File
 # Begin Source File
 
@@ -219,6 +235,10 @@ SOURCE=.\cobjeto.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\construcoes.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\ctela.h
 # End Source File
 # Begin Source File
@@ -233,46 +253,50 @@ SOURCE=.\erro.h
 
 SOURCE=.\funcoes.h
 # End Source File
-# Begin Source File
-
-SOURCE=.\graficos.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\jogo.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\nucleo.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\objgraf.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\resource.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\vglobal.h
-# End Source File
 # End Group
 # Begin Group "Resource Files"
 
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
 # Begin Source File
 
-SOURCE=.\atena.ico
+SOURCE=.\Filmes\abertura.txt
 # End Source File
 # Begin Source File
 
-SOURCE=.\atena1.rc
+SOURCE=.\Resources\atena.ico
 # End Source File
-# End Group
 # Begin Source File
 
 SOURCE=.\atena.ini
 # End Source File
+# Begin Source File
+
+SOURCE=.\Resources\atena.rc
+# End Source File
+# Begin Source File
+
+SOURCE=.\Resources\atena1.ico
+# End Source File
+# Begin Source File
+
+SOURCE=.\resource.h
+# End Source File
+# End Group
+# Begin Group "Allegro Headers"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\armas.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\atena.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\tiros.h
+# End Source File
+# End Group
 # End Target
 # End Project

@@ -1,0 +1,81 @@
+Padrões a serem utilizado na programação
+========================================
+
+1. Variaveis
+
+1.1. Variáveis sempre minúsculas e separadas por 
+     _ (sublinho) e dizendo em seu nome que tipo de
+     dado ela irá acumular.
+
+     Ex: largura, altura, velocidade_angular, final_jogo
+
+1.2. Nomes de parametros devem sempre iniciar com  _
+
+     Ex: int _x1, char *_texto, CTela &_tela
+
+
+2. Funções
+
+2.1. Funções sempre letra maiúscula e minúscula e com
+     verbo no infinitivo.
+
+     Ex: AbrirJogo, CarregarDados, VerificarImpacto
+
+2.2. Nomes de funções que carregam algum tipo específico
+     de variavel, deve conter o nome da variavel
+     separado por _
+
+     Ex: Carregar_dat_arquivo, Descarregar_dat_arquivo
+
+
+3. Macros como constantes sempre maiúsculas.
+
+   Ex: MAX_NAVES, MAX_ITENS, VELOCIDADE_INICIAL
+
+4. Estruturas sempre iniciando com a letra T e demais
+   letras em maiúsculas e minúsculas.
+
+   Ex: TNaves, TPonto, TEntradaMouse
+
+5. Classes sempre iniciando com a letra C e demais
+   letras em maiúsculas e minúsculas
+
+   Ex: CMenu, CNave, CAlien, CDispositivos
+
+6. Tabela de Variáveis especiais e seus prefixos:
+   +---------+------+-------------------------+
+   | BITMAP  | bmp_ | bmp_alien, bmp_nave     |
+   | PALETTE | pal_ | pal_abertura, pal_jogo  |
+   | SAMPLE  | wav_ | wav_alien, wav_explosao |
+   | MIDI    | mid_ | mid_abertura, mid_final |
+   +---------+------+-------------------------+
+
+7. Estética de programação
+   - Utilizar caractere de tabulação.
+
+   - Comentários explicativos sempre com //
+
+   - Comentários temporários sempre com /* */
+
+   - if e for sempre com "{" e "}" salvo os casos onde a
+     expressão e comando sejam pequenos e que caibam na
+     mesma linha.
+
+   - "{" sempre abaixo da linha e alinhado ao primeiro
+     caractere do comando. Ex:
+
+            if (velocidade > 10)
+            {
+                ...
+8. Arquivos
+   - os nomes dos arquivos devem indicar o seu conteúdo.
+
+   - os arquivos devem começar com comentário indicando
+     o nome, descrição, etc. Vide arquivos fontes para
+     maiores esclarecimentos.
+
+   - arquivos de cabeçalho devem sempre haver as diretivas:
+     #ifndef [nome_arquivo]_h_incluido
+     #define [nome_arquivo]_h_incluido
+     //código
+     #endif

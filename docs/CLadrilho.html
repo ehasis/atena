@@ -1,0 +1,41 @@
+<html>
+<body>
+
+<font size="+2">Classe <b>CLadrilho</b></font>
+<p>
+<font size="+1"><b>Descrição:</b><br></font>
+Classe derivada de CObjeto, serve para manipulação dos
+ladrilhos que é utilizado juntamente com a classe CFundo.
+</p>
+
+<p>
+<font size="+1"><b>Propriedades:</b></font>
+<table border="1" width="100%">
+ <tr><td>SetarXBmp</td><td>Seta a coordenada x da posição de origem da imagem do ladrilho no bitmap.</td></tr>
+ <tr><td>ObterXBmp</td><td>Retorna a coordenada x da posição de origem da imagem do ladrilho no bitmap.</td></tr>
+ <tr><td>SetarYBmp</td><td>Seta a coordenada y da posição de origem da imagem do ladrilho no bitmap.</td></tr>
+ <tr><td>ObterYBmp</td><td>Retorna a coordenada y da posição de origem da imagem do ladrilho no bitmap.</td></tr>
+ <tr><td>ObterTLadrilho</td><td>Retorna a a estrutura TLadrilho do ladrilho.</td></tr>
+ <tr><td>SetarArquivoBmp</td><td>Seta o nome do arquivo de bitmap.</td></tr>
+ <tr><td>ObterArquivoBmp</td><td>Retorna o nome do arquivo de bitmap.</td></tr>
+ <tr><td>ObterHFlip</td><td>Retorna se o ladrilho foi virado na horizontal.</td></tr>
+ <tr><td>ObterVFlip</td><td>Retorna se o ladrilho foi virado na vertical.</td></tr>
+ <tr><td>ObterBmpFonte</td><td>Retorna o bitmap de origem do ladrilho.</td></tr>
+</table>
+</p>
+
+<p>
+<font size="+1"><b>Metodos:</b></font>
+<table border="1" width="100%">
+ <tr><td>CLadrilho</td><td>Seta para NULL os os ponteiro dos bmp's.</td></tr>
+ <tr><td>Iniciar</td><td>Seta as variáveis e pinta o ladrilho no bmp_ladrilho.</td></tr>
+ <tr><td>Finalizar</td><td>Desloca memória alocada por bmp_ladrilho e bmp_aux.</td></tr>
+ <tr><td>Desenhar</td><td>Desenha bmp_ladrilho na camada de fundo.</td></tr>
+ <tr><td>VirarHorizontal</td><td>Vira a imagem do ladrilho na horizontal.</td></tr>
+ <tr><td>VirarVertical</td><td>Vira a imagem do ladrilho na vertical.</td></tr>
+ <tr><td>Rotacionar</td><td>Rotaciona o ladrilho 90° no sentido horário.</td></tr>
+</table>
+</p>
+
+</body>
+</html>

@@ -6,9 +6,24 @@
 *
 *  Alterações:
 *  Diego Giacomelli em 09/01/2002
-*   - Implementação dos métodos ObterLargura_destino,
-*     ObterAltura_destino;
+*   - Implementação dos métodos ObterLarguraDestino,
+*     ObterAlturaDestino;
 *
+*  Diego Giacomelli em 13/02/2002
+*   - Alterado o método Desenhar para aceitar CTela e
+*     posicionamento relativo;
+*
+*  Diego Giacomelli em 04/03/2002
+*   - Retirado o método SetarArquivoAlien (obsoleto);
+*
+*  Diego Giacomelli em 07/03/2002
+*   - Retirado os métodos SetarCFundo, ObterCFundo,
+*     ObterLarguraDestino, ObterAlturaDestino e  ObterNave (obsoletos);
+*   - Métodos ChecarColisaoTiroNosAliens e ChecarColisaoNaNave
+*     retirados do escopo public e inseridos no private;
+*
+*  Diego Giacomelli em 01/05/2002
+*	- Inserido o método ObterNave();
 *
 *------------------------------------------------------------*/
 
@@ -16,67 +31,57 @@
 #ifndef cfase_h_incluido
 #define cfase_h_incluido
 
-
-#include <stdio.h>
-#include <allegro.h>
-#include <string.h>
-#include "cfundo.h"
-#include "cladrilho.h"
-#include "funcoes.h"
-#include "calien.h"
-#include "cnave.h"
-#include "cconstrucao.h"
 #include "cobjeto.h"
-
+#include "cladrilho.h"
+#include "cfundo.h"
+#include "cnave.h"
+#include "calien.h"
+#include "carma.h"
+#include "cconstrucao.h"
 
 //------------------------------------------------------------
 // Classe para as fases
 class CFase
 {
 public:
-	void Iniciar(char arquivo_fase[], int _x1_destino, int _y1_destino, int _largura_destino, int _altura_destino);
-	void Desenhar(CTela &_tela);
-	int Rolar(EDirecao _direcao, int _pixels);
-	void SetarCFundo(CFundo _fundo);
-	CFundo ObterCFundo(void);
-	int ObterX1_fonte(void);
-	int ObterY1_fonte(void);
-	BITMAP *ObterFase_screen(void);
-	void SalvarFase(void);
-	void Desligar(void);
-	void SetarLadrilho(int _x, int _y, TLadrilho _ladrilho, BITMAP *_bmp_fonte);
-	CLadrilho ObterLadrilho(int _x, int _y);
-	void SetarArquivo_fase(char _arquivo_fase[]);
-	void SetarArquivoAlien(DATAFILE *_dat_aliens);
-	void AdicionarAlien(int _tipo, int _x, int _y);
-	void AdicionarConstrucao(int _tipo, int _x, int _y);
-	void ExcluirAliens(int _x1, int _y1, int _x2, int _y2);
-	void ExcluirConstrucoes(int _x1, int _y1, int _x2, int _y2);
-	int Atualizar(int _fundo_pixels);
-	int ObterLargura_destino(void);
-	int ObterAltura_destino(void);
-	int ChecarColisaoAliens(int _x1, int _y1, int _x2, int _y2);
-	int ChecarColisaoConstrucoes(int _x1, int _y1, int _x2, int _y2);
-	void Sonorizar(void);
-	void ChecarColisaoTiroNosAliens(void);
-	void ChecarColisaoNaNave(void);
-	CNave ObterNave(void);
-	CAlien ObterAliens(void);
-	CConstrucao ObterConstrucoes(void);
+	void Iniciar(char arquivo_fase[], int x1_destino, int y1_destino, int largura_destino, int altura_destino);
+	void Desenhar(CTela & tela);
+	int Rolar(EDirecao direcao, int pixels);
+	int ObterX1Fonte();
+	int ObterY1Fonte();
+	void SalvarFase();
+	void Finalizar();
+	void SetarLadrilho(int x, int y, TLadrilho ladrilho, BITMAP * bmp_fonte);
+	CLadrilho ObterLadrilho(int x, int y);
+	void SetarArquivoFase(char arquivo_fase[]);
+	void AdicionarAlien(int tipo, int x, int y);
+	void AdicionarConstrucao(int tipo, int x, int y);
+	void ExcluirAliens(int x1, int y1, int x2, int y2);
+	void ExcluirConstrucoes(int x1, int y1, int x2, int y2);
+	bool Atualizar(int fundo_pixels);
+	void Sonorizar();
+	CAlien ObterAliens();
+	CConstrucao ObterConstrucoes();
+	int ChecarColisaoAliens(int x1, int y1, int x2, int y2);
+	int ChecarColisaoConstrucoes(int x1, int y1, int x2, int y2);
+	CNave & ObterNave();
+
 
 private:
-	char arquivo_fase[50];  // Nome do arquivo da fase
-	BITMAP *fase_screen;
-	CFundo fundo;			// Fundo atual da fase
-	CAlien aliens;
-	CConstrucao construcoes;
-	CNave nave;
-	int x1_fonte;
-	int y1_fonte;
-	int x1_destino;			// Coordenada x onde a fase deve ser pintada no _bmp_destino
-	int y1_destino;			// Coordenada y onde a fase deve ser pintada no _bmp_destino
-	int largura_destino;    // Largura onde a fase deve ser pintada no _bmp_destino
-	int altura_destino;     // Altura onde a fase deve ser pintada no _bmp_destino
+	void ChecarColisaoTiroNosAliens();
+	void ChecarColisaoNaNave();
+
+	char m_arquivo_fase[50];  	// Nome do m_arquivo da m_fase
+	CFundo m_fundo;			// Fundo atual da m_fase
+	CAlien m_aliens;
+	CConstrucao m_construcoes;
+	CNave m_nave;
+	int m_x1_fonte;
+	int m_y1_fonte;
+	int m_x1_destino;			// Coordenada x onde a m_fase deve ser pintada no bmp_destino
+	int m_y1_destino;			// Coordenada y onde a m_fase deve ser pintada no bmp_destino
+	int m_largura_destino;   		// Largura onde a m_fase deve ser pintada no bmp_destino
+	int m_altura_destino;    		// Altura onde a m_fase deve ser pintada no bmp_destino
 };
 
 #endif

@@ -4,8 +4,6 @@
 *  Nome: Edison Henrique Andreassy
 *  Data: terça-feira, 4 de setembro de 2001
 *
-*  Henrique em 08/02/2002
-*   - Incluido Log em modo Console
 *
 *------------------------------------------------------------*/
 
@@ -37,7 +35,7 @@ void ErroX(char *arquivo, int linha, char *s1, char *s2)
 
 void LogX(char *arquivo, int linha, char *texto)
 {
-	FILE *f;
+/*	FILE *f;
 
 	f = fopen("log.txt", "a");
 
@@ -48,4 +46,5 @@ void LogX(char *arquivo, int linha, char *texto)
 	fclose(f);
 
 	//CLog::LogXX(texto);
+/**/
 }

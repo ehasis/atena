@@ -1,0 +1,39 @@
+<html>
+<body>
+
+<font size="+2">Classe <b>CTiro</b></font>
+<p>
+<font size="+1"><b>Descrição:</b><br></font>
+Classe derivada de CObjetoAvancado, serve para manipula todos os tiros do jogo
+</p>
+
+<p>
+<font size="+1"><b>Propriedades:</b></font>
+<table border="1" width="100%">
+ <tr><td>SetarStatus			- Seta o status do tiro.</td></tr>
+ <tr><td>ObterStatus			- Retorna o status do objeto.</td></tr>
+</table>
+</p>
+
+<p>
+<font size="+1"><b>Metodos:</b></font>
+<table border="1" width="100%">
+ <tr><td>CTiro</td><td>Seta como NULL o ponteiro para o próximo nodo da lista.</td></tr>
+ <tr><td>CarregarArquivoDados</td><td>Método static para alocar o arquivo de dados que será usado por todos os objetos da classe.</td></tr>
+ <tr><td>DescarregarArquivoDados</td><td>Método desaloca a memória do arquivo de dados da classe.</td></tr>
+ <tr><td>Iniciar</td><td>Seta as variáveis conforme o tipo do tiro.</td></tr>
+ <tr><td>Adicionar</td><td>Aloca memória para o novo tiro e a insere no fim da lista encadeada.</td></tr>
+ <tr><td>Atualizar</td><td>Executa a movimentação e alteração do status do tiro.</td></tr>
+ <tr><td>AtualizarTodos</td><td>Chama Atualizar para todos os tiros do objeto dono que colidirem com a área informada e que ainda estão ativas.</td></tr>
+ <tr><td>Desenhar</td><td>Desenha o tiro segundo o seu status.</td></tr>
+ <tr><td>DesenharTodos</td><td>Chama o método Desenhar para todos as tiros que estão ativos.</td></tr>
+ <tr><td>VerificarExisteTiros</td><td>Retorna verdadeiro se existe tiros na lista encadeada.</td></tr>
+ <tr><td>ChecarColisaoTiros</td><td>Retorna verdadeiro se algumo tiro está colidindo com a área informada.</td></tr>
+ <tr><td>Sonorizar</td><td>Sonoriza o tiro com o som correspondente ao seu status.</td></tr>
+ <tr><td>SonorizarTodos</td><td>Chama o método Sonorizar para todo o tiro ativo.</td></tr>
+ <tr><td>Finalizar</td><td>Libera a memória de todos as tiros alocados.</td></tr>
+</table>
+</p>
+
+</body>
+</html>

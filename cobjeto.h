@@ -9,7 +9,7 @@
 *   - Alterações na estrutura TRect;
 *
 *  Diego Giacomelli em 02/01/2002
-*   - Implementação dos métodos Colisao(_x1, _y1, _x2, _y2),
+*   - Implementação dos métodos Colisao(x1, y1, x2, y2),
 *     SetarX, ObterX, IncX, DecX, SetarY, ObterY, IncY, DecY,
 *     SetarLargura, ObterLargura, SetarAltura, ObterAltura;
 *
@@ -21,9 +21,34 @@
 *   - Alteração do nome do método Colisão para ChecarColisao
 *     para adaptar-se aos padrões de nomenclatura;
 *
+*  Diego em 13/02/2002
+*   - Alterado o método DesenharExplosao para aceitar CTela e
+*     posicionamento relativo;
 *
 *  Diego Giacomelli em 15/02/2002
-*   - Incluido o membro de dados ativo
+*   - Incluido o membro de dados ativo;
+*   - Retirados os membros de dados vi, vx e vy;
+*
+*  Diego Giacomelli em 28/02/2002
+*   - Incluído os membros de dados angulo e raio;
+*	- Particionamento de CObjeto em 3 Classes: CObjetoBasico,
+*     CObjeto e CObjetoAvancado;
+*	- Implementado os métodos Iniciar para CObjetoBasico,
+*	  CObjeto e CObjetoAvancado;
+*
+*  Diego Giacomelli em 01/05/2002
+*	- Inserido o membro de dado m_tipo;
+*
+*  Diego Giacomelli em 22/06/2002
+*   - Alterado a nomenclatura dos membros de dados e parâmetros para o padrão
+*	  m_<nome do membro de dados> e <nome do parâmetro>, respectivamente.
+*
+*  Diego Giacomelli em 06/07/2002
+*	- Inserido o método SetarVisivel;
+*
+*  Diego Giacomelli em 07/07/2002
+*	- Inseridos os métodos ObterEnergia, IncEnergia e DecEnergia;
+		
 *------------------------------------------------------------*/
 
 
@@ -40,16 +65,24 @@ typedef enum
 	eAlien,
 	eSeresVivo,
 	eFundo,
-	eVeiculo
+	eVeiculo,
+	eTiro
 } EObjeto;
 
 typedef struct
 {
-	EObjeto tipo;
+	EObjeto m_tipo;
 	int subtipo;
 	int x;
 	int y;
 } TObjeto;
+
+typedef enum
+{
+	eObjetoNormal,
+	eObjetoAtingido,
+	eObjetoExplosao
+};
 
 
 // Estrutura de um retangulo
@@ -61,42 +94,83 @@ typedef struct
 
 
 //------------------------------------------------------------
-// Classe base para manipulação de objetos
-class CObjeto
+// Classe básica para manipulação de objetos
+class CObjetoBasico
 {
-public:
-	int ChecarColisao(TRect _rect);
-	int ChecarColisao(int _x1, int _y1, int _x2, int _y2);
-	int ChecarColisao(int _x, int _y);
-	int ChecarColisaoX(int _x1, int _x2);
-	int ChecarColisaoY(int _y1, int _y2);
-	TRect ObterRect(void);
-	void SetarX(int _x);
-	int ObterX(void);
-	int ObterPMX(void);
-	int ObterX2(void);
-	void IncX(int _incremento);
-	void DecX(int _decremento);
-	void SetarY(int _y);
-	int ObterY(void);
-	int ObterPMY(void);
-	int ObterY2(void);
-	void IncY(int _incremento);
-	void DecY(int _decremento);
-	void SetarLargura(int _largura);
-	int ObterLargura(void);
-	void SetarAltura(int _altura);
-	int ObterAltura(void);
-	void DesenharExplosao(CTela &_tela, int _x_real, int _y_fase, int _x, int _y, int _raio, int _num_particulas);
-	CObjeto *RetornarObjeto(void);
-	int Obter_ativo(void);
-	int Obter_visivel(void);
+	public:
+		void Iniciar(int x, int y, int largura, int altura);
+		int ChecarColisao(TRect rect);
+		int ChecarColisao(int x1, int y1, int x2, int y2);
+		int ChecarColisao(int x, int y);
+		int ChecarColisaoX(int x1, int x2);
+		int ChecarColisaoY(int y1, int y2);
 
-protected:
-	int x, y;
-	int largura, altura;
-	int ativo;
-	int visivel;
+		TRect ObterRect();
+
+		void SetarX(int x);
+		int ObterX();
+		int ObterPMX();
+		int ObterX2();
+		void IncX(int incremento);
+		void DecX(int decremento);
+
+		void SetarY(int y);
+		int ObterY();
+		int ObterPMY();
+		int ObterY2();
+		void IncY(int incremento);
+		void DecY(int decremento);
+
+		void SetarLargura(int largura);
+		int ObterLargura();
+		void SetarAltura(int altura);
+		int ObterAltura();
+
+		CObjetoBasico *RetornarObjetoBasico();
+
+	protected:
+		int m_x, m_y;
+		int m_largura, m_altura;
+		EObjeto m_objeto;
 };
 
+
+//------------------------------------------------------------
+// Classe intermediária para manipulação de objetos
+
+class CObjeto : public CObjetoBasico
+{
+	public:
+		void SetarAngulo(int angulo);
+		int ObterAngulo();
+	protected:
+		int m_angulo;
+		int m_raio;
+};
+
+
+//------------------------------------------------------------
+// Classe avançada para manipulação de objetos
+class CObjetoAvancado : public CObjeto
+{
+	public:
+		void SetarAtivo(int ativo);
+		int ObterAtivo();
+		int ObterVisivel();
+		void SetarVisivel(int visivel);
+		void DesenharExplosao(CTela &m_tela, int x_real, int y_real, int x, int y, int raio, int num_particulas);
+		CObjetoAvancado *RetornarObjetoAvancado();
+		int ObterEnergia();
+		void IncEnergia(int incremento);
+		void DecEnergia(int decremento);
+		
+	protected:
+		int m_ativo;		// Se o objeto esta ativo
+		int m_visivel;		// Se o objeto esta visivel
+		int m_energia;
+		int m_quadro;		// Frame de animação atual
+		int m_tempo;		// Contador do n. de iterações que o objeto já passou
+
+
+};
 #endif

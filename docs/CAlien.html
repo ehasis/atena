@@ -1,0 +1,48 @@
+<html>
+<body>
+
+<font size="+2">Classe <b>CAlien</b></font>
+<p>
+<font size="+1"><b>Descrição:</b><br></font>
+Classe derivada de CObjetoAvancado, serve para manipulação
+dos veículos aéreos inimigos. Tais objetos são dinamicos,
+é dizer se movem.
+</p>
+
+<p>
+<font size="+1"><b>Propriedades:</b></font>
+<table border="1" width="100%">
+ <tr><td>SetarStatus</td><td>Seta o status do alien.</td></tr>
+ <tr><td>ObterTipo</td><td>Retorna o tipo do alien.</td></tr>
+ <tr><td>ObterStatus</td><td>Retorna o status do objeto.</td></tr>
+ <tr><td>ObterEnergia</td><td>Retorna a energia.</td></tr>
+ <tr><td>ObterTiros</td><td>Retorna um ponteiro do tipo CTiro para o objeto tiros do alien.</td></tr>
+ <tr><td>ObterMaisProximo</td><td>Efetua o cálculo de distância entre dois pontos "d = ((x2 - x1)^2 + (y2 - y1)^2)^(1/2)" para localizar o alien da lista que está mais próximo do ponto informado.</td></tr>
+</table>
+</p>
+
+<p>
+<font size="+1"><b>Metodos:</b></font>
+<table border="1" width="100%">
+ <tr><td>CAlien</td><td>Seta como NULL o ponteiro para o próximo nodo da lista.</td></tr>
+ <tr><td>CarregarArquivoDados</td><td>Método static para alocar o arquivo de dados que será usado por todos os objetos da classe.</td></tr>
+ <tr><td>DescarregarArquivoDados</td><td>Método desaloca a memória do arquivo de dados da classe.</td></tr>
+ <tr><td>ObterNumeroAliens</td><td>Retorna o número de aliens adicionados.</td></tr>
+ <tr><td>Iniciar</td><td>Seta as variáveis conforme o tipo do alien.</td></tr>
+ <tr><td>Desenhar</td><td>Desenha o alien segundo o seu status e após chama o metódo para desenhar todos os tiros do alien corrente.</td></tr>
+ <tr><td>DesenharTodos</td><td>Chama o método Desenhar para todos os aliens que estão ativos.</td></tr>
+ <tr><td>Atualizar</td><td>Executa a movimentação e alteração do status do alien e após chama o método para atualizar todos os tiros do alien.</td></tr>
+ <tr><td>AtualizarTodos</td><td>Chama Atualizar para todos os aliens que colidirem com a área informada e que ainda estão ativos.</td></tr>
+ <tr><td>Finalizar</td><td>Libera a memória de todos os aliens alocadas e tb chama o método de finalização dos tiros de cada alien.</td></tr>
+ <tr><td>Adicionar</td><td>Aloca memória para o novo alien e o insere no fim da lista.</td></tr>
+ <tr><td>Excluir</td><td>Exclui todo o alien que corresponder as especificações informadas.</td></tr>
+ <tr><td>DecEnergia</td><td>Decrementa a energia pelo valor informado.</td></tr>
+ <tr><td>ChecarColisaoAliens</td><td>Retorna verdadeiro se algum alien colidi com a área informada.</td></tr>
+ <tr><td>Sonorizar</td><td>Sonoriza o alien com o som correspondente ao seu status e chama o método de sonorização dos seus tiros.</td></tr>
+ <tr><td>SonorizarTodos</td><td>Chama o método Sonorizar para todo o alien ativo.</td></tr>
+ <tr><td>SalvarAlien</td><td>Salva todos os aliens da lista no final do arquivo informada, utilizando a estrutura TObjeto.</td></tr>
+</table>
+</p>
+
+</body>
+</html>

@@ -83,6 +83,29 @@ private:
 	int pontos;
 	int vidas;
 	int atirar;
+	int vx, vy;
 };
 
+
+/*
+class CAlien: public CObjeto
+{
+public:
+	//Energia
+	int getEnergia() { return energia; }
+	void incEnergia(int valor) { energia += valor;}
+	void decEnergia(int valor) { energia -= valor;}
+	void setEnergia(int valor) { energia = valor; }
+	
+	void setTempo(int valor)   { tempo   = valor; }
+	void setDataFile(DATAFILE *arquivo);
+	void Desligar();
+
+private:
+	int energia;
+	int tempo;
+	int atirar;
+};
+
+*/
 #endif

@@ -116,7 +116,7 @@ SOURCE=.\main.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\objetos.cpp
+SOURCE=.\nucleo.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -156,7 +156,7 @@ SOURCE=.\jogo.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\objetos.h
+SOURCE=.\nucleo.h
 # End Source File
 # Begin Source File
 

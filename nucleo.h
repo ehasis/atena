@@ -1,5 +1,5 @@
  /*------------------------------------------------------------*
- *  objetos.h - Cabecalho do Modulo de Objetos
+ *  nucleo.h - Cabecalho do Nucleo Principal
 *------------------------------------------------------------*
 *  Nome: Edison Henrique Andreassy
 *  Data: quarta-feira, 5 de setembro de 2001

@@ -19,8 +19,8 @@ BITMAP *bmp_buffer;
 /* Inicializacao do motor grafico */
 void IniciarGraficos()
 {
-	//if (set_gfx_mode(GFX_AUTODETECT, 640, 480, 0, 0) < 0)
-	if (set_gfx_mode(GFX_DIRECTX_WIN, 640, 480, 0, 0) < 0)
+	if (set_gfx_mode(GFX_AUTODETECT, 640, 480, 0, 0) < 0)
+	//if (set_gfx_mode(GFX_DIRECTX_WIN, 640, 480, 0, 0) < 0)
 		Erro("Nao foi possivel definir o modo grafico", allegro_error);	
 
 	bmp_buffer = create_bitmap(640, 480);

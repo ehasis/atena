@@ -51,7 +51,10 @@ CNave::CNave()
 	y = 380;
 	l = 64;
 	a = 100;
-	v = 5;
+	v = 12;
+	vx = 0;
+	vy = 0;
+
 	
 	pontos	= 0;
 	energia = 100;
@@ -92,17 +95,38 @@ void CNave::Desenhar(BITMAP *bmp)
 // metodo para atualizacao do objeto
 void CNave::Atualizar(TEntrada &valor)
 {
+	atirar = 0;
 	if (status == 3) status = 1;
 	/* se estiver normal */
 	if (status == 1)
 	{
+		
 		/* se tiver energia */
 		if (energia > 0)
 		{
-			if(valor.y > 0)	y += v;
-			if(valor.y < 0)	y -= v;
-			if(valor.x > 0) x += v;
-			if(valor.x < 0) x -= v;
+			/* com incercia */
+
+			if(valor.y >  0) vy =  v;
+			if(valor.y <  0) vy = -v;
+			if(valor.y == 0) vy /= 2;
+			
+			if(valor.x >  0) vx =  v;
+			if(valor.x <  0) vx = -v;
+			if(valor.x == 0) vx /= 2;
+
+			y += vy;
+			x += vx;
+			
+
+			/* sem inercia 
+			
+			if(valor.y >  0) y += v;
+			if(valor.y <  0) y -= v;
+			
+			if(valor.x >  0) x += v;
+			if(valor.x <  0) x -= v;
+			*/
+			
 			atirar = valor.a;
 		}
 		else

@@ -14,7 +14,7 @@
 
 #include "jogo.h"
 #include "graficos.h"
-#include "objetos.h"
+#include "nucleo.h"
 #include "entrada.h"
 #include "vglobal.h"
 

@@ -1,18 +1,20 @@
  /*------------------------------------------------------------*
- *  vglobal.h - Variaveis Globais
+ *  centrada.h - 
 *------------------------------------------------------------*
 *  Nome: Edison Henrique Andreassy
-*  Data: quarta-feira, 5 de setembro de 2001
+*  Data: quarta-feira, 19 de setembro de 2001
 *
 *  
 *
 *------------------------------------------------------------*/
 
-#ifndef vglobal_h_incluido
-#define vglobal_h_incluido
+#ifndef centrada_h_incluido
+#define centrada_h_incluido
 
-extern int final_jogo;
-extern struct TEntrada entrada1;
-extern struct TEntrada entrada2;
+struct TEntrada
+{
+	int x, y;
+	int a, b, c;
+};
 
 #endif

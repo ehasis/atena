@@ -13,10 +13,24 @@
 #include "entrada.h"
 #include "vglobal.h"
 #include "erro.h"
+#include "centrada.h"
+
+struct TEntrada entrada1;
+struct TEntrada entrada2;
 
 void IniciarEntrada()
 {
-	//Implementar
+	entrada1.x = 0;
+	entrada1.y = 0;
+	entrada1.a = 0;
+	entrada1.b = 0;
+	entrada1.c = 0;
+
+	entrada2.x = 0;
+	entrada2.y = 0;
+	entrada2.a = 0;
+	entrada2.b = 0;
+	entrada2.c = 0;
 }
 
 void DesligarEntrada()
@@ -26,6 +40,21 @@ void DesligarEntrada()
 
 void AtualizarEntrada()
 {
-	//Mudar isto aqui
+	int x = 0, y = 0, a = 0, b = 0, c = 0;
+	
 	if (key[KEY_ESC]) final_jogo = 1;
+
+	/* Leitura das Teclas */
+	if (key[KEY_UP])    y--;
+	if (key[KEY_DOWN])  y++;
+	if (key[KEY_LEFT])  x--;
+	if (key[KEY_RIGHT]) x++;
+	if (key[KEY_SPACE]) a = 1;
+
+	/* Atualizacao da estrutura */
+	entrada1.x = x;
+	entrada1.y = y;
+	entrada1.a = a;
+	entrada1.b = b;
+	entrada1.c = c;
 }

@@ -128,6 +128,18 @@ SOURCE=.\atena.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\centrada.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\cnave.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\datnave.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\entrada.h
 # End Source File
 # Begin Source File

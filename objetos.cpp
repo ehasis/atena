@@ -16,16 +16,14 @@
 #include "stdlib.h"
 #include "atena.h"
 #include "string.h"
+#include "cnave.h"
 
 int max_aliens;
 int num_aliens;
 int num_balas;
 
-struct TRect
-{
-	int e, t;
-	int d, b;
-};
+
+CNave nave1;
 
 struct TPowerUp
 {
@@ -43,27 +41,6 @@ struct TPowerUp
 		return ret;
 	}
 }powerup;
-
-struct TNave
-{
-	int x, y;
-	int a, l;
-	int status;
-	int time;
-	int kills, escaped, lives;
-	int health;
-	TRect Rect()
-	{
-		TRect ret;
-		ret.e = x;
-		ret.t = y;
-		ret.d = x + l;
-		ret.b = y + a;
-
-		return ret;
-	}
-}nave;
-
 
 struct TBala
 {
@@ -95,6 +72,7 @@ struct TAlien
 
 int j;
 int scroll_y = 0;
+int scroll_y2 = 0;
 int bla	= 0;
 int bla2 = 0;
 int tempo_prox_alien = 0;
@@ -108,7 +86,7 @@ void lose()
 	char str[40];
 	clear(screen);
 	textout_centre(screen,font,"Voce morreu!",320,200,250);
-	sprintf(str,"Sua Pontuacao: %d",nave.kills-nave.escaped/2+max_aliens*2);
+	sprintf(str,"Sua Pontuacao: %d",nave1.getPontos());
 	textout_centre(screen,font,str,320,220,250);
 	rest(700);
 	clear_keybuf();
@@ -134,49 +112,44 @@ void ChecarImpacto()
 	for(j=0;j<30;j++)
 	{
 		if(myalien[j].status
-		&& nave.status==1
-		&& ChecarColisao(nave.Rect(), myalien[j].Rect()))
+		&& nave1.getStatus() == 1
+		&& nave1.Colisao(myalien[j].Rect()))
 		{
 			myalien[j].status=0;
 			hit=1;
 		}
 		
-		if(powerup.status && nave.status==1 && nave.x+100>=powerup.x && nave.y+40<powerup.y+50 && nave.y+40>=powerup.y  && nave.x+100<powerup.x+50)
-			hit_powerup=1;
-		
-		if(powerup.status && nave.status==1 && nave.x+50>=powerup.x && nave.y+20<powerup.y+50 && nave.y+20>=powerup.y  && nave.x+50<powerup.x+50)
-			hit_powerup=1;
-				
-		if(powerup.status && nave.status==1 && nave.x>=powerup.x && nave.y+40<powerup.y+50 && nave.y+40>=powerup.y  && nave.x<powerup.x+50)
-			hit_powerup=1;
-
-		
-		if(powerup.status && nave.status==1 && nave.x+45>=powerup.x && nave.y+75<powerup.y+50 && nave.y+75>=powerup.y  && nave.x<powerup.x+40)
-			hit_powerup=1;
-
 	}
 
+	
+	if(powerup.status
+	&& nave1.getStatus() == 1
+	&& nave1.Colisao(powerup.Rect()))
+	{
+		hit_powerup = 1;
+	}
+	
 	if(hit)
 	{
+		nave1.decEnergia(50);
+		nave1.incPontos(1);
+
 		num_aliens--;
-		nave.health-=50;
-		nave.kills++;
 		rectfill(screen,0,0,639,479,250);
 	}
 
 	if(hit_powerup)
 	{
-		if(powerup.status==1) nave.health+=50;
-		powerup.status=0;
-	}	
+		if(powerup.status==1)
+		{
+			nave1.incV(4);
+			nave1.incEnergia(50);
 
-	if(nave.health<=0 && nave.status==1)
-	{
-		nave.status=2;
-		nave.lives--;
-		nave.time=70;
-		nave.health=0;
+		}
+
+		powerup.status=0;
 	}
+
 }
 
 void ChecarMorteAlien()
@@ -187,17 +160,19 @@ void ChecarMorteAlien()
 	{
 		for(j = 0; j < 30; j++)
 		{
-			if(bala[i].active
+			if (bala[i].active
 			&& myalien[j].status
 			&& bala[i].x >= myalien[j].x
 			&& bala[i].y <  myalien[j].y+50
 			&& bala[i].y >= myalien[j].y
 			&& bala[i].x <  myalien[j].x+50)
 			{
-				bala[i].active=0;
-				if(myalien[j].status==1) myalien[j].time=40;
-				myalien[j].status=2;
-				nave.kills++;
+				bala[i].active = 0;
+				myalien[j].status = 2;
+				if(myalien[j].status == 1)
+					myalien[j].time = 40;
+
+				nave1.incPontos(1);
 			}
 		}
 	}
@@ -236,29 +211,16 @@ void CriarAlien(int type)
 
 void CriarPowerUp()
 {
-	powerup.x = (rand()%600) - 640;
+	powerup.x = rand()%100;
 	powerup.y = -20;
+	powerup.a = 50;
+	powerup.l = 50;
 	powerup.status = 1;	
 }
 
-void IniciarNave()
-{
-	nave.x = 300;
-	nave.y = 380;
-	nave.l = 64;
-	nave.a = 100;
-	nave.kills = 0;
-	nave.escaped = 0;
-	nave.health = 100;
-	nave.status = 1;
-	nave.lives = 3;
-}
-
-
 /***********************************************************/
 void IniciarObjetos()
-{
-	IniciarNave();
+{	
 	//struct time t;
 	//gettime(&t);
 	//srand(t.ti_sec);
@@ -278,55 +240,73 @@ void IniciarObjetos()
 
 	text_mode(-1);
 	clear_keybuf();
-
+	
+	nave1.setDataFile(load_datafile("nave.dat"));
 }
+
+//------------------------------------------------------------
 void DesligarObjetos()
 {
+	nave1.Desligar();
 	destroy_bitmap(buffer);
 	destroy_bitmap(big_boom);
 }
 
+//------------------------------------------------------------
 void AtualizarObjetos()
 {
 	if(num_aliens < max_aliens)
 		CriarAlien(0);
 	
-	blit((BITMAP *)data[NUVENS].dat,buffer, 0, 0, 0, scroll_y - 480,640, 480);
-	blit((BITMAP *)data[NUVENS].dat,buffer, 0, 0, 0, scroll_y,      640, 480);
+	/* fundo */
+	blit((BITMAP *)data[SOL].dat,buffer, 0, 0, 0, 0,640, 480);
+	masked_blit((BITMAP *)data[ESTRELAS2].dat,buffer, 0, 0, 0, scroll_y2 - 480,640, 480);
+	masked_blit((BITMAP *)data[ESTRELAS2].dat,buffer, 0, 0, 0, scroll_y2,      640, 480);
+	masked_blit((BITMAP *)data[NUVENS].dat,buffer, 0, 0, 0, scroll_y - 480,640, 480);
+	masked_blit((BITMAP *)data[NUVENS].dat,buffer, 0, 0, 0, scroll_y,      640, 480);
 	
-	if(nave.status == 1)
-		draw_sprite(buffer, (BITMAP *)data[JATO].dat, nave.x, nave.y);
-	
-	if(nave.status == 2)
-		draw_sprite(buffer, big_boom, nave.x, nave.y);
+	ChecarMorteAlien();
+	ChecarImpacto();
 
-	if(nave.status == 1)
+	/* atualiza dados da nave */
+	nave1.Atualizar(entrada1);
+
+	/* se havia morrido, reinicia os aliens */
+	if (nave1.getStatus() == 3 && nave1.getTempo() <= 0)
 	{
-		if(key[KEY_UP])    nave.y -= 3;
-		if(key[KEY_RIGHT]) nave.x += 3;
-		if(key[KEY_DOWN])  nave.y += 3;
-		if(key[KEY_LEFT])  nave.x -= 3;
-		if(key[KEY_SPACE] && bla2 >= 25)
-		{
-			Atirar(nave.x,nave.y);
-			bla2 = 0;
-		}
+		for(j = 0; j < 30; j++) 
+			myalien[j].status=0;
 	}
+
+	/* verifica se pode atirar */
+	if (nave1.Atirar() && bla2 >= 2)
+	{
+		Atirar(nave1.getX(), nave1.getY());
+		bla2 = 0;
+	}
+	
+	/* verifica se acabou as vidas */
+	if (nave1.getVidas() == 0)
+	{
+		lose();
+	}
+
 
 	bla++;
 	bla2++;
 
-	scroll_y++;
+	scroll_y2 += 1;
+	scroll_y  += 2;
 
 	for(j = 0; j < 30; j++)
 	{
-		bala[j].y -= 5;
-		
+		bala[j].y -= 20;
+
 		if(bala[j].y < 0)
 			bala[j].active = 0;
-		
+
 		if(bala[j].active)
-			line(buffer, bala[j].x, bala[j].y, bala[j].x,bala[j].y + 4,254);
+			line(buffer, bala[j].x, bala[j].y, bala[j].x,bala[j].y + 4,250);
 		
 		if(myalien[j].status == 1)
 			masked_blit((BITMAP *)data[ALIEN].dat,buffer,0,0,myalien[j].x,myalien[j].y,50,50);
@@ -342,34 +322,14 @@ void AtualizarObjetos()
 			myalien[j].status=0;
 			num_aliens--;
 		}
-		if(myalien[j].status) myalien[j].y += 2;
+		if(myalien[j].status) myalien[j].y += 3;
 		if(myalien[j].x < -50 && myalien[j].status == 1)
 		{
 			num_aliens--;
 			myalien[j].status = 0;
-			nave.escaped++;
 		}
 	}
-	
-	if(nave.status == 2)
-		nave.time--;
-	
-	if(nave.status == 2 && nave.time <= 0)
-	{
-		num_aliens = 0;
-		nave.status = 1;
-		nave.health = 100;
 		
-		for(j = 0; j < 30; j++) 
-			myalien[j].status=0;
-	}
-	
-	if(nave.lives == 0)
-		lose();
-	
-	ChecarMorteAlien();
-	ChecarImpacto();
-
 	tempo_prox_powerup--;
 	
 	if(tempo_prox_powerup == 0)
@@ -379,32 +339,36 @@ void AtualizarObjetos()
 	}
 	
 	if(powerup.status)
-		powerup.x -= 2;
+		powerup.y += 3;
 	
 	if(powerup.status == 1)
 		masked_blit((BITMAP *)data[HEAL].dat,buffer,0,0,powerup.x,powerup.y,50,50);
 
 	tempo_prox_alien++;
 	
-	if(tempo_prox_alien == 500)
+	if(tempo_prox_alien >= 100)
 	{
 		tempo_prox_alien = 0;
 		max_aliens++;
 	}
 
-	sprintf(str,"Mortes: %d   Escapadas: %d",nave.kills,nave.escaped);
-	textout(buffer,font,str,5,15,254);
-	sprintf(str,"Vidas: %d",nave.lives);
-	textout(buffer,font,str,5,460,254);
-	sprintf(str,"Energia: %d",nave.health);
-	textout(buffer,font,str,5,470,254);
+	sprintf(str,"Mortes: %d   ", nave1.getPontos());
+	textout(buffer,font,str,5,15,250);
+	sprintf(str,"Vidas: %d",nave1.getVidas());
+	textout(buffer,font,str,5,460,250);
+	sprintf(str,"Energia: %d",nave1.getEnergia());
+	textout(buffer,font,str,5,470,250);
 
 	if(scroll_y == 480)
 		scroll_y = 0;
+	
+	if(scroll_y2 == 480)
+		scroll_y2 = 0;
 
 }
 
 void DesenharObjetos(BITMAP *bmp)
 {
+	nave1.Desenhar(buffer);
 	blit(buffer, bmp, 0, 0, 0, 0, 640, 480);
 }

@@ -22,14 +22,37 @@
 *     para adaptar-se aos padrões de nomenclatura;
 *
 *
+*  Diego Giacomelli em 15/02/2002
+*   - Incluido o membro de dados ativo
 *------------------------------------------------------------*/
 
 
 #ifndef cobjeto_h_incluido
 #define cobjeto_h_incluido
 
+#include "ctela.h"
+//-----------------------------------------------
+// Enumeracoes
+typedef enum
+{
+	eBonus,
+	eConstrucao,
+	eAlien,
+	eSeresVivo,
+	eFundo,
+	eVeiculo
+} EObjeto;
 
-/* Estrutura de um retangulo */
+typedef struct
+{
+	EObjeto tipo;
+	int subtipo;
+	int x;
+	int y;
+} TObjeto;
+
+
+// Estrutura de um retangulo
 typedef struct
 {
 	int x1, y1;
@@ -38,21 +61,25 @@ typedef struct
 
 
 //------------------------------------------------------------
-/* Classe base para manipulação de objetos */
+// Classe base para manipulação de objetos
 class CObjeto
 {
 public:
 	int ChecarColisao(TRect _rect);
 	int ChecarColisao(int _x1, int _y1, int _x2, int _y2);
 	int ChecarColisao(int _x, int _y);
-	TRect Rect(void);
+	int ChecarColisaoX(int _x1, int _x2);
+	int ChecarColisaoY(int _y1, int _y2);
+	TRect ObterRect(void);
 	void SetarX(int _x);
 	int ObterX(void);
+	int ObterPMX(void);
 	int ObterX2(void);
 	void IncX(int _incremento);
 	void DecX(int _decremento);
 	void SetarY(int _y);
 	int ObterY(void);
+	int ObterPMY(void);
 	int ObterY2(void);
 	void IncY(int _incremento);
 	void DecY(int _decremento);
@@ -60,11 +87,16 @@ public:
 	int ObterLargura(void);
 	void SetarAltura(int _altura);
 	int ObterAltura(void);
+	void DesenharExplosao(CTela &_tela, int _x_real, int _y_fase, int _x, int _y, int _raio, int _num_particulas);
+	CObjeto *RetornarObjeto(void);
+	int Obter_ativo(void);
+	int Obter_visivel(void);
 
 protected:
 	int x, y;
 	int largura, altura;
-	float vi, vx, vy;
+	int ativo;
+	int visivel;
 };
 
 #endif

@@ -9,10 +9,13 @@
 *  Alterações:
 *
 *  Diego Giacomelli em 06/11/2001
-*  - Inserido a chamada à install_mouse na procedure Iniciar;
+*   - Inserido a chamada à install_mouse na procedure Iniciar;
 *
 *  Henrique em 22/01/2002
-*  - Tratamento para aceitar diversos tipos de resolucao
+*   - Tratamento para aceitar diversos tipos de resolucao
+*
+*  Henrique em 08/02/2002
+*   - Incluido Log em modo Console
 *
 *------------------------------------------------------------*/
 
@@ -20,6 +23,7 @@
 #include <allegro.h>
 #include "jogo.h"
 #include "erro.h"
+#include "clog.h"
 #include "vglobal.h"
 
 /* ----- EM TESTE
@@ -42,7 +46,7 @@ static void checar_arquivo(const char *nome)
 	}
 }
 
-/* Inicializacao Geral */
+// Inicializacao Geral
 static void Iniciar()
 {
 	int modo_tela;
@@ -53,13 +57,12 @@ static void Iniciar()
 	install_timer();
 	install_sound(DIGI_AUTODETECT, MIDI_AUTODETECT, NULL);
 	install_mouse();
-	//install_joystick(JOY_TYPE_AUTODETECT);
+	// install_joystick(JOY_TYPE_AUTODETECT);
 
 
 	/* ----- EM TESTE
 	LOCK_VARIABLE(contador);
 	LOCK_FUNCTION(Temporizador);
-
 	install_int_ex(Temporizador, BPS_TO_TIMER(60));
 	/**/
 
@@ -99,9 +102,11 @@ static void Iniciar()
 	if (set_gfx_mode(modo_tela, resolucao_x, resolucao_y, 0, 0) < 0)
 		Erro("Nao foi possivel definir o modo grafico", allegro_error);
 
+	CLog::Iniciar();
+	CLog::SetarVisivel(get_config_int("jogo", "console", 0));
 }
 
-/* Execucao das rotinas do jogo */
+// Execucao das rotinas do jogo
 static void Executar()
 {
 	IniciarJogo();
@@ -109,13 +114,14 @@ static void Executar()
 	DesligarJogo();
 }
 
-/* Finalizacao Geral */
+// Finalizacao Geral
 static void Desligar()
 {
+	CLog::Desligar();
 	allegro_exit();
 }
 
-/* Funcao de entrada */
+// Funcao de entrada
 int main(int argc, char *argv[])
 {
 

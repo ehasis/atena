@@ -4,15 +4,23 @@
 *  Nome: Diego Giacomelli
 *  Data: sexta-feira, 19 de outubro de 2001
 *
-*  Henrique em 18/01/2001
+*  Henrique em 18/01/2002
 *   - Corrigido erro na rotação do bitmap com "itofix(rotacao)"
 *   - Modificado metodo Rotacionar
 *
-*  Henrique em 23/01/2001
+*  Henrique em 23/01/2002
 *   - Chamada de SetarTLadrilho() a partir de Iniciar()
 *   - Criação de bmp_aux_1 e 2 em Iniciar()
 *   - Implementado metodo CLadrilho::Desligar()
 *
+*  Diego em 24/01/2002
+*   - Retirado o método SetarBmp_fonte (obsoleto);
+*	- Criado bmp_ladrilho;
+*   - Alterado os métodos Iniciar, Desenhar
+*
+*  Diego em 13/02/2002
+*   - Alterado o método Desenhar para aceitar CTela e
+*     posicionamento relativo;
 *------------------------------------------------------------*/
 
 
@@ -20,59 +28,72 @@
 #include <string.h>
 #include "erro.h"
 
+
 //------------------------------------------------------------
-void CLadrilho::Iniciar(TLadrilho &_ladrilho, int _largura, int _altura, BITMAP *_bmp_fonte)
+CLadrilho::CLadrilho()
 {
+	bmp_ladrilho = NULL;
+	bmp_aux = NULL;
+}
+
+
+//------------------------------------------------------------
+void CLadrilho::Iniciar(TLadrilho _ladrilho, int _largura, int _altura, BITMAP *_bmp_fonte)
+{
+	//Log("Inicio");
+	int aux_rotacao;
+
+	//Log("SetarTLadrilho");
 	SetarTLadrilho(_ladrilho);
 
 	largura   = _largura;
 	altura    = _altura;
+	//Log("bmp_fonte");
 	bmp_fonte = _bmp_fonte;
-	
-	bmp_aux_1 = create_bitmap(largura, altura);
-	bmp_aux_2 = create_bitmap(largura, altura);
+
+	//Log("bmp_ladrilho");
+	if(!bmp_ladrilho)
+	{
+		bmp_ladrilho = create_bitmap(largura, altura);
+		if(!bmp_ladrilho)
+		{
+			Erro("Código do Erro:", "0300");
+		}
+	}
+
+	clear(bmp_ladrilho);
+	blit(bmp_fonte, bmp_ladrilho, bmp_x, bmp_y, 0, 0, largura, altura);
+
+	//Log("bmp_aux");
+	if(!bmp_aux)
+	{
+		bmp_aux = create_bitmap(largura, altura);
+		if(!bmp_aux)
+		{
+			Erro("Código do Erro:", "0301");
+		}
+	}
+	clear(bmp_aux);
+
+	if(v_flip)
+	{
+		VirarVertical();
+		v_flip = TRUE;
+	}
+	if(h_flip)
+	{
+		VirarHorizontal();
+		h_flip = TRUE;
+	}
+	aux_rotacao = rotacao;
+	rotacao = 0;
+	Rotacionar(aux_rotacao);
 }
 
 //------------------------------------------------------------
-void CLadrilho::Desenhar(BITMAP *_bmp_destino)
+void CLadrilho::Desenhar(CTela &_tela, int _x_real, int _y_real)
 {
-	/* Se as coordenadas do ladrilho são inválidas ou o 
-	arquivo_bmp não foi informado imprime no bmp_destino um 
-	ladrilho padrao com fundo preto e bordas verdes */
-	if(bmp_x == -1
-	|| bmp_y == -1
-	|| strlen(arquivo_bmp) == 0
-	|| !bmp_fonte)
-	{
-		rectfill(_bmp_destino, x, y, x + largura, y + altura, makecol(0, 0, 0));
-		rect(_bmp_destino, x, y, x + largura, y + altura, makecol(0, 255, 0));
-	}
-	/* Senão obtem o ladrilho na posição do bmp_fonte e
-	imprime no bmp_destino */
-	else
-	{
-		blit(bmp_fonte, bmp_aux_1, bmp_x, bmp_y, 0, 0, largura, altura);
-
-		// Inverte na vertical
-		if(v_flip)
-		{
-			draw_sprite_v_flip(bmp_aux_2, bmp_aux_1, 0, 0);
-			draw_sprite(bmp_aux_1, bmp_aux_2, 0, 0);
-		}
-
-		// Inverte na horizontal
-		if(h_flip)
-		{
-			draw_sprite_h_flip(bmp_aux_2, bmp_aux_1, 0, 0);
-			draw_sprite(bmp_aux_1, bmp_aux_2, 0, 0);			
-		}
-
-		// Rotacao
-		if (rotacao)
-			rotate_scaled_sprite(_bmp_destino, bmp_aux_1, x, y, itofix(rotacao), itofix(1));
-		else
-			blit(bmp_aux_1, _bmp_destino, 0, 0, x, y, largura, altura);
-	}
+	_tela.DrawSprite(eCamadaFundo, bmp_ladrilho, x - _x_real, y - _y_real);
 }
 
 //------------------------------------------------------------
@@ -100,7 +121,7 @@ int CLadrilho::ObterBmp_y(void)
 }
 
 //------------------------------------------------------------
-void CLadrilho::SetarTLadrilho(TLadrilho &_ladrilho)
+void CLadrilho::SetarTLadrilho(TLadrilho _ladrilho)
 {
    x         = _ladrilho.x;
    y	     = _ladrilho.y;
@@ -141,35 +162,32 @@ char *CLadrilho::ObterArquivo_bmp()
    return arquivo_bmp;
 }
 
-//------------------------------------------------------------
-void CLadrilho::SetarBmp_fonte(BITMAP *_bmp_fonte)
-{
-   bmp_fonte = _bmp_fonte;
-}
-
-//------------------------------------------------------------
-BITMAP *CLadrilho::ObterBmp_fonte(void)
-{
-   return (BITMAP *) bmp_fonte;
-}
 
 //------------------------------------------------------------
 void CLadrilho::VirarHorizontal(void)
 {
 	h_flip = !h_flip;
+	draw_sprite_h_flip(bmp_aux, bmp_ladrilho, 0, 0);
+	draw_sprite(bmp_ladrilho, bmp_aux, 0, 0);
+	clear(bmp_aux);
 }
 
 //------------------------------------------------------------
 void CLadrilho::VirarVertical(void)
 {
 	v_flip = !v_flip;
+	draw_sprite_v_flip(bmp_aux, bmp_ladrilho, 0, 0);
+	draw_sprite(bmp_ladrilho, bmp_aux, 0, 0);
+	clear(bmp_aux);
 }
 
 //------------------------------------------------------------
-void CLadrilho::Rotacionar(void)
+void CLadrilho::Rotacionar(int _rotacoes)
 {
-	rotacao = ((rotacao + 64) <= 256) ? rotacao + 64 : 0;
-	//rotacao = (rotacao + 64) % 256;
+	rotacao = (rotacao + _rotacoes) <= 4 ? rotacao + _rotacoes : 1;
+	rotate_sprite(bmp_aux, bmp_ladrilho, 0, 0, itofix(_rotacoes * 64));
+	draw_sprite(bmp_ladrilho, bmp_aux, 0, 0);
+	clear(bmp_aux);
 }
 
 //------------------------------------------------------------
@@ -193,6 +211,15 @@ int CLadrilho::ObterRotacao(void)
 //------------------------------------------------------------
 void CLadrilho::Desligar()
 {
-	destroy_bitmap(bmp_aux_1);
-	destroy_bitmap(bmp_aux_2);
+	destroy_bitmap(bmp_ladrilho);
+	bmp_ladrilho = NULL;
+	destroy_bitmap(bmp_aux);
+	bmp_aux = NULL;
+}
+
+
+//------------------------------------------------------------
+BITMAP *CLadrilho::ObterBmp_fonte(void)
+{
+	return bmp_fonte;
 }

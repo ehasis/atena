@@ -36,6 +36,9 @@
 #include "..\cfundo.h"
 #include "..\cfase.h"
 #include "..\cobjeto.h"
+#include "..\cconstrucao.h"
+#include "..\ctela.h"
+#include "..\clog.h"
 #include "imagem.h"
 
 #define MENU_LARGURA				542
@@ -63,7 +66,7 @@
 #define MENU_OBJ_Y2					MENU_OBJ_Y1 + MENU_OBJ_ALTURA
 
 
-#define MAPA_EDITOR_LARGURA			542
+#define MAPA_EDITOR_LARGURA			543
 #define MAPA_EDITOR_ALTURA			437
 #define MAPA_EDITOR_X1				MENU_OBJ_X2 + 1
 #define MAPA_EDITOR_X2				MAPA_EDITOR_X1 + MAPA_EDITOR_LARGURA
@@ -101,19 +104,8 @@
 #define LADRILHO_ROTACAO_X				LADRILHO_V_FLIP_X + LADRILHO_LARGURA + 1
 #define LADRILHO_ROTACAO_Y				MENU_AUX_Y + 1
 
-
-//-----------------------------------------------
-/* Enumeracoes */
-typedef enum
-{
-	eBonus,
-	eConstrucoes,
-	eAliens,
-	eSeresVivos,
-	eFundo,
-	eVeiculos
-} EObjeto;
-
+#define LADRILHO_APAGAR_X				LADRILHO_SEL_DIREITO_X + LADRILHO_LARGURA + 1
+#define LADRILHO_APAGAR_Y				MENU_AUX_Y + 1
 
 void IniciarZeus(void);
 void MontarMenuObj(int modo);
@@ -132,6 +124,7 @@ int Sair(void);
 void DesenharTela(void);
 void VerificarLadrilho(void);
 void VerificarAlien(void);
+void VerificarConstrucao(void);
 void DesenharQuadrado(void);
 void VerificarRolaTecla(void);
 void VerificarRolaMouse(void);
@@ -141,4 +134,5 @@ int VerificarMenuExibir(void);
 int VerificarMenuFerramentas(void);
 void VerificarMenuObj(void);
 void VerificarMenuAux(void);
+void VerificarApagar(void);
 #endif

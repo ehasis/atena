@@ -12,6 +12,8 @@
 #ifndef objgraf_h_incluido
 #define objgraf_h_incluido
 
-void DesenharObjetos(BITMAP *bmp);
+#include "ctela.h"
+
+void DesenharObjetos(CTela &_tela);
 
 #endif

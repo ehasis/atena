@@ -1,4 +1,4 @@
-/*------------------------------------------------------------*
+ /*------------------------------------------------------------*
  *  ctiro.h - Classe CTiro
 *------------------------------------------------------------*
 *  Nome: Diego Giacomelli
@@ -20,11 +20,11 @@
 typedef enum
 {
 	eTiroCerra,
-	eTiroFogo,
+	eTiroBola,
 	eTiroLaserVermelho,
 	eTiroLaserVerde,
-	eTiroBola,
-	eTiroMissil
+	eTiroFogoTeleguiado,
+	eTiroFogo
 } ETiroTipo;
 
 
@@ -35,35 +35,39 @@ typedef enum
 } EStatusTiro;
 
 //------------------------------------------------------------
-/* Classe para as tiros */
+// Classe para as tiros
 class CTiro : public CObjeto
 {
 public:
 	CTiro(void);
-	void Iniciar(ETiroTipo _tipo, int _x, int _y);
-	void Adicionar(ETiroTipo _tipo, int _x, int _y);
-	void AtualizarTodos(int _x1_alvo, int _y1_alvo, int _x2_alvo, int _y2_alvo, int _x1, int _y1, int _x2, int _y2);
-	void Atualizar(int _x1_alvo, int _y1_alvo, int _x2_alvo, int _y2_alvo);
-	void Desenhar(BITMAP *_bmp_destino);
-	void DesenharTodos(BITMAP *_bmp_destino);
-	void Excluir(void);
+	static void Carregar_dat_arquivo(DATAFILE * _dat_arquivo){dat_arquivo = _dat_arquivo;}
+	static void Descarregar_dat_arquivo(void){unload_datafile(dat_arquivo);}
+	void Iniciar(ETiroTipo _tipo, int _x, int _y,   CObjeto * const _alvo);
+	void Adicionar(ETiroTipo _tipo, int _x, int _y,  CObjeto * const _alvo);
+	void AtualizarTodos(TRect _area, CObjeto * const _alvo);
+	void Atualizar(CObjeto * const _alvo);
+	void Desenhar(CTela &_tela, int _x_real, int _y_real);;
+	void DesenharTodos(CTela &_tela, int _x_real, int _y_fase);
 	int VerificarExisteTiros(void);
 	int ChecarColisaoTiros(TRect _obj);
-	void TocarSom(void);
-	void TocarSomTodos(void);
+	void Sonorizar(void);
+	void SonorizarTodos(void);
 	void SetarStatus(EStatusTiro _status);
+	void Desligar(void);
 
 	CTiro *p_tiro;
 private:
 	ETiroTipo tipo;
-	int bmp_x;
-	int atualizado;
-	DATAFILE *dat_arquivo;
-	int tempo;
-	int x_alvo;
-	int y_alvo;
+	static DATAFILE *dat_arquivo;
+	int quadro;
+	CObjeto *alvo;
 	int tocar_som;
 	EStatusTiro status;
+	int dir_x;
+	int dir_y;
+	int flag_x;
+	int flag_y;
+	int cont;
 };
 
 #endif

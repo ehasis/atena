@@ -8,6 +8,9 @@
 *  Diego Giacomelli em 19/09/2001
 *  	- Adicionada sombra à nave Alien no método Desenhar;
 *
+*  Diego em 24/01/2002
+*  	- Criado o método Iniciar;
+*
 *------------------------------------------------------------*/
 
 #ifndef cnave_h_incluido
@@ -33,14 +36,13 @@ struct TEntrada
 class CNave: public CObjeto
 {
 public:
-	CNave();
+	void Iniciar(void);
 	void DecEnergia(int valor);
 	void IncEnergia(int valor);
-	void SetArquivoDat(DATAFILE *arquivo);
-	void Atualizar(int _x1, int _y1, int _x2, int _y2);
-	void Desenhar(BITMAP *bmp);
+	void Atualizar(TRect _area, CObjeto * const _alvo);
+	void Desenhar(CTela &_tela, int _x_real, int _y_real);;
 	void Desligar(void);
-	void TocarSom(void);
+	void Sonorizar(void);
 	CTiro *ObterTiros(void);
 	int ObterPontos(void);
 	void IncPontos(int _incremento);
@@ -49,15 +51,17 @@ public:
 	int ObterStatus(void);
 
 private:
-	DATAFILE *data;
+	DATAFILE *dat_arquivo;
 	CTiro tiros;
 	int energia;
-	int tempo;
+	int quadro;
 	int pontos;
 	int casco;
 	int atirar;
 	int tipo_tiro;
 	EStatusNave status;
+	int turbina;
+	float vi, vx, vy;
 
 };
 

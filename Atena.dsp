@@ -103,6 +103,14 @@ SOURCE=.\calien.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\cconfig.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\cconstrucao.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\cfase.cpp
 # End Source File
 # Begin Source File
@@ -115,6 +123,10 @@ SOURCE=.\cladrilho.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\clog.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\cmenu.cpp
 # End Source File
 # Begin Source File
@@ -124,6 +136,10 @@ SOURCE=.\cnave.cpp
 # Begin Source File
 
 SOURCE=.\cobjeto.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ctela.cpp
 # End Source File
 # Begin Source File
 
@@ -167,6 +183,14 @@ SOURCE=.\calien.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\cconfig.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\cconstrucao.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\cfase.h
 # End Source File
 # Begin Source File
@@ -179,6 +203,10 @@ SOURCE=.\cladrilho.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\clog.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\cmenu.h
 # End Source File
 # Begin Source File
@@ -188,6 +216,10 @@ SOURCE=.\cnave.h
 # Begin Source File
 
 SOURCE=.\cobjeto.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ctela.h
 # End Source File
 # Begin Source File
 

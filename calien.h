@@ -9,6 +9,8 @@
 *   - Alteração do nome do método Colisão para ChecarColisao
 *     para adaptar-se aos padrões de nomenclatura;
 *
+*  Diego Giacomelli em 14/01/2002
+*   - Implementado o método ObterMaisProximo;
 *
 *------------------------------------------------------------*/
 
@@ -29,38 +31,33 @@ typedef enum
 	eAlien_05,
 	eAlien_06,
 	eAlien_07
-} eAlien;
+} EAlien;
 
 
 enum EStatusAlien
 {
 	eAlienNormal,
 	eAlienEscudo,
+	eAlienAtingido,
 	eAlienExplosao,
 	eAlienInativo
 };
 
 
-typedef struct
-{
-	int tipo;
-	int x;
-	int y;
-} TAlien;
-
-
-
 //------------------------------------------------------------
-/* Classe para as naves aliens */
+// Classe para as naves aliens
 class CAlien : public CObjeto
 {
 public:
 	CAlien(void);
-	void Iniciar(int _tipo, int _x, int _y, DATAFILE *_dat_arquivo);
-	void Desenhar(BITMAP *_bmp_destino);
-	void DesenharTodos(BITMAP *_bmp_destino);
-	void Atualizar(int _x1_alvo, int _y1_alvo, int _x2_alvo, int _y2_alvo, int _x1, int _y1, int _x2, int _y2);
-	void AtualizarTodos(int _x1_alvo, int _y1_alvo, int _x2_alvo, int _y2_alvo, int _x1, int _y1, int _x2, int _y2);
+	static void Carregar_dat_arquivo(DATAFILE * _dat_arquivo){dat_arquivo = _dat_arquivo;}
+	static void Descarregar_dat_arquivo(void){unload_datafile(dat_arquivo);}
+	static int ObterNumeroAliens(void) { return num_aliens; };
+	void Iniciar(int _tipo, int _x, int _y);
+	void Desenhar(CTela &_tela, int _x_real, int _y_real);
+	void DesenharTodos(CTela &_tela, int _x_real, int _y_fase);
+	void Atualizar(TRect _area, CObjeto * const _alvo);
+	void AtualizarTodos(TRect _area, CObjeto * const _alvo);
 	void Desligar(void);
 	void Adicionar(int _tipo, int _x, int _y);
 	int ObterTipo(void);
@@ -69,24 +66,27 @@ public:
 	void Excluir(int _x1, int _y1, int _x2, int _y2);
 	int ChecarColisaoAliens(int _x1, int _y1, int _x2, int _y2);
 	int ChecarColisaoAliens(void);
-	void TocarSom(void);
-	void TocarSomTodos(void);
+	void Sonorizar(void);
+	void SonorizarTodos(void);
 	void SetarStatus(EStatusAlien _status);
 	EStatusAlien ObterStatus(void);
 	int ObterEnergia(void);
 	void DecEnergia(int _decremento);
 	CTiro *ObterTiros(void);
+	CObjeto *ObterMaisProximo(int _x, int _y);
 
-	CAlien *p_alien;	   		/* Ponteiro para o proximo nodo da lista */
+	CAlien *p_alien;	// Ponteiro para o proximo nodo da lista
 private:
 	int tipo; //eAlien
 	int energia;
-	int tempo;
+	int quadro;
 	int atirar;
 	int velocidade;
 	EStatusAlien status;
-	DATAFILE *dat_arquivo;
-	int atualizado;
+	static DATAFILE *dat_arquivo;
+	static int num_aliens;
 	CTiro tiros;
+	int dir_x;
+	int dir_y;
 };
 #endif

@@ -4,7 +4,12 @@
 *  Nome: Diego Giacomelli
 *  Data: terça-feira, 13 de dezembro de 2001
 *
+*  Henrique em 25/01/2002
+*   - Implementado metodo DesenharExplosao()
 *
+*  Diego em 13/02/2002
+*   - Alterado os métodos Desenhar e DesenharTodos para aceitar
+*     CTela e posicionamento relativo;
 *
 *------------------------------------------------------------*/
 
@@ -13,13 +18,19 @@
 #include <stdlib.h>
 #include <time.h>
 #include <allegro.h>
+#include <math.h>
 #include "aliens.h"
 #include "calien.h"
 #include "erro.h"
 
+//------------------------------------------------------------
+// Membros static
+DATAFILE *CAlien::dat_arquivo = NULL;
+int CAlien::num_aliens = 0;
+
 
 //------------------------------------------------------------
-/* Construtor */
+// Construtor
 CAlien::CAlien(void)
 {
 	p_alien = NULL;
@@ -27,15 +38,18 @@ CAlien::CAlien(void)
 
 
 //------------------------------------------------------------
-void CAlien::Iniciar(int _tipo, int _x, int _y, DATAFILE *_dat_arquivo)
+void CAlien::Iniciar(int _tipo, int _x, int _y)
 {
+	tipo		= _tipo;
 	x			= _x;
 	y			= _y;
-	tipo		= _tipo;
-	dat_arquivo = _dat_arquivo;
-	tempo	    = 0;
-	atirar		= TRUE;
-	atualizado  = TRUE;
+	dir_x       = 0;
+	dir_y	    = 1;
+	quadro	    = 0;
+	ativo       = FALSE;
+	visivel		= FALSE;
+	atirar      = 150;
+	status	    = eAlienNormal;
 
 	switch(tipo)
 	{
@@ -43,63 +57,50 @@ void CAlien::Iniciar(int _tipo, int _x, int _y, DATAFILE *_dat_arquivo)
 			largura    = 47;
 			altura     = 31;
 			energia	   = 1;
-			atirar	   = 1;
 			velocidade = 5;
-			status	   = eAlienNormal;
+			dir_x      = 1;
 			break;
 
 		case eAlien_02:
 			largura    = 50;
 			altura     = 50;
 			energia	   = 2;
-			atirar	   = 1;
 			velocidade = 6;
-			status	   = eAlienNormal;
 			break;
 
 		case eAlien_03:
 			largura    = 52;
 			altura     = 48;
-			energia	   = 2;
-			atirar	   = 1;
+			energia	   = 3;
 			velocidade = 7;
-			status	   = eAlienNormal;
 			break;
 
 		case eAlien_04:
 			largura    = 65;
 			altura     = 106;
-			energia	   = 1;
-			atirar	   = 1;
+			energia	   = 4;
 			velocidade = 8;
-			status	   = eAlienNormal;
 			break;
 
 		case eAlien_05:
 			largura    = 41;
 			altura     = 38;
 			energia	   = 1;
-			atirar	   = 1;
 			velocidade = 9;
-			status	   = eAlienNormal;
 			break;
 
 		case eAlien_06:
 			largura    = 40;
 			altura     = 40;
-			energia	   = 3;
-			atirar	   = 1;
+			energia	   = 2;
 			velocidade = 8;
-			status	   = eAlienNormal;
 			break;
 
 		case eAlien_07:
 			largura    = 98;
 			altura     = 73;
 			energia	   = 3;
-			atirar	   = 1;
 			velocidade = 7;
-			status	   = eAlienNormal;
 			break;
 	}
 }
@@ -108,127 +109,147 @@ void CAlien::Iniciar(int _tipo, int _x, int _y, DATAFILE *_dat_arquivo)
 //------------------------------------------------------------
 void CAlien::Adicionar(int _tipo, int _x, int _y)
 {
-	if(p_alien)
+	CAlien *aux;
+
+    for(aux = this; aux->p_alien; aux = aux->p_alien);
+
+	aux->p_alien = new CAlien;
+	if(!aux->p_alien)
 	{
-		p_alien->Adicionar(_tipo, _x, _y);
+		Erro("Código do erro:", "0000");
 	}
-	else
-	{
-		p_alien = new CAlien;
-		p_alien->Iniciar(_tipo, _x, _y, load_datafile("aliens.dat"));
-	}
+	aux->p_alien->Iniciar(_tipo, _x, _y);
+	num_aliens++;
 }
 
 
 //------------------------------------------------------------
-void CAlien::Atualizar(int _x1_alvo, int _y1_alvo, int _x2_alvo, int _y2_alvo, int _x1, int _y1, int _x2, int _y2)
+void CAlien::Atualizar(TRect _area, CObjeto * const _alvo)
 {
 	time_t tm;
 
-	if (status == eAlienNormal || status == eAlienEscudo)
+	if (status != eAlienExplosao && status != eAlienInativo)
 	{
-		//if (x < -l) status = eAlienInativo;
-		y += velocidade;
-	}
-
-	/*
-	if(ChecarColisaoAliens())
-	{
-		status = eAlienExplosao;
-	}
-	*/
-	switch(tipo)
-	{
-		case eAlien_03:
-			tempo = tempo < 2 ?tempo + 1 :0;
-			break;
-	}
-
-	if(atirar)
-	{
-		if(tipo != eAlien_04)
+		switch(tipo)
+		{
+			case eAlien_01:
+				if(x <= (largura * 2))
+				{
+					dir_x = 1;
+				}
+				else if(x > SCREEN_W - (largura * 2))
+				{
+					dir_x = -1;
+				}
+				break;
+			case eAlien_03:
+				quadro = quadro < 2 ?quadro + 1 :0;
+				break;
+			case eAlien_06:
+				if(!_alvo->ChecarColisaoX(x, x + largura))
+				{
+					dir_x = _alvo->ObterX() >= x ? 1 : -1;
+				}
+				else
+				{
+					dir_x = 0;
+				}
+		}
+		x += dir_x * velocidade;
+		y += dir_y * velocidade;
+		
+		if(atirar >= 125) 
 		{
 			srand((unsigned) time(&tm));
-			tiros.Adicionar((ETiroTipo) (rand() % 5), x + (largura / 2), y + altura);
-			atirar = FALSE;
+			tiros.Adicionar((ETiroTipo) (rand() % 2), x + (largura / 2), y + altura, _alvo);
+			atirar = 0;
 		}
-		else
+		atirar += rand() % 11;
+	}
+	else if(status == eAlienAtingido)
+	{
+		quadro++;
+		if(quadro == 2)
 		{
-			tiros.Adicionar(eTiroLaserVermelho, x, y + (altura / 2));
-			tiros.Adicionar(eTiroLaserVermelho, x + largura, y + (altura / 2));
-			atirar = FALSE;
+			status = eAlienNormal;
+			quadro = 0;
 		}
 	}
-
-	tiros.AtualizarTodos(_x1_alvo, _y1_alvo, _x2_alvo, _y2_alvo, _x1, _y1, _x2,  _y2);
-
-	if(status == eAlienExplosao)
+	else if(status == eAlienExplosao)
 	{
-		tempo++;
-		if (tempo == 9)
+		quadro++;
+		if (quadro == 5)
 		{
 			status = eAlienInativo;
 		}
 	}
+	tiros.AtualizarTodos(_area, _alvo);
 }
 
 
 //------------------------------------------------------------
-void CAlien::AtualizarTodos(int _x1_alvo, int _y1_alvo, int _x2_alvo, int _y2_alvo, int _x1, int _y1, int _x2, int _y2)
+void CAlien::AtualizarTodos(TRect _area, CObjeto * const _alvo)
 {
-	if(p_alien)
+	CAlien *aux;
+
+	for(aux = p_alien; aux; aux = aux->p_alien)
 	{
- 		if(p_alien->ChecarColisao(_x1, _y1, _x2, _y2)
-		|| p_alien->tiros.VerificarExisteTiros())
+		if((aux->ChecarColisao(_area)
+		&& aux->status != eAlienExplosao
+		&& aux->status != eAlienInativo))
 		{
-			p_alien->Atualizar(_x1_alvo, _y1_alvo, _x2_alvo, _y2_alvo, _x1, _y1, _x2, _y2);
-			p_alien->atualizado = TRUE;
+			aux->Atualizar(_area, _alvo);
+			aux->ativo = TRUE;
+			aux->visivel = TRUE;
+		}
+		else if(aux->tiros.VerificarExisteTiros())
+		{
+			aux->Atualizar(_area, _alvo);
+			aux->visivel = FALSE;
 		}
 		else
 		{
-			p_alien->atualizado = FALSE;
-		}
-
-		if(p_alien->p_alien)
-		{
-			p_alien->AtualizarTodos(_x1_alvo, _y1_alvo, _x2_alvo, _y2_alvo, _x1, _y1, _x2, _y2);
+			aux->ativo = FALSE;
+			aux->visivel = FALSE;
 		}
 	}
 }
 
 
 //------------------------------------------------------------
-void CAlien::Desenhar(BITMAP *_bmp_destino)
+void CAlien::Desenhar(CTela &_tela, int _x_real, int _y_real)
 {
 	switch(status)
 	{
 		case eAlienNormal:
-			//draw_trans_sprite(_bmp_destino, (BITMAP *)dat_arquivo[(tipo * 2) + 1].dat, x + 25, y + 35);
-			//draw_sprite(_bmp_destino, (BITMAP *)dat_arquivo[(tipo * 2)].dat, x, y);
-			masked_blit((BITMAP *)dat_arquivo[(tipo * 2) + 1].dat, _bmp_destino, tempo * (largura / 1.5), 0, x + 50, y + 50, (largura / 1.5), (altura / 1.5));
-			masked_blit((BITMAP *)dat_arquivo[(tipo * 2)].dat, _bmp_destino, tempo * largura, 0, x, y, largura, altura);
+
+			_tela.MaskedBlit((BITMAP *)dat_arquivo[(tipo * 2) + 1].dat, eCamadaObjetos, quadro * (largura / 1.5), 0, x - _x_real + 50, y  - _y_real + 50, (largura / 1.5), (altura / 1.5));
+			_tela.MaskedBlit((BITMAP *)dat_arquivo[(tipo * 2)].dat, eCamadaObjetos, quadro * largura, 0, x - _x_real, y  - _y_real, largura, altura);
+			break;
+
+		case eAlienAtingido:
+			_tela.MaskedBlit((BITMAP *)dat_arquivo[(tipo * 2) + 1].dat, eCamadaObjetos, quadro * (largura / 1.5), 0, x - _x_real + 50, y  - _y_real + 50, (largura / 1.5), (altura / 1.5));
+			_tela.MaskedBlit((BITMAP *)dat_arquivo[(tipo * 2)].dat, eCamadaObjetos, quadro * largura, 0, x - _x_real, y - _y_real, largura, altura);
 			break;
 
 		case eAlienExplosao:
-			masked_blit((BITMAP *)dat_arquivo[ALIEN_EXPLOSAO].dat, _bmp_destino, tempo * 50, 0, x, y, 50, 50);
+			DesenharExplosao(_tela, _x_real, _y_real, x + (largura/2), y + (altura/2), (quadro * 3) + (largura / 2), 250);
 			break;
 	}
-	tiros.DesenharTodos(_bmp_destino);
+	tiros.DesenharTodos(_tela, _x_real, _y_real);
 }
 
 
 //------------------------------------------------------------
-void CAlien::DesenharTodos(BITMAP *_bmp_destino)
+void CAlien::DesenharTodos(CTela &_tela, int _x_real, int _y_real)
 {
-	if(p_alien)
+	CAlien *aux;
+
+	for(aux = p_alien; aux; aux = aux->p_alien)
 	{
-		if(p_alien->atualizado)
+		if(aux->ativo)
 		{
-			p_alien->Desenhar(_bmp_destino);
-		}
-		if(p_alien->p_alien)
-		{
-			p_alien->DesenharTodos(_bmp_destino);
+			aux->Desenhar(_tela, _x_real, _y_real);
 		}
 	}
 }
@@ -237,16 +258,15 @@ void CAlien::DesenharTodos(BITMAP *_bmp_destino)
 //------------------------------------------------------------
 void CAlien::Desligar(void)
 {
-	CAlien *aux_alien, *del_alien;
+	CAlien *aux, *del;
 
-	for(aux_alien = p_alien; aux_alien;)
+	for(aux = p_alien; aux;)
 	{
-		del_alien = aux_alien;
-		aux_alien = aux_alien->p_alien;
-		delete del_alien;
+		del = aux;
+		aux = aux->p_alien;
+		delete del;
+		num_aliens--;
 	}
-	p_alien = NULL;
-	unload_datafile(dat_arquivo);
 }
 
 
@@ -260,22 +280,20 @@ int CAlien::ObterTipo(void)
 //------------------------------------------------------------
 void CAlien::SalvarAlien(char *_fase)
 {
-	CAlien *aux_alien;
-	TAlien alien;
+	CAlien *aux;
+	TObjeto alien;
 	FILE *arquivo;
 
 	if((arquivo = fopen(_fase, "rb+")) != NULL)
 	{
-		if(p_alien)
+		alien.tipo = eAlien;
+		fseek(arquivo, 0, SEEK_END);
+		for(aux = p_alien; aux; aux = aux->p_alien)
 		{
-			fseek(arquivo, 0, SEEK_END);
-	 		for(aux_alien = p_alien; aux_alien; aux_alien = aux_alien->p_alien)
-			{
-				alien.tipo = aux_alien->ObterTipo();
-				alien.x = aux_alien->ObterX();
-				alien.y = aux_alien->ObterY();
-				fwrite(&alien, sizeof(TAlien), 1, arquivo);
-			}
+			alien.subtipo = aux->ObterTipo();
+			alien.x = aux->ObterX();
+			alien.y = aux->ObterY();
+			fwrite(&alien, sizeof(TObjeto), 1, arquivo);
 		}
 	}
     fclose(arquivo);
@@ -285,78 +303,55 @@ void CAlien::SalvarAlien(char *_fase)
 //------------------------------------------------------------
 void CAlien::Excluir(int _tipo, int _x, int _y)
 {
-	CAlien *aux;
+	CAlien *aux, *del;
 
-	if(p_alien)
+	for(aux = this; aux->p_alien;)
 	{
-		if(p_alien->p_alien)
+		if(aux->p_alien->ObterTipo() == _tipo
+		&& aux->p_alien->ObterX()    == _x
+		&& aux->p_alien->ObterY()    == _y)
 		{
-			p_alien->Excluir(_tipo, _x, _y);
+			del = aux->p_alien;
+			aux->p_alien = aux->p_alien->p_alien;
+			delete del;
+			num_aliens--;
 		}
-		if(p_alien)
+		else
 		{
-			if(p_alien->ObterTipo() == _tipo
-			&& p_alien->ObterX()    == _x
-			&& p_alien->ObterY()    == _y)
-			{
-
-				aux = p_alien->p_alien;
-				delete p_alien;
-				if(aux)
-				{
-					p_alien = aux;
-				}
-				else
-				{
-					p_alien = NULL;
-				}
-			}
+			aux = aux->p_alien;
 		}
 	}
 }
 
 void CAlien::Excluir(int _x1, int _y1, int _x2, int _y2)
 {
-	CAlien *aux;
+	CAlien *aux, *del;
 
-	if(p_alien)
+	for(aux = this; aux->p_alien;)
 	{
-		if(p_alien->p_alien)
+		if(aux->p_alien->ChecarColisao(_x1, _y1, _x2, _y2))
 		{
-			p_alien->Excluir(_x1, _y1, _x2, _y2);
+			del = aux->p_alien;
+			aux->p_alien = aux->p_alien->p_alien;
+			delete del;
+			num_aliens--;
 		}
-		if(p_alien)
+		else
 		{
-			if(p_alien->ChecarColisao(_x1, _y1, _x2, _y2))
-			{
-				aux = p_alien->p_alien;
-				delete p_alien;
-				if(aux)
-				{
-					p_alien = aux;
-				}
-				else
-				{
-					p_alien = NULL;
-				}
-			}
+			aux = aux->p_alien;
 		}
 	}
 }
 
 
-
 //------------------------------------------------------------
 int CAlien::ChecarColisaoAliens(int _x1, int _y1, int _x2, int _y2)
 {
-	if(p_alien)
+	CAlien *aux;
+
+	for(aux = p_alien; aux; aux = aux->p_alien)
 	{
-		if(p_alien->ChecarColisao(_x1, _y1, _x2, _y2))
-		{
-			//p_alien->atualizado = FALSE;
-			return TRUE;
-		}
-		if(p_alien->ChecarColisaoAliens(_x1, _y1, _x2, _y2))
+		if(aux->ChecarColisao(_x1, _y1, _x2, _y2))
 		{
 			return TRUE;
 		}
@@ -366,14 +361,11 @@ int CAlien::ChecarColisaoAliens(int _x1, int _y1, int _x2, int _y2)
 
 int CAlien::ChecarColisaoAliens(void)
 {
-	if(p_alien)
+	CAlien *aux;
+
+	for(aux = p_alien; aux; aux = aux->p_alien)
 	{
-		if(p_alien->ChecarColisao(x, y, x + largura, y + altura))
-		{
-			p_alien->atualizado = FALSE;
-			return TRUE;
-		}
-		if(p_alien->ChecarColisaoAliens())
+		if(aux->ChecarColisao(x, y, x + largura, y + altura))
 		{
 			return TRUE;
 		}
@@ -383,29 +375,27 @@ int CAlien::ChecarColisaoAliens(void)
 
 
 //------------------------------------------------------------
-void CAlien::TocarSom(void)
+void CAlien::Sonorizar(void)
 {
 	if(status == eAlienExplosao
-	&& tempo == 0)
+	&& quadro == 0)
 	{
 		play_sample((SAMPLE *)dat_arquivo[WAV_ALIEN_EXPLOSAO].dat, 128, 128, 1000, 0);
 	}
-	tiros.TocarSomTodos();
+	tiros.SonorizarTodos();
 }
 
 
 //------------------------------------------------------------
-void CAlien::TocarSomTodos(void)
+void CAlien::SonorizarTodos(void)
 {
-	if(p_alien)
+	CAlien *aux;
+
+	for(aux = p_alien; aux; aux = aux->p_alien)
 	{
-		if(p_alien->atualizado)
+		if(aux->ativo)
 		{
-			p_alien->TocarSom();
-		}
-		if(p_alien->p_alien)
-		{
-			p_alien->TocarSomTodos();
+			aux->Sonorizar();
 		}
 	}
 }
@@ -440,7 +430,7 @@ void CAlien::DecEnergia(int _decremento)
 	if(energia == 0)
 	{
 		status = eAlienExplosao;
-		tempo = 0;
+		quadro = 0;
 	}
 }
 
@@ -452,17 +442,28 @@ CTiro *CAlien::ObterTiros(void)
 }
 
 //------------------------------------------------------------
-/*int CAlien::ObterXAlienProximo(int _x, int _menor_distancia)
+CObjeto *CAlien::ObterMaisProximo(int _x, int _y)
 {
+	CAlien *aux;
+	int menor_distancia = 999;
+	int distancia;
+	CObjeto *obj;
+
+	obj = NULL;
 	if(p_alien)
 	{
-		if(abs((x - p_alien->x)) < _menor_distancia)
+		for(aux = p_alien; aux; aux = aux->p_alien)
 		{
-			p_alien->Desenhar(_bmp_destino);
-		}
-		if(p_alien->p_alien)
-		{
-			p_alien->DesenharTodos(_bmp_destino);
+			if(aux->visivel)
+			{
+				distancia = sqrt(pow(_x - aux->x, 2) + pow(_y - aux->y, 2));
+				if(distancia < menor_distancia)
+				{
+					menor_distancia = distancia;
+					obj = aux->RetornarObjeto();
+				}
+			}
 		}
 	}
-}*/
+	return obj;
+}

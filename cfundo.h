@@ -17,6 +17,10 @@
 *  Diego Giacomelli em 07/01/2002
 *   - Alteração do nome do método Colisão para ChecarColisao
 *     para adaptar-se aos padrões de nomenclatura;
+*
+*  Diego Giacomelli em 27/01/2002
+*   - Alterada a alocação dos bitmaps dos ladrilhos de vetor para
+*	  lista encadeada;
 *------------------------------------------------------------*/
 
 
@@ -50,25 +54,27 @@ typedef enum
 } EDirecao;
 
 
-/* Estrutura para os nodos de bmp relacionados aos ladrilhos */
-typedef struct
+// Estrutura para os nodos de bmp relacionados aos ladrilhos
+typedef struct _TBmp
 {
-	char arquivo_bmp[100];
+	char arquivo_bmp[32];
 	BITMAP *bmp_bmp;
+	struct _TBmp *p_TBmp;
+
 } TBmp;
 
 
 //------------------------------------------------------------
-/* Classe para manipulacao do fundo */
+// Classe para manipulacao do fundo
 class CFundo
 {
 public:
 	int Iniciar(TLadrilho _mapa_ladrilhos[MAPA_LARGURA_LADRILHOS][MAPA_ALTURA_LADRILHOS], int _x_fonte, int _y_fonte, int _mapa_largura_ladrilhos, int _mapa_altura_ladrilhos, int _ladrilho_largura, int _ladrilho_altura, int _x_destino, int _y_destino, int _largura_destino, int _altura_destino);
-	void Desenhar(BITMAP * _bmp_destino, int _x_fonte, int _y_fonte);
+	void Desenhar(CTela &_tela, int _x_real, int _y_real);;
 	int Rolar(EDirecao _direcao, int _pixels);
 	void Atualizar(void);
 	CLadrilho ObterLadrilho(int _x, int _y);
-	void SetarLadrilho(int _x, int _y, CLadrilho _ladrilho);
+	void SetarLadrilho(int _x, int _y, TLadrilho _ladrilho, BITMAP *_bmp_fonte);
 	void SetarTLadrilho(int _x, int _y, TLadrilho _ladrilho);
 	BITMAP *ObterFundo_screen(void);
 	int ObterX_fonte(void);
@@ -79,7 +85,7 @@ public:
 	void Desligar(void);
 
 private:
-	TBmp bmp_arquivos[ARQUIVOS_BMP_QUANT];
+	TBmp *bmp_arquivos;
 	BITMAP *fundo_screen;
 	int x_fonte;
 	int y_fonte;

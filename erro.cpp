@@ -4,7 +4,8 @@
 *  Nome: Edison Henrique Andreassy
 *  Data: terça-feira, 4 de setembro de 2001
 *
-*
+*  Henrique em 08/02/2002
+*   - Incluido Log em modo Console
 *
 *------------------------------------------------------------*/
 
@@ -13,6 +14,7 @@
 #include <stdlib.h>
 
 #include "erro.h"
+#include "clog.h"
 
 void ErroX(char *arquivo, int linha, char *s1, char *s2)
 {
@@ -44,4 +46,6 @@ void LogX(char *arquivo, int linha, char *texto)
 	fprintf(f, "\n");
 
 	fclose(f);
+
+	//CLog::LogXX(texto);
 }

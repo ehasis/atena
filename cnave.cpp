@@ -4,6 +4,8 @@
 *  Nome: Edison Henrique Andreassy
 *  Data: terça-feira, 18 de setembro de 2001
 *
+*  Diego em 24/01/2002
+*   - Retirado o método SetArquivoDat (obsoleto);
 *
 *
 *------------------------------------------------------------*/
@@ -12,169 +14,177 @@
 #include "datnave.h"
 #include "datalien.h"
 #include "cnave.h"
+#include "erro.h"
+
 
 //------------------------------------------------------------
-// constructor
-CNave::CNave()
+void CNave::Iniciar(void)
 {
 	x = 320;
 	y = 6300;
 	largura = 72;
-	altura = 90;
-	vi = 12;
+	altura = 100;
+	vi = 20;
 	vx = 0;
 	vy = 0;
+	ativo = TRUE;
+	visivel = TRUE;
 
-	atirar	  = 0;
-	pontos	  = 0;
-	energia   = 100;
-	casco	  = 100;
-	status	  = eNaveNormal;
-	tempo	  = 2;
-	tipo_tiro = 0;
+	turbina		= 0;
+	atirar	    = 0;
+	pontos	    = 0;
+	energia     = 100;
+	casco	    = 100;
+	status	    = eNaveNormal;
+	quadro	    = 2;
+	tipo_tiro   = 2;
+	dat_arquivo = load_datafile("nave.dat");
 }
 
 
-//------------------------------------------------------------
-void CNave::SetArquivoDat(DATAFILE *arquivo)
-{
-	data = arquivo;
-}
 //------------------------------------------------------------
 void CNave::Desligar()
 {
-	unload_datafile(data);
+	unload_datafile(dat_arquivo);
+	dat_arquivo = NULL;
 }
 
 //------------------------------------------------------------
 // metodo para desenhar o objeto
-void CNave::Desenhar(BITMAP *bmp)
+void CNave::Desenhar(CTela &_tela, int _x_real, int _y_real)
 {
-	tiros.DesenharTodos(bmp);
 	switch(status)
 	{
-	case eNaveEscudo:
-		draw_sprite(bmp, (BITMAP *)data[ESCUDO].dat, x, y);
-		status = eNaveNormal;
+		case eNaveEscudo:
+			_tela.DrawSprite(eCamadaObjetos, (BITMAP *)dat_arquivo[ESCUDO].dat, x - _x_real, y - _x_real);
+			status = eNaveNormal;
 
-	case eNaveNormal:
-		masked_blit((BITMAP *)data[SOMBRA].dat, bmp, tempo * (largura / 1.5), 0, x + 50, y + 50, (largura / 1.5), (altura / 1.5));
-		masked_blit((BITMAP *)data[NORMAL].dat, bmp, tempo * largura, 0, x, y, largura, altura);
-		break;
+		case eNaveNormal:
+			_tela.MaskedBlit((BITMAP *)dat_arquivo[SOMBRA].dat, eCamadaObjetos, (quadro + (5 * turbina)) * (largura / 1.5), 0, x + 50 - _x_real, y + 50 - _y_real, (largura / 1.5), (altura / 1.5));
+			_tela.MaskedBlit((BITMAP *)dat_arquivo[NORMAL].dat, eCamadaObjetos, (quadro + (5 * turbina)) * largura , 0, x - _x_real, y - _y_real, largura, altura);
+			break;
 
-	case eNaveExplosao:
+		case eNaveExplosao:
 
-	case eNaveRenacer:
-		draw_sprite(bmp, (BITMAP *)data[EXPLOSAO].dat, x, y);
-		break;
+		case eNaveRenacer:
+			_tela.DrawSprite(eCamadaObjetos, (BITMAP *)dat_arquivo[EXPLOSAO].dat, x - _x_real, y - _x_real);
+			break;
 	}
+	tiros.DesenharTodos(_tela, _x_real, _y_real);
 }
 
 //------------------------------------------------------------
 // metodo para atualizacao do objeto
-void CNave::Atualizar(int _x1, int _y1, int _x2, int _y2)
+void CNave::Atualizar(TRect _area, CObjeto * const _alvo)
 {
 	TEntrada valor;
-	
-	valor.a = valor.b = valor.c = valor.x = valor.y = 0; 
+
+	valor.a = valor.b = valor.c = valor.x = valor.y = 0;
 
 	atirar = 0;
 
-	/* Leitura das Teclas */
+	// Leitura das Teclas
 	if (key[KEY_UP])		valor.y--;
 	if (key[KEY_DOWN])		valor.y++;
 	if (key[KEY_LEFT])		valor.x--;
 	if (key[KEY_RIGHT])		valor.x++;
 	if (key[KEY_SPACE])		valor.a = 1;
-	if (key[KEY_MINUS_PAD]) valor.b = 1; 
-	if (key[KEY_PLUS_PAD])  valor.c = 1; 
+	if (key[KEY_MINUS_PAD]) valor.b = 1;
+	if (key[KEY_PLUS_PAD])  valor.c = 1;
 
 	if (status == eNaveRenacer) status = eNaveNormal;
 
-	/* se estiver normal */
+	// se estiver normal
 	if (status == eNaveNormal)
 	{
 
-		/* com incercia */
-		switch (valor.y)
-		{
-		case -1:
-			vy = -vi;
-			y += vy;
-			break;
-		case 0:
-			vy /= 2;
-			if (vy < 0) y -= abs(vy);
-			else        y += vy;
-			break;
-		case 1:
-			vy =  vi;
-			y += vy;
-			break;
-		}
-		
+		// com incercia
 		switch (valor.x)
 		{
 		case -1:
 			vx = -vi;
 			x += vx;
-			tempo = tempo > 0 ?tempo - 1 :0;
+			quadro = quadro > 0 ?quadro - 1 :0;
 			break;
 		case 0:
 			vx /= 2;
 			if (vx < 0) x -= abs(vx);
 			else        x += vx;
-			if(tempo != 2)
+			if(quadro != 2)
 			{
-				tempo = tempo > 2 ? tempo - 1 :tempo + 1;
+				quadro = quadro > 2 ? quadro - 1 :quadro + 1;
 			}
 			break;
 		case 1:
 			vx =  vi;
 			x += vx;
-			tempo = tempo = tempo < 4 ?tempo + 1 : 4;
+			quadro = quadro = quadro < 4 ?quadro + 1 : 4;
 			break;
 		}
 
-		/* Testa os limites da tela */
-		if (y < _y1) y = _y1;
-		if (y + altura > _y2) y = _y2 - altura;
+		switch (valor.y)
+		{
+		case -1:
+			turbina = 1;
+			vy = -vi;
+			y += vy;
+			break;
+		case 0:
+			turbina = 0;
+			vy /= 2;
+			if (vy < 0) y -= abs(vy);
+			else        y += vy;
+			break;
+		case 1:
+			turbina = 0;
+			vy =  vi;
+			y += vy;
+			break;
+		}
 
-		if (x < _x1) x = _x1;
-		if (x + largura > _x2) x = _x2 - largura;
-	
 
-		/* Troca a arma selecionada */
-		if(valor.b && tipo_tiro > 0)
+		// Testa os limites da tela
+		if (y < _area.y1) y = _area.y1;
+		if (y + altura > _area.y2) y = _area.y2 - altura;
+
+		if (x < _area.x1) x = _area.x1;
+		if (x + largura > _area.x2) x = _area.x2 - largura;
+
+
+		// Troca a arma selecionada
+		if(valor.b && tipo_tiro > 2)
 		{
 			tipo_tiro--;
 		}
-		else 
+		else
 		if(valor.c && tipo_tiro < 4)
 		{
 			tipo_tiro++;
 		}
 
-		/* Atira */
+		// Atira
 		if(valor.a)
 		{
-			tiros.Adicionar((ETiroTipo)tipo_tiro , x + (largura / 2), y);
+			//Log("Adicionando tiro nave...");
+			tiros.Adicionar((ETiroTipo)tipo_tiro , x + (largura / 2), y, _alvo);
+			//Log("Tiro nave adicionado...");
 		}
-		tiros.AtualizarTodos(0, 0, 640, 0, _x1, _y1, _x2,  _y2);
-
+		//Log("Atualizando tiros nave...");
+		tiros.AtualizarTodos(_area, _alvo);
+		//Log("Ttiros nave atualizados...");
 		if (casco <= 0)
 		{
 			status = eNaveExplosao;
-			tempo = 70;
+			quadro = 70;
 			energia = 0;
 		}
 	}
 
-	/* se estiver explodindo */
+	// se estiver explodindo
 	if (status == eNaveExplosao)
 	{
-		/* se o tempo explodindo esgotou */
-		if (tempo <= 0)
+		// se o quadro explodindo esgotou
+		if (quadro <= 0)
 		{
 			vi = 12;
 			status = eNaveRenacer;
@@ -182,19 +192,21 @@ void CNave::Atualizar(int _x1, int _y1, int _x2, int _y2)
 		}
 		else
 		{
-			tempo--;
+			quadro--;
 		}
 	}
 
 
-	/*tempo++;
-	if (tempo == 15)
+	/*
+	quadro++;
+	if (quadro == 15)
 	{
-		tempo = 0;
+		quadro = 0;
 
 		if (energia < 100)
 			energia++;
-	}*/
+	}
+	*/
 }
 
 //------------------------------------------------------------
@@ -224,9 +236,9 @@ void CNave::IncEnergia(int valor)
 
 
 //------------------------------------------------------------
-void CNave::TocarSom(void)
+void CNave::Sonorizar(void)
 {
-	tiros.TocarSomTodos();
+	tiros.SonorizarTodos();
 }
 
 

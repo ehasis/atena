@@ -25,9 +25,6 @@
 
 #include "callegro.h"
 #include "cjogo.h"
-#include "../alfont/alfont.h"
-
-ALFONT_FONT *fonte;
 
 int main(int argc, char *argv[])
 {
@@ -38,15 +35,16 @@ int main(int argc, char *argv[])
 	install_keyboard();
 	install_sound(DIGI_AUTODETECT, MIDI_AUTODETECT, NULL);
 
+	set_uformat(U_ASCII);
+	alfont_init();
+	alfont_text_mode(-1);
 /*
 	
 	set_color_depth(16);
 	set_gfx_mode(GFX_AUTODETECT_WINDOWED, 320, 240, 0, 0);
 
-	set_uformat(U_ASCII);
-	alfont_init();
 
-	alfont_text_mode(-1);
+	
 	fonte = alfont_load_font("dat/lucon.ttf");
 	alfont_set_font_size(fonte, 18);
 
@@ -59,7 +57,6 @@ int main(int argc, char *argv[])
 
 	dados.Fechar();
 	alfont_destroy_font(fonte);
-	alfont_exit();
 
 /**/
 
@@ -73,6 +70,7 @@ int main(int argc, char *argv[])
 	atena.Finalizar();
 
 /**/
+	alfont_exit();
 	allegro_exit();
 
 	return 0;

@@ -41,11 +41,21 @@ void GADados::Abrir(const char *arquivo)
 	strcat(tmp_arquivo, "indice.txt");
 	//-------------------------------------------------
 
+	char str[80];
+	if (!exists(tmp_arquivo))
+	{
+		sprintf(str, "Arquivo [%s] nao encontrado.", tmp_arquivo);
+		allegro_message(str);
+		return;
+	}
+
+
 	VETORPALAVRA lista;
 
-	lista.push_back(GAPalavra(1, "bmp"));
-	lista.push_back(GAPalavra(2, "wav"));
-	lista.push_back(GAPalavra(3, "mid"));
+	lista.push_back(GAPalavra(eTipoBMP, "bmp"));
+	lista.push_back(GAPalavra(eTipoWAV, "wav"));
+	lista.push_back(GAPalavra(eTipoMID, "mid"));
+	lista.push_back(GAPalavra(eTipoTTF, "ttf"));
 
 	GAScript script(this, lista);
 	script.Carregar(tmp_arquivo);
@@ -141,15 +151,15 @@ SAMPLE *GADados::Sample(const char *nome)
 }
 
 //------------------------------------------------------------
-FONT *GADados::Font(int indice)
+ALFONT_FONT *GADados::Font(int indice)
 {
-	return reinterpret_cast<FONT *>(m_dados[indice].dat);
+	return reinterpret_cast<ALFONT_FONT *>(m_dados[indice].dat);
 }
 
 //------------------------------------------------------------
-FONT *GADados::Font(const char *nome)
+ALFONT_FONT *GADados::Font(const char *nome)
 {
-	return reinterpret_cast<FONT *>(BuscarPorNome(nome));
+	return reinterpret_cast<ALFONT_FONT *>(BuscarPorNome(nome));
 }
 
 
@@ -164,16 +174,11 @@ int GADados::ExecutarInstrucao(int cmd, const std::string &par)
 		//	strcpy(m_caminho, par.c_str());
 		//	break;
 
-		case 1: //bmp
-			m_dados.push_back(GADadosAberto(m_caminho, par.c_str(), eTipoBMP));
-			break;
-
-		case 2: //wav
-			m_dados.push_back(GADadosAberto(m_caminho, par.c_str(), eTipoWAV));
-			break;
-
-		case 3: //mid
-			m_dados.push_back(GADadosAberto(m_caminho, par.c_str(), eTipoMID));
+		case eTipoBMP:
+		case eTipoWAV:
+		case eTipoMID:
+		case eTipoTTF:
+			m_dados.push_back(GADadosAberto(m_caminho, par.c_str(), (ETipoArquivo)cmd));
 			break;
 	}
 	return TRUE;

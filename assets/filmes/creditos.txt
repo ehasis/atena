@@ -11,9 +11,11 @@ cls
 
 dat filmes/abertura.dat
 
-mid MID_ABERTURA
+ttf lucon
 
-bmp BMP_ABERTURA
+mid mid_abertura
+
+bmp bmp_abertura
 txt ATENA
 seg 5
 txt Desenvolvido por
@@ -21,7 +23,7 @@ seg 3
 txt GA Entretenimento
 seg 3
 
-bmp MULHER_01
+bmp mulher_01
 txt Programacao:
 seg 3
 
@@ -31,14 +33,14 @@ seg 2
 txt Edison Henrique Andreassy
 seg 2
 
-bmp MULHER_02
+bmp mulher_02
 txt Historia:
 seg 3
 
 txt Vinicius
 seg 2
 
-bmp BMP_ABERTURA
+bmp bmp_abertura
 txt Artes Graficas:
 seg 3
 
@@ -60,7 +62,7 @@ seg 2
 txt Wanderson Pereira
 seg 3
 
-bmp MULHER_01
+bmp mulher_01
 txt Agradecimentos Especiais:
 seg 2
 
@@ -76,7 +78,7 @@ txt Time da Allegro, por ter feito esta excelente biblioteca
 seg 2
 
 
-bmp MULHER_02
+bmp mulher_02
 txt Puxa vida, que legal, sempre quiz programar os creditos...
 seg 4
 
@@ -104,8 +106,8 @@ seg 2
 
 mid .
 seg 1
-bmp BMP_ABERTURA
-wav WAV_ABERTURA
+bmp bmp_abertura
+wav wav_abertura
 txt Entao tchau! :)
 seg 6
 

@@ -99,9 +99,7 @@ public:
 	void RotateSprite(ECamada camada, BITMAP * bmp, int x, int y, fixed angulo);
 
 	//Metodos Extras
-	void Escrever(const char * str, int x, int y, int cor);
-	void Escrever(const char * str, int x, int y, int cor, FONT *fonte);
-	void Escrever(ECamada camada, const char * str, int x, int y, int cor);
+	void Escrever(const char * str, int x, int y, int cor, ALFONT_FONT *fonte);
 
 	//Metodo auxiliar que retorna o bitmap associado a camada
 	BITMAP *RetornarCamada(ECamada camada);

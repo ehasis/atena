@@ -42,18 +42,17 @@
 *  Diego Giacomelli em 20/07/2002
 *	- Inserido controle de m_tiros por CColecaoAvancada;
 *	- Substituido m_tiros por m_armas; 
+*
+*  Henrique Andreassy em 17/06/2003
+*	- Modificado a classe para derivar de CInimigo
+*
 -----------------------------------------------------------*/
 
 
 #ifndef calien_h_incluido
 #define calien_h_incluido
 
-
-#include "callegro.h"
-
-#include "cobjeto.h"
-#include "ccolecaoavancada.h"
-#include "carma.h"
+#include "cinimigo.h"
 
 typedef enum
 {
@@ -67,43 +66,20 @@ typedef enum
 } EAlien;
 
 
-enum EStatusAlien
-{
-	eAlienNormal,
-	eAlienEscudo,
-	eAlienAtingido,
-	eAlienExplosao,
-	eAlienInativo
-};
-
-
 //------------------------------------------------------------
 // Classe para as naves aliens
-class CAlien : public CObjetoAvancado
+class CAlien : public CInimigo
 {
 public:
-	CAlien();
-	static void CarregarArquivoDados(const char *arquivo);
-	static void DescarregarArquivoDados();
-	void Iniciar(int tipo, int x, int y);
+	virtual void Iniciar(TObjeto &obj);
+	virtual void Finalizar();
+
 	void Desenhar(CTela & tela, int x_real, int y_real);
-	void Atualizar(TRect area, CObjetoAvancado * const alvo);
-	void Finalizar();
-	int ObterTipo();
-	void Sonorizar();
-	void SetarStatus(EStatusAlien status);
-	EStatusAlien ObterStatus();
-	void DecEnergia(int decremento);
-	CColecaoAvancada< CArma > & ObterArmas();
-	bool Colidir(TRect area, int energia);
-	
+	void Atualizar(TRect &area, CObjetoAvancado * const alvo);
+
+
 protected:
-	int m_tipo; //eAlien
-	int m_atirar;
-	int m_velocidade;
-	EStatusAlien m_status;
-	static GADados m_dat_arquivo;
-	CColecaoAvancada< CArma > m_armas;
+	int m_atirar;	
 	int m_dir_x;
 	int m_dir_y;
 	int m_dir_r;		// Direção da rotação

@@ -69,21 +69,23 @@
 // Enumeracoes
 typedef enum
 {
-	eBonus,
-	eConstrucao,
-	eAlien,
-	eSeresVivo,
-	eFundo,
+	eAlien = 0,
 	eVeiculo,
+	eConstrucao,
+	eBonus,
+	eFundo,
 	eTiro
 } EObjeto;
 
 typedef struct
 {
-	EObjeto tipo;
+	int tipo;
 	int subtipo;
 	int x;
 	int y;
+	int energia;
+	int velocidade;
+	char arquivo[256];
 } TObjeto;
 
 typedef enum
@@ -106,44 +108,45 @@ typedef struct
 // Classe básica para manipulação de objetos
 class CObjetoBasico
 {
-	public:
-		void Iniciar(int x, int y, int largura, int altura);
-		int ChecarColisao(TRect rect);
-		int ChecarColisao(int x1, int y1, int x2, int y2);
-		int ChecarColisao(int x, int y);
-		int ChecarColisaoX(int x1, int x2);
-		int ChecarColisaoY(int y1, int y2);
+public:
+	void Iniciar(int x, int y, int largura, int altura);
+	int ChecarColisao(TRect &rect);
+	int ChecarColisao(int x1, int y1, int x2, int y2);
+	int ChecarColisao(int x, int y);
+	int ChecarColisaoX(int x1, int x2);
+	int ChecarColisaoY(int y1, int y2);
 
-		TRect ObterRect();
+	TRect& ObterRect();
 
-		void SetarX(int x);
-		int ObterX();
-		int ObterPMX();
-		int ObterX2();
-		void IncX(int incremento);
-		void DecX(int decremento);
+	void SetarX(int x);
+	int ObterX();
+	int ObterPMX();
+	int ObterX2();
+	void IncX(int incremento);
+	void DecX(int decremento);
 
-		void SetarY(int y);
-		int ObterY();
-		int ObterPMY();
-		int ObterY2();
-		void IncY(int incremento);
-		void DecY(int decremento);
+	void SetarY(int y);
+	int ObterY();
+	int ObterPMY();
+	int ObterY2();
+	void IncY(int incremento);
+	void DecY(int decremento);
 
-		void SetarXY(int x, int y);
-		void SetarLargura(int largura);
-		int ObterLargura();
-		void SetarAltura(int altura);
-		int ObterAltura();
+	void SetarXY(int x, int y);
+	void SetarLargura(int largura);
+	int ObterLargura();
+	void SetarAltura(int altura);
+	int ObterAltura();
 
-		void SetarTipoObjeto(EObjeto tipo_objeto);
-		EObjeto ObterTipoObjeto();
-		CObjetoBasico *RetornarObjetoBasico();
+	void SetarTipoObjeto(EObjeto tipo_objeto);
+	EObjeto ObterTipoObjeto();
+	CObjetoBasico *RetornarObjetoBasico();
 
-	protected:
-		int m_x, m_y;
-		int m_largura, m_altura;
-		EObjeto m_tipo_objeto;
+protected:
+	int m_x, m_y;
+	int m_largura, m_altura;
+	EObjeto m_tipo_objeto;
+	TRect m_rect;
 };
 
 
@@ -152,12 +155,12 @@ class CObjetoBasico
 
 class CObjeto : public CObjetoBasico
 {
-	public:
-		void SetarAngulo(int angulo);
-		int ObterAngulo();
-	protected:
-		int m_angulo;
-		int m_raio;
+public:
+	void SetarAngulo(int angulo);
+	int ObterAngulo();
+protected:
+	int m_angulo;
+	int m_raio;
 };
 
 
@@ -165,25 +168,25 @@ class CObjeto : public CObjetoBasico
 // Classe avançada para manipulação de objetos
 class CObjetoAvancado : public CObjeto
 {
-	public:
-		void SetarAtivo(int ativo);
-		int ObterAtivo();
-		int ObterVisivel();
-		void SetarVisivel(int visivel);
-		void DesenharExplosao(CTela &m_tela, int x_real, int y_real, int x, int y, int raio, int num_particulas);
-		void DesenharExplosaoRadial(int x_real, int y_real, int x, int y, int raio);
-		CObjetoAvancado *RetornarObjetoAvancado();
-		int ObterEnergia();
-		void IncEnergia(int incremento);
-		void DecEnergia(int decremento);
-		
-	protected:
-		int m_ativo;		// Se o objeto esta ativo
-		int m_visivel;		// Se o objeto esta visivel
-		int m_energia;
-		int m_quadro;		// Frame de animação atual
-		int m_tempo;		// Contador do n. de iterações que o objeto já passou
-		CExplosao m_explosao;
+public:
+	void SetarAtivo(int ativo);
+	int ObterAtivo();
+	int ObterVisivel();
+	void SetarVisivel(int visivel);
+	void DesenharExplosao(CTela &m_tela, int x_real, int y_real, int x, int y, int raio, int num_particulas);
+	void DesenharExplosaoRadial(int x_real, int y_real, int x, int y, int raio);
+	CObjetoAvancado *RetornarObjetoAvancado();
+	int ObterEnergia();
+	void IncEnergia(int incremento);
+	void DecEnergia(int decremento);
+	
+protected:
+	int m_ativo;		// Se o objeto esta ativo
+	int m_visivel;		// Se o objeto esta visivel
+	int m_energia;
+	int m_quadro;		// Frame de animação atual
+	int m_tempo;		// Contador do n. de iterações que o objeto já passou
+	CExplosao m_explosao;
 
 };
 
@@ -192,12 +195,12 @@ class CObjetoAvancado : public CObjeto
 // Classe para manipulação de objetos animados
 class CObjetoAnimado : public CObjetoAvancado
 {
-	public:
-		virtual bool Adicionar(int tipo, int x, int y);
-		virtual void Atualizar(TRect area, CObjetoAvancado * const alvo);
-		virtual void Desenhar(CTela & tela, int x_real, int y_real);
-		virtual void Sonorizar();
-		virtual void Finalizar();	
+public:
+	virtual bool Adicionar(int tipo, int x, int y);
+	virtual void Atualizar(TRect &area, CObjetoAvancado * const alvo);
+	virtual void Desenhar(CTela & tela, int x_real, int y_real);
+	virtual void Sonorizar();
+	virtual void Finalizar();	
 };
 
 #endif

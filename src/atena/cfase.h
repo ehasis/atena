@@ -78,15 +78,10 @@ public:
 	int Rolar(EDirecao direcao, int pixels);
 	int ObterX1Fonte();
 	int ObterY1Fonte();
-	void SalvarFase();
 	void Finalizar();
 	void SetarLadrilho(int x, int y, TLadrilho ladrilho, BITMAP * bmp_fonte);
 	CLadrilho ObterLadrilho(int x, int y);
 	void SetarArquivoFase(char arquivo_fase[]);
-	void AdicionarAlien(int tipo, int x, int y);
-	void AdicionarConstrucao(int tipo, int x, int y);
-	void ExcluirAliens(int x1, int y1, int x2, int y2);
-	void ExcluirConstrucoes(int x1, int y1, int x2, int y2);
 	bool Atualizar(int fundo_pixels);
 	void Sonorizar();
 	CColecaoAvancada< CAlien > & ObterAliens();

@@ -23,7 +23,7 @@ void CObjetoBasico::Iniciar(int x, int y, int largura, int altura)
 
 //------------------------------------------------------------
 // retorna se ha colisao com o objeto passado como parametro
-int CObjetoBasico::ChecarColisao(TRect rect)
+int CObjetoBasico::ChecarColisao(TRect &rect)
 {
 	if ((m_x + m_largura < rect.x1)
 	||  (m_y + m_altura  < rect.y1)
@@ -99,16 +99,14 @@ int CObjetoBasico::ChecarColisaoY(int y1, int y2)
 
 //------------------------------------------------------------
 // retorna os vertices do retangulo do objeto
-TRect CObjetoBasico::ObterRect()
+TRect& CObjetoBasico::ObterRect()
 {
-	TRect ret;
+	m_rect.x1 = m_x;
+	m_rect.y1 = m_y;
+	m_rect.x2 = m_x + m_largura;
+	m_rect.y2 = m_y + m_altura;
 
-	ret.x1 = m_x;
-	ret.y1 = m_y;
-	ret.x2 = m_x + m_largura;
-	ret.y2 = m_y + m_altura;
-
-	return ret;
+	return m_rect;
 }
 
 

@@ -19,62 +19,33 @@
 // Constructors
 CMenuH::CMenuH()
 {
-	m_x 		= 0;
-	m_y			= 0;
-	m_fonte		= font;
-	m_cor_texto	= makecol(255,255,255);
-	m_cor_selecao	= makecol(255,255,0);
-	m_num_itens	= 0;
-	m_pos_atual	= 0;
-	m_alinhamento	= eAlinharEsquerda;
-	m_cp_screen	= create_bitmap(SCREEN_W, SCREEN_H);
-	m_bmp_menu	= create_bitmap(SCREEN_W, SCREEN_H);
-}
-
-//------------------------------------------------------------
-CMenuH::CMenuH(FONT * fonte, int cor_texto, int cor_selecao)
-{
 	m_x 			= 0;
-	m_y			= 0;
-	m_fonte		= fonte;
-	m_cor_texto	= cor_texto;
-	m_cor_selecao	= cor_selecao;
-	m_num_itens	= 0;
-	m_pos_atual	= 0;
-	m_alinhamento = eAlinharEsquerda;
-	m_cp_screen	= create_bitmap(SCREEN_W, SCREEN_H);
-	m_bmp_menu	= create_bitmap(SCREEN_W, SCREEN_H);
-}
-
-//------------------------------------------------------------
-CMenuH::CMenuH(FONT * fonte, int cor_texto, int cor_selecao, int x, int y)
-{
-	m_x 			= x;
-	m_y			= y;
-	m_fonte		= fonte;
-	m_cor_texto	= cor_texto;
-	m_cor_selecao	= cor_selecao;
-	m_num_itens	= 0;
-	m_pos_atual	= 0;
+	m_y				= 0;
+	m_fonte			= NULL;
+	m_cor_texto		= makecol(255,255,255);
+	m_cor_selecao	= makecol(255,255,0);
+	m_num_itens		= 0;
+	m_pos_atual		= 0;
 	m_alinhamento	= eAlinharEsquerda;
-	m_cp_screen	= create_bitmap(SCREEN_W, SCREEN_H);
-	m_bmp_menu	= create_bitmap(SCREEN_W, SCREEN_H);
+	m_cp_screen		= create_bitmap(SCREEN_W, SCREEN_H);
+	m_bmp_menu		= create_bitmap(SCREEN_W, SCREEN_H);
 }
-
 
 //------------------------------------------------------------
 // Destructor
 CMenuH::~CMenuH()
 {
+	m_fonte = NULL;
 	destroy_bitmap(m_cp_screen);
 	destroy_bitmap(m_bmp_menu);
 }
 
 //------------------------------------------------------------
 // Adiciona um novo m_item ao menu
-void CMenuH::Adicionar(const char * texto)
+CMenuH& CMenuH::Adicionar(const char * texto)
 {
 	sprintf(m_item[m_num_itens++], texto);
+	return *this;
 }
 
 //------------------------------------------------------------
@@ -88,7 +59,7 @@ int CMenuH::Executar()
 	//Limpa o buffer de teclas pressionadas
 	//rest(50);
 	clear_keybuf();
-	text_mode(-1);
+	alfont_text_mode(-1);
 
 	//Copia da Tela
 	blit(screen, m_cp_screen, 0, 0, 0, 0, SCREEN_W, SCREEN_H);
@@ -134,70 +105,85 @@ int CMenuH::Executar()
 // Escreve o texto no bitmap como parametro
 void CMenuH::Escrever(BITMAP * bmp, const char * texto, int linha, int cor)
 {
-	int aux_linha = (linha * m_fonte->height) + (font->height / 3);
+	int aux_linha = (linha * alfont_get_font_height(m_fonte)) + (alfont_get_font_height(m_fonte) / 3);
 	switch (m_alinhamento)
 	{
 		case eAlinharEsquerda:
-			textout(bmp, m_fonte, texto, m_x, m_y + aux_linha , cor);
+			alfont_textout(bmp, m_fonte, texto, m_x, m_y + aux_linha , cor);
 			break;
 
 		case eAlinharDireita:
-			textout_right(bmp, m_fonte, texto, m_x, m_y + aux_linha, cor);
+			alfont_textout_right(bmp, m_fonte, texto, m_x, m_y + aux_linha, cor);
 			break;
 
 		case eAlinharCentro:
-			textout_centre(bmp, m_fonte, texto, m_x, m_y + aux_linha, cor);
+			alfont_textout_centre(bmp, m_fonte, texto, m_x, m_y + aux_linha, cor);
 			break;
 	}
 }
 
 //------------------------------------------------------------
-void CMenuH::SetarAlinhamento(EAlinhamentoMenu alinhamento)
+CMenuH& CMenuH::SetarAlinhamento(EAlinhamentoMenu alinhamento)
 {
 	m_alinhamento = alinhamento;
+	return *this;
 }
 
 //------------------------------------------------------------
-void CMenuH::SetarFonte(FONT * fonte)
+CMenuH& CMenuH::SetarFonte(ALFONT_FONT *fonte)
 {
 	m_fonte = fonte;
+	return *this;
 }
 
 //------------------------------------------------------------
-void CMenuH::SetarCorTexto(int cor_texto)
+CMenuH& CMenuH::SetarTamanhoFonte(int tamanho)
+{
+	alfont_set_font_size(m_fonte, tamanho);
+	return *this;
+}
+
+//------------------------------------------------------------
+CMenuH& CMenuH::SetarCorTexto(int cor_texto)
 {
 	m_cor_texto = cor_texto;
+	return *this;
 }
 
 //------------------------------------------------------------
-void CMenuH::SetarCorSelecao(int cor_selecao)
+CMenuH& CMenuH::SetarCorSelecao(int cor_selecao)
 {
 	m_cor_selecao = cor_selecao;
+	return *this;
 }
 
 //------------------------------------------------------------
-void CMenuH::SetarX(int x)
+CMenuH& CMenuH::SetarX(int x)
 {
 	m_x = x;
+	return *this;
 }
 
 //------------------------------------------------------------
-void CMenuH::SetarY(int y)
+CMenuH& CMenuH::SetarY(int y)
 {
 	m_y = y;
+	return *this;
 }
 
 //------------------------------------------------------------
-void CMenuH::SetarTexto(int indice, const char * texto)
+CMenuH& CMenuH::SetarTexto(int indice, const char * texto)
 {
 	if (indice >= 0 && indice < m_num_itens)
 	{
 		sprintf(m_item[indice], texto);
 	}
+	return *this;
 }
 
 //------------------------------------------------------------
-void CMenuH::SetarNumeroItens(int numero_itens)
+CMenuH& CMenuH::SetarNumeroItens(int numero_itens)
 {
 	m_num_itens = numero_itens;
+	return *this;
 }

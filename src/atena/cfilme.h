@@ -29,6 +29,7 @@ public:
 
 private:
 	GADados m_dados;
+	ALFONT_FONT *m_fonte;
 };
 
 #endif

@@ -13,97 +13,28 @@
 #include "construcoes.h"
 #include "erro.h"
 
-
 //------------------------------------------------------------
-// Membros static
-GADados CConstrucao::m_dat_arquivo;
-
-
-//------------------------------------------------------------
-void CConstrucao::CarregarArquivoDados(const char *arquivo)
+void CConstrucao::Iniciar(TObjeto &obj)
 {
-	Log("CConstrucao::CarregarArquivoDados();");
-	m_dat_arquivo.Abrir(arquivo);
+	IniciarInimigo(obj);
+
+	m_quadro	= 0;
+	m_atirar	= 1;
+	m_ativo		= 1;
+	m_status	= eInimigoNormal;
+	m_atirar	= 1;
 }
 
-
 //------------------------------------------------------------
-void CConstrucao::DescarregarArquivoDados()
+void CConstrucao::Finalizar()
 {
-	Log("CConstrucao::DescarregarArquivoDados();");
-	m_dat_arquivo.Fechar();
+	FinalizarInimigo();
 }
 
-
-
 //------------------------------------------------------------
-// Construtor
-CConstrucao::CConstrucao()
+void CConstrucao::Atualizar(TRect &area, CObjetoAvancado * const alvo)
 {
-
-}
-
-
-//------------------------------------------------------------
-void CConstrucao::Iniciar(int tipo, int x, int y)
-{
-	m_x	= x;
-	m_y	= y;
-	m_tipo = tipo;
-	m_quadro = 0;
-	m_atirar = 1;
-	m_ativo	= 1;
-	m_status = eConstrucaoNormal;
-	m_atirar = 1;
-	m_tipo_objeto = eConstrucao;
-
-	switch(m_tipo)
-	{
-		case eConstrucao_01:
-			m_largura    = 74;
-			m_altura     = 109;
-			m_energia	   = 1;
-			break;
-
-		case eConstrucao_02:
-			m_largura    = 161;
-			m_altura     = 161;
-			m_energia	   = 2;
-			break;
-
-		case eConstrucao_03:
-			m_largura    = 102;
-			m_altura     = 103;
-			m_energia	   = 2;
-			break;
-
-		case eConstrucao_04:
-			m_largura    = 62;
-			m_altura     = 67;
-			m_energia	   = 2;
-			break;
-
-		case eConstrucao_05:
-			m_largura    = 132;
-			m_altura     = 132;
-			m_energia	   = 2;
-			break;
-
-		case eConstrucao_06:
-			m_largura    = 111;
-			m_altura     = 97;
-			m_energia	   = 2;
-			break;
-	}
-	m_armas.Adicionar();
-	m_armas.Obter().Iniciar(eArmaInvisivel, m_x, m_y);
-}
-
-
-//------------------------------------------------------------
-void CConstrucao::Atualizar(TRect area, CObjetoAvancado * const alvo)
-{
-	if(m_tipo == eConstrucao_04)
+	if(m_subtipo == eConstrucao_04)
 	{
 		if(m_atirar >= 500)
 		{
@@ -114,99 +45,30 @@ void CConstrucao::Atualizar(TRect area, CObjetoAvancado * const alvo)
 		m_quadro = m_quadro == 2 ? 0 : m_quadro + 1;
 	}
 
-	if(m_status == eConstrucaoExplosao)
+	if(m_status == eInimigoExplosao)
 	{
 		m_quadro++;
 		if (m_quadro == 9)
 		{
-			m_status = eConstrucaoInativo;
+			m_status = eInimigoInativo;
 		}
 	}
-	//m_armas.Obter().SetarXY(m_x, m_y);
 	m_armas.Atualizar(area, alvo);
 }
 
 
 //------------------------------------------------------------
-void CConstrucao::Desenhar(CTela & tela, int x_real, int y_real)
+void CConstrucao::Desenhar(CTela &tela, int x_real, int y_real)
 {
 	switch(m_status)
 	{
-		case eConstrucaoNormal:
-			tela.MaskedBlit(m_dat_arquivo.Bitmap(m_tipo), eCamadaObjetos, m_quadro * m_largura, 0, m_x - x_real, m_y - y_real, m_largura, m_altura);
+		case eInimigoNormal:
+			tela.MaskedBlit(m_bitmap, eCamadaObjetos, m_quadro * m_largura, 0, m_x - x_real, m_y - y_real, m_largura, m_altura);
 			break;
 
-		case eConstrucaoExplosao:
-			//tela.Blit(m_dat_arquivo.Bitmap(_CONSTRUCAO_EXPLOSAO), eCamadaObjetos, m_quadro * 50, 0, m_x - x_real, m_y - y_real, 50, 50);
+		case eInimigoExplosao:
 			DesenharExplosao(tela, x_real, y_real, m_x + (m_largura/2), m_y + (m_altura/2), (m_quadro * 3) + (m_largura / 2), m_largura);
 			break;
 	}
 	m_armas.Desenhar(tela, x_real, y_real);
-}
-
-
-//------------------------------------------------------------
-void CConstrucao::Finalizar()
-{
-	m_armas.Finalizar();
-}
-
-
-//------------------------------------------------------------
-int CConstrucao::ObterTipo()
-{
-	return m_tipo;
-}
-
-
-//------------------------------------------------------------
-void CConstrucao::Sonorizar()
-{
-	if(m_status == eConstrucaoExplosao
-	&& m_quadro == 0)
-	{
-		play_sample(m_dat_arquivo.Sample(_WAV_CONSTRUCAO_EXPLOSAO), 128, 128, 1000, 0);
-	}
-	m_armas.Sonorizar();
-}
-
-
-//------------------------------------------------------------
-void CConstrucao::SetarStatus(EStatusConstrucao status)
-{
-	m_status = status;
-}
-
-
-//------------------------------------------------------------
-EStatusConstrucao CConstrucao::ObterStatus()
-{
-	return m_status;
-}
-
-
-//------------------------------------------------------------
-int CConstrucao::ObterEnergia()
-{
-	return m_energia;
-}
-
-
-//------------------------------------------------------------
-void CConstrucao::DecEnergia(int decremento)
-{
-	m_energia -= decremento;
-
-	if(m_energia == 0)
-	{
-		m_status = eConstrucaoExplosao;
-		m_quadro = 0;
-	}
-}
-
-
-//------------------------------------------------------------
-CColecaoAvancada< CArma > & CConstrucao::ObterArmas()
-{
-	return m_armas;
 }

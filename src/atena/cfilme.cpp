@@ -17,6 +17,7 @@ enum EOPCodeFilme
 	op_mid,
 	op_wav,
 	op_bmp,
+	op_ttf,
 	op_seg
 };
 
@@ -24,6 +25,7 @@ enum EOPCodeFilme
 //------------------------------------------------------------
 CFilme::CFilme()
 {
+	m_fonte = NULL;
 }
 
 //------------------------------------------------------------
@@ -44,6 +46,7 @@ void CFilme::Executar(const char *arquivo)
 	lista.push_back(GAPalavra(op_mid, "mid"));
 	lista.push_back(GAPalavra(op_wav, "wav"));
 	lista.push_back(GAPalavra(op_bmp, "bmp"));
+	lista.push_back(GAPalavra(op_ttf, "ttf"));
 	lista.push_back(GAPalavra(op_seg, "seg"));
 
 	GAScript script(this, lista);
@@ -69,13 +72,23 @@ bool CFilme::Escrever(const char *texto)
 		if (saltar && texto[i] == ' ')
 		{
 			coluna = -1;
-			linha += 10;
+			linha += 12;
 			saltar = false;
 		}
 		
-		textprintf(screen,
-				   font, (coluna * 8) + 50, linha,
-				   makecol(255,255,0), "%c", texto[i]);
+		if (m_fonte != NULL)
+		{
+			alfont_textprintf_aa(screen,
+					   m_fonte, (coluna * 8) + 50, linha,
+					   makecol(255,255,0), "%c", texto[i]);
+		}
+		else
+		{
+			textprintf(screen,
+					   font, (coluna * 8) + 50, linha,
+					   makecol(255,255,0), "%c", texto[i]);
+		}
+
 
 		coluna++;
 		
@@ -129,6 +142,11 @@ int CFilme::ExecutarInstrucao(int cmd, const std::string &par)
 
 	case op_bmp:
 		blit(m_dados.Bitmap(par.c_str()), screen, 0, 0, 0, 60, 640, 320);
+		break;
+
+	case op_ttf:
+		m_fonte = m_dados.Font(par.c_str());
+		alfont_set_font_size(m_fonte, 14);
 		break;
 
 	case op_seg:

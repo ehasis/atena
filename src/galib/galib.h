@@ -31,6 +31,9 @@
 #include <string>
 #include <vector>
 
+//Allegro Font
+#include "../alfont/alfont.h"
+
 #include "gascript.h"
 #include "gaconfig.h"
 #include "gadados.h"

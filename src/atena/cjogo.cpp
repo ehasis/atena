@@ -86,13 +86,10 @@ void CJogo::Iniciar()
 {
 	//Verifica se existe os arquivos necessarios
 	ChecarArquivo("atena.ini");
-	ChecarArquivo(ARQUIVO_ATENA_DAT);
-	ChecarArquivo(ARQUIVO_NAVE_DAT);
-	ChecarArquivo(ARQUIVO_ALIENS_DAT);
-	ChecarArquivo(ARQUIVO_TIROS_DAT);
-	ChecarArquivo(ARQUIVO_ARMAS_DAT);
-	ChecarArquivo(ARQUIVO_CONSTRUCOES_DAT);
-	ChecarArquivo(ARQUIVO_VEICULOS_DAT);
+	//ChecarArquivo(ARQUIVO_ATENA_DAT);
+	//ChecarArquivo(ARQUIVO_NAVE_DAT);
+	//ChecarArquivo(ARQUIVO_TIROS_DAT);
+	//ChecarArquivo(ARQUIVO_ARMAS_DAT);
 
 	srand(1);
 	text_mode(-1);
@@ -145,6 +142,8 @@ void CJogo::IniciarPartida()
 	}
 
 	CExplosao::Iniciar(ARENA_L, ARENA_A, m_cfg_particulas);
+
+	alfont_set_font_size(m_dados.Font(LUCON), 10);
 }
 
 //------------------------------------------------------------
@@ -154,7 +153,7 @@ void CJogo::ExecutarPartida()
     char bff[101];
     
 	//FONT *fonte = m_dados.Font(TAHOMA7);
-	FONT *fonte = font;
+	ALFONT_FONT *fonte = m_dados.Font(LUCON);
 
     if (!m_fase.Atualizar(1))
     {
@@ -204,7 +203,7 @@ void CJogo::ExecutarPartida()
 
 	// Calculo de FPS
 	sprintf(bff, "FPS:%i", CalcularFPS());
-	m_tela.Escrever(bff, 580, 472, makecol(0, 255, 0));
+	m_tela.Escrever(bff, 580, 472, makecol(0, 255, 0), fonte);
 
 	m_tela.AtualizarNaTela();
 	
@@ -222,9 +221,11 @@ void CJogo::FinalizarPartida()
 
 //------------------------------------------------------------
 void CJogo::Executar()
-{	
-	//m_estado = eExibirAbertura;
-    m_estado = eExibirMenuPrincipal;
+{
+	if (m_cfg.ObterInt("jogo", "abertura"))
+		m_estado = eExibirAbertura;
+	else
+		m_estado = eExibirMenuPrincipal;
     
     m_final_jogo = false;
     
@@ -283,30 +284,30 @@ void CJogo::ExibirMenuPrincipal()
 	/* <EM TESTE> */
 
 	bool sair = false;
-	CMenuH m;
+	CMenuH menu;
 
 	m_tela.Blit(m_dados.Bitmap(ABERTURA), eCamadaScreen, 0, 0, 0, 0, SCREEN_W, SCREEN_H);
 
 	//Propriedades do Menu
-	//m.SetarFonte(m_dados.Font(BANKGOTIC));
-	m.SetarFonte(font);
-	m.SetarCorTexto(makecol(0,0,255));
-	m.SetarCorSelecao(makecol(255,255,0));
-	m.SetarAlinhamento(eAlinharCentro);
-	m.SetarX(SCREEN_W/2);
-	m.SetarY(100);
+	menu.SetarFonte(m_dados.Font(BNKGOTHM))
+		.SetarTamanhoFonte(48)
+		.SetarCorTexto(makecol(0,0,255))
+		.SetarCorSelecao(makecol(255,255,0))
+		.SetarAlinhamento(eAlinharCentro)
+		.SetarX(SCREEN_W/2)
+		.SetarY(100);
 
-	m.Adicionar("Iniciar");
-	m.Adicionar("Demo");
-	m.Adicionar("Configurar");
-	m.Adicionar("Creditos");
-	m.Adicionar("Sair");
+	menu.Adicionar("Iniciar")
+		.Adicionar("Demo")
+		.Adicionar("Configurar")
+		.Adicionar("Creditos")
+		.Adicionar("Sair");
 
 	
 
 	while (!sair)
 	{
-		switch (m.Executar())
+		switch (menu.Executar())
 		{
 		case 0:
             m_estado = eIniciarPartida;
@@ -347,13 +348,14 @@ void CJogo::ExibirMenuConfiguracao()
 	CMenuH m;
 	CConfig m_cfg("atena.ini");
 
-	m.SetarFonte(font);
-	m.SetarCorTexto(makecol(0,0,255));
-	m.SetarCorSelecao(makecol(255,255,0));
-	m.SetarAlinhamento(eAlinharEsquerda);
-	m.SetarX(50);
-	m.SetarY(80);
-	m.SetarNumeroItens(10);
+	m.SetarFonte(m_dados.Font(LUCON))
+	 .SetarTamanhoFonte(18)
+	 .SetarCorTexto(makecol(0,0,255))
+	 .SetarCorSelecao(makecol(255,255,0))
+	 .SetarAlinhamento(eAlinharEsquerda)
+	 .SetarX(50)
+	 .SetarY(80)
+	 .SetarNumeroItens(10);
 
 	while (!sair)
 	{

@@ -1,9 +1,8 @@
 object frmZeus: TfrmZeus
-  Left = 200
-  Top = 110
-  Width = 549
-  Height = 425
-  VertScrollBar.Position = 171
+  Left = 190
+  Top = 102
+  Width = 691
+  Height = 570
   Caption = 'Zeus 2.0 Turbo'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -11,160 +10,227 @@ object frmZeus: TfrmZeus
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
+  Icon.Data = {
+    000001000200101010000000000028010000260000002020100000000000E802
+    00004E0100002800000010000000200000000100040000000000C00000000000
+    0000000000000000000000000000000000000000800000800000008080008000
+    00008000800080800000C0C0C000808080000000FF0000FF000000FFFF00FF00
+    0000FF00FF00FFFF0000FFFFFF00EEEEEEEEEEEEEEEEE00000000000000EE00E
+    EEE0E00EE00EE000E00000E00E0EE0000E0000E00E0EE00000E000E00E0EE00E
+    EE00000EE00EE00000000000000EEEEE0EE0EEE0EE0EEE000E00E0E000EEE0E0
+    0EE0E0E00E0EE00E0E00E0E0E00EEEEE0EE0E0E00EEEE00000000000000EE000
+    00000000000EEEEEEEEEEEEEEEEE000000000000000000000000000000000000
+    0000000000000000000000000000000000000000000000000000000000000000
+    0000000000000000000000000000280000002000000040000000010004000000
+    0000800200000000000000000000000000000000000000000000000080000080
+    000000808000800000008000800080800000C0C0C000808080000000FF0000FF
+    000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00EEEEEEEEEEEEEEEEEEEE
+    EEEEEEEEEEEEE000000000000000000000000000000EE0000000000000000000
+    00000000000EE000000000000000000000000000000EE0000000000000000000
+    00000000000EE00000000EEEEE00E000EEE00000000EE00000000E000000E00E
+    000E0000000EE000000000E00000000E000E0000000EE0000000000E0000000E
+    000E0000000EE00000000000E000000E000E0000000EE000000000000E00000E
+    000E0000000EE00000000E000E00000E000E0000000EE000000000EEE0000000
+    EEE00000000EE000000000000000000000000000000EE0000000000000000000
+    00000000000EE000000000000000000000000000000EE0000000000000000000
+    00000000000EE000000000000000000000000000000EE0000EEEEE00EEE000EE
+    EE0EEE00000EE0000E00000E000E0E000E0000E0000EE00000E0000E00000E00
+    0E000EE0000EE000000E000EEEEE0E000E0EE000000EE000000E000E000E0E00
+    0E0E0000000EE0000000E000EEE00E000E00EEE0000EE00000000E0000000000
+    00000000000EE0000EEEEE000000000000000000000EE0000000000000000000
+    00000000000EE000000000000000000000000000000EE0000000000000000000
+    00000000000EE000000000000000000000000000000EE0000000000000000000
+    00000000000EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE00000000000000000000
+    0000000000000000000000000000000000000000000000000000000000000000
+    0000000000000000000000000000000000000000000000000000000000000000
+    0000000000000000000000000000000000000000000000000000000000000000
+    00000000000000000000000000000000000000000000}
   Menu = MenuPrincipal
   OldCreateOrder = False
+  Position = poScreenCenter
   OnClose = FormClose
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object Label1: TLabel
-    Left = 589
-    Top = 329
-    Width = 32
-    Height = 13
-    Caption = 'Label1'
-  end
-  object Label2: TLabel
-    Left = 629
-    Top = 329
-    Width = 32
-    Height = 13
-    Caption = 'Label2'
-  end
-  object pagObjetos: TPageControl
+  object Panel2: TPanel
     Left = 0
-    Top = -171
-    Width = 109
-    Height = 534
-    ActivePage = tabLadrilhos
-    TabHeight = 16
-    TabOrder = 0
-    object tabLadrilhos: TTabSheet
-      Caption = 'Fundo'
-      object imgLadrilhos: TImage
-        Left = 0
-        Top = 24
-        Width = 96
-        Height = 480
-        OnMouseDown = imgLadrilhosMouseDown
-      end
-      object cboLadrilhos: TComboBox
-        Left = 0
-        Top = 0
-        Width = 73
-        Height = 22
-        Style = csOwnerDrawFixed
-        ItemHeight = 16
-        TabOrder = 0
-        OnChange = cboLadrilhosChange
-        Items.Strings = (
-          'fundo.bmp')
-      end
-      object btnAbrirLadrilhos: TButton
-        Left = 76
-        Top = 0
-        Width = 23
-        Height = 21
-        Caption = '...'
-        TabOrder = 1
-        OnClick = btnAbrirLadrilhosClick
-      end
-    end
-    object tabAliens: TTabSheet
-      Caption = 'Aliens'
-      ImageIndex = 1
-    end
-    object tabVeiculos: TTabSheet
-      Caption = 'Veiculos'
-      ImageIndex = 2
-    end
-    object tabConstrucoes: TTabSheet
-      Caption = 'Constru'#231#245'es'
-      ImageIndex = 3
-    end
-  end
-  object Panel1: TPanel
-    Left = 112
-    Top = -171
-    Width = 558
-    Height = 493
+    Top = 25
+    Width = 117
+    Height = 480
+    Align = alLeft
     BevelOuter = bvNone
-    BorderStyle = bsSingle
-    Color = clAppWorkSpace
-    TabOrder = 1
-    object imgTela: TImage
+    TabOrder = 0
+    object Panel4: TPanel
       Left = 4
       Top = 4
-      Width = 544
-      Height = 480
-      OnMouseMove = imgTelaMouseMove
-      OnMouseUp = imgTelaMouseUp
+      Width = 105
+      Height = 105
+      BevelOuter = bvNone
+      BorderStyle = bsSingle
+      Color = clAppWorkSpace
+      TabOrder = 0
+      object imgPrevisao: TImage
+        Left = 0
+        Top = 0
+        Width = 101
+        Height = 101
+        Align = alClient
+        AutoSize = True
+        Center = True
+        Transparent = True
+        OnClick = imgPrevisaoClick
+      end
+    end
+    object BarraProgresso: TProgressBar
+      Left = 4
+      Top = 112
+      Width = 105
+      Height = 17
+      BorderWidth = 2
+      DragMode = dmAutomatic
+      TabOrder = 1
+    end
+    object tvObjetos: TTreeView
+      Left = 4
+      Top = 133
+      Width = 105
+      Height = 344
+      Indent = 19
+      ReadOnly = True
+      TabOrder = 2
+      OnClick = tvObjetosClick
+      Items.Data = {
+        030000001F0000000000000000000000FFFFFFFFFFFFFFFF0000000000000000
+        06416C69656E73210000000000000000000000FFFFFFFFFFFFFFFF0000000000
+        000000085665ED63756C6F73240000000000000000000000FFFFFFFFFFFFFFFF
+        00000000000000000B436F6E73747275E7F56573}
     end
   end
-  object sbTelaY: TScrollBar
-    Left = 668
-    Top = -171
-    Width = 16
-    Height = 492
-    Kind = sbVertical
-    LargeChange = 4
-    Max = 15
-    PageSize = 2
-    Position = 15
-    TabOrder = 2
-    OnChange = sbTelaYChange
-  end
-  object Panel2: TPanel
-    Left = 112
-    Top = 324
-    Width = 77
-    Height = 39
+  object panCentro: TPanel
+    Left = 117
+    Top = 25
+    Width = 566
+    Height = 480
+    Align = alClient
     BevelOuter = bvNone
-    BorderStyle = bsSingle
-    Color = clAppWorkSpace
-    TabOrder = 3
-    object imgPincelEsq: TImage
-      Left = 1
-      Top = 1
-      Width = 32
-      Height = 32
+    Caption = 'panCentro'
+    TabOrder = 1
+    object Panel5: TPanel
+      Left = 0
+      Top = 0
+      Width = 550
+      Height = 480
+      Align = alClient
+      BevelOuter = bvNone
+      BorderStyle = bsSingle
+      Color = clAppWorkSpace
+      TabOrder = 0
+      DesignSize = (
+        546
+        476)
+      object imgTela: TImage
+        Left = 2
+        Top = -3
+        Width = 544
+        Height = 480
+        Anchors = []
+        OnMouseDown = imgTelaMouseDown
+        OnMouseMove = imgTelaMouseMove
+      end
     end
-    object imgPincelDir: TImage
-      Left = 37
-      Top = 1
-      Width = 32
-      Height = 32
+    object ScrollBarY: TScrollBar
+      Left = 550
+      Top = 0
+      Width = 16
+      Height = 480
+      Align = alRight
+      Kind = sbVertical
+      LargeChange = 15
+      Max = 185
+      PageSize = 0
+      Position = 185
+      TabOrder = 1
+      OnChange = ScrollBarYChange
     end
   end
-  object Memo1: TMemo
-    Left = 192
-    Top = 324
-    Width = 376
-    Height = 37
-    Lines.Strings = (
-      'Memo1')
-    TabOrder = 4
+  object BarraStatus: TStatusBar
+    Left = 0
+    Top = 505
+    Width = 683
+    Height = 19
+    Panels = <
+      item
+        Width = 115
+      end
+      item
+        Width = 300
+      end
+      item
+        Width = 50
+      end>
+  end
+  object ToolBar1: TToolBar
+    Left = 0
+    Top = 0
+    Width = 683
+    Height = 25
+    Caption = 'ToolBar1'
+    EdgeBorders = [ebBottom]
+    Flat = True
+    Images = imlBarra
+    TabOrder = 3
+    object sbtLadrilhos: TToolButton
+      Left = 0
+      Top = 0
+      AllowAllUp = True
+      Caption = 'Editar Ladrilhos'
+      Grouped = True
+      ImageIndex = 0
+      Style = tbsCheck
+      OnClick = sbtLadrilhosClick
+    end
+    object sbtAliens: TToolButton
+      Left = 23
+      Top = 0
+      AllowAllUp = True
+      Caption = 'Editar Objetos'
+      Grouped = True
+      ImageIndex = 1
+      Style = tbsCheck
+      OnClick = sbtAliensClick
+    end
   end
   object MenuPrincipal: TMainMenu
-    Left = 123
-    Top = 11
+    Left = 136
+    Top = 40
     object mnuArquivo: TMenuItem
       Caption = '&Arquivo'
       object itmNovo: TMenuItem
         Caption = '&Novo'
+        ShortCut = 16462
         OnClick = itmNovoClick
       end
       object itmAbrir: TMenuItem
-        Caption = '&Abrir'
+        Caption = '&Abrir...'
+        ShortCut = 16449
         OnClick = itmAbrirClick
       end
       object itmSalvar: TMenuItem
-        Caption = '&Salvar'
+        Caption = '&Salvar...'
+        ShortCut = 16467
         OnClick = itmSalvarClick
       end
       object itmFechar: TMenuItem
         Caption = '&Fechar'
         OnClick = itmFecharClick
+      end
+      object N3: TMenuItem
+        Caption = '-'
+      end
+      object itmExportar: TMenuItem
+        Caption = 'E&xportar...'
+        ShortCut = 16453
+        OnClick = itmExportarClick
       end
       object N1: TMenuItem
         Caption = '-'
@@ -174,27 +240,173 @@ object frmZeus: TfrmZeus
         OnClick = itmSairClick
       end
     end
-    object mnuEditar: TMenuItem
-      Caption = '&Editar'
-      object itmPreencherLadrilhos: TMenuItem
-        Caption = 'Preencher Ladrilhos'
-        OnClick = itmPreencherLadrilhosClick
+    object mnuLadrilho: TMenuItem
+      Caption = '&Ladrilho'
+      object itmFlipVertical: TMenuItem
+        Caption = 'Flip &Vertical'
+        ShortCut = 86
+        OnClick = itmFlipVerticalClick
+      end
+      object itmFlipHorizontal: TMenuItem
+        Caption = 'Flip &Horizontal'
+        ShortCut = 72
+        OnClick = itmFlipHorizontalClick
+      end
+    end
+    object mnuObjeto: TMenuItem
+      Caption = '&Objeto'
+      object itmPropriedades: TMenuItem
+        Caption = '&Propriedades'
+        ShortCut = 80
+        OnClick = imgPrevisaoClick
+      end
+    end
+    object mnuExibir: TMenuItem
+      Caption = '&Exibir'
+      object itmPaletadeLadrilhos: TMenuItem
+        Action = ExibirPaletaLadrilhos
+        AutoCheck = True
+      end
+      object itmExibirObjetos: TMenuItem
+        AutoCheck = True
+        Caption = '&Objetos'
+        Checked = True
+        OnClick = itmExibirObjetosClick
+      end
+    end
+    object mnuAjuda: TMenuItem
+      Caption = 'Ajuda'
+      object itmConteudo: TMenuItem
+        Caption = '&Conte'#250'do'
+        OnClick = itmConteudoClick
+      end
+      object N4: TMenuItem
+        Caption = '-'
+      end
+      object itmSobre: TMenuItem
+        Caption = '&Sobre'
+        OnClick = itmSobreClick
       end
     end
   end
-  object dlgAbrirLadrilhos: TOpenPictureDialog
-    Filter = 'Bitmaps (*.bmp)|*.bmp'
-    Left = 156
-    Top = 11
-  end
   object dlgAbrirMapa: TOpenDialog
-    Filter = 'Mapa do Atena (*.map)|*.map'
-    Left = 188
-    Top = 12
+    Filter = 'Todos os Arquivos(*.xml)|*.xml|Mapa XML (*.xml)|*.xml'
+    Left = 172
+    Top = 40
   end
   object dlgSalvarMapa: TSaveDialog
-    Filter = 'Mapa do Atena (*.map)|*.map'
-    Left = 220
-    Top = 12
+    Filter = 
+      'Todos os Arquivos(*.map *.xml)|*.map; *.xml|Mapa do Zeus XML (*.' +
+      'xml)|*.xml|Mapa do Atena (*.map)|*.map'
+    Left = 172
+    Top = 72
+  end
+  object popObjetos: TPopupMenu
+    Left = 136
+    Top = 72
+    object itmObjetosExcluir: TMenuItem
+      Caption = '&Excluir'
+      OnClick = itmObjetosExcluirClick
+    end
+    object N2: TMenuItem
+      Caption = '-'
+    end
+    object itmObjetosPropriedades: TMenuItem
+      Caption = '&Propriedades'
+      OnClick = itmObjetosPropriedadesClick
+    end
+  end
+  object imlBarra: TImageList
+    Left = 208
+    Top = 40
+    Bitmap = {
+      494C010102000400040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      0000000000003600000028000000400000001000000001001000000000000008
+      0000000000000000000000000000000000001042104210421042104210421042
+      1042104210421042104210421042104210420000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000000000010421F001F001F001F001F001F00
+      1F001F001F001F001F001F001F00000210420000FF03FF03FF03FF03FF03FF03
+      FF03FF03FF03FF03FF0300000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000000000010421F001F001F001F001F001F00
+      1F001F001F001F001F001F000002000210420000FF031F001F001F001F001F00
+      1F001F001F001F00FF03FF030000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000000000010421F001F001F001F001F001F00
+      1F001F001F001F001F0000020002000210420000FF031F001F001F001F001F00
+      1F001F001F001F00FF031000FF03000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000000000010421F001F001F001F001F001F00
+      1F001F001F001F00000200020002000210420000FF031F001F001F001F001F00
+      1F001F001F001F00FF0310001000FF0300000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000000000010421F001F001F001F001F001F00
+      1F001F001F000002000200020002000210420000FF031F001F001F001F001F00
+      1F001F001F001F00FF0310001000FF0300000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000001042FF03FF03FF03FF03FF03FF03
+      FF03FF03FF03FF03000200020002000210420000FF031F001F001F001F001F00
+      1F001F001F001F00FF0310001000FF0300000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000001042FF03FF03FF03FF03FF03FF03
+      FF03FF03FF03FF03000200020002000210420000FF031F001F001F001F001F00
+      1F001F001F001F00FF0310001000FF0300000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000001042FF03FF03FF03FF03FF03FF03
+      FF03FF03FF03FF03FF0300020002000210420000FF031F001F001F001F001F00
+      1F001F001F001F00FF0310001000FF0300000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000001042FF03FF03FF03FF03FF03FF03
+      FF03FF03FF03FF03FF03FF030002000210420000FF031F001F001F001F001F00
+      1F001F001F001F00FF0310001000FF0300000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000001042FF03FF0300420042FF03FF03
+      FF03FF03FF03FF03FF03FF030002000210420000FF031F001F001F001F001F00
+      1F001F001F001F00FF0310001000FF0300000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000001042FF030042E07FE07F0042FF03
+      FF03FF03FF03FF03FF03FF03FF03000210420000FF03FF03FF03FF03FF03FF03
+      FF03FF03FF03FF03FF0310001000FF0300000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000001042FF030042E07FE07F0042FF03
+      FF03FF03FF03FF03FF03FF03FF03FF03104200000000FF031F001F001F001F00
+      1F001F001F001F001F00FF031000FF0300000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000001042FF03FF0300420042FF03FF03
+      FF03FF03FF03FF03FF03FF03FF03FF031042000000000000FF031F001F001F00
+      1F001F001F001F001F001F00FF03FF0300000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000001042FF03FF03FF03FF03FF03FF03
+      FF03FF03FF03FF03FF03FF03FF03FF0310420000000000000000FF03FF03FF03
+      FF03FF03FF03FF03FF03FF03FF03FF0300000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000001042104210421042104210421042
+      1042104210421042104210421042104210420000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000424D3E000000000000003E000000
+      2800000040000000100000000100010000000000800000000000000000000000
+      000000000000000000000000FFFFFF000000FFFF000000000000800F00000000
+      0000800700000000000080030000000000008001000000000000800100000000
+      0000800100000000000080010000000000008001000000000000800100000000
+      000080010000000000008001000000000000C001000000000000E00100000000
+      0000F001000000000000FFFF0000000000000000000000000000000000000000
+      000000000000}
+  end
+  object alZeus: TActionList
+    Left = 136
+    Top = 104
+    object ExibirPaletaLadrilhos: TAction
+      AutoCheck = True
+      Caption = 'Paleta de Ladrilhos'
+      Checked = True
+      OnExecute = ExibirPaletaLadrilhosExecute
+    end
+  end
+  object imlObjetos: TImageList
+    Left = 208
+    Top = 72
   end
 end

@@ -15,16 +15,15 @@
 *	- Alterada toda a classe para ser utilizada com CColecaoAvancada;
 *	- Substituido m_tiros por m_armas; 
 *
+*  Henrique Andreassy em 17/06/2003
+*	- Modificado a classe para derivar de CInimigo
+*
 *------------------------------------------------------------*/
 
 #ifndef cconstrucao_h_incluido
 #define cconstrucao_h_incluido
 
-#include "callegro.h"
-
-#include "cobjeto.h"
-#include "carma.h"
-#include "ccolecaoavancada.h"
+#include "cinimigo.h"
 
 typedef enum
 {
@@ -37,41 +36,19 @@ typedef enum
 	eConstrucao_07
 } EConstrucao;
 
-
-enum EStatusConstrucao
-{
-	eConstrucaoNormal,
-	eConstrucaoExplosao,
-	eConstrucaoInativo
-};
-
-
 //------------------------------------------------------------
 // Classe para as construções
-class CConstrucao : public CObjetoAvancado
+class CConstrucao : public CInimigo
 {
 public:
-	CConstrucao();
-	static void CarregarArquivoDados(const char *arquivo);
-	static void DescarregarArquivoDados();
-	void Iniciar(int tipo, int x, int y);
-	void Desenhar(CTela & tela, int x_real, int y_real);;
-	void Atualizar(TRect area, CObjetoAvancado * const alvo);
-	void Finalizar();
-	int ObterTipo();
-	void Sonorizar();
-	void SetarStatus(EStatusConstrucao status);
-	EStatusConstrucao ObterStatus();
-	int ObterEnergia();
-	void DecEnergia(int decremento);
-	CColecaoAvancada< CArma > & ObterArmas();
+	virtual void Iniciar(TObjeto &obj);
+	virtual void Finalizar();
+
+	virtual void Desenhar(CTela &tela, int x_real, int y_real);;
+	void Atualizar(TRect &area, CObjetoAvancado * const alvo);
 
 private:
-	int m_tipo; //eConstrucao
 	int m_atirar;
-	EStatusConstrucao m_status;
-	static GADados m_dat_arquivo;
-	CColecaoAvancada< CArma > m_armas;
 };
 
 #endif

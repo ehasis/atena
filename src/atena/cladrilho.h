@@ -58,7 +58,7 @@
 	int h_flip;				// Flip horizontal
 	int v_flip;				// Flip vertical
 	int angulo;				// angulo do m_ladrilho 0-90-180-360
-	char arquivo_bmp[32];	// Path do bmp associado ao m_ladrilho
+	char arquivo_bmp[64];	// Path do bmp associado ao m_ladrilho
 } TLadrilho;
 
 

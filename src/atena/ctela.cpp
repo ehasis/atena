@@ -212,31 +212,15 @@ void CTela::RectFill(ECamada camada, int x1, int y1, int x2, int y2, int cor)
 }
 
 //------------------------------------------------------------
-void CTela::Escrever(const char * str, int x, int y, int cor)
-{
-	Escrever(eCamadaFundo, str, x, y, cor);
-}
-
-void CTela::Escrever(const char * str, int x, int y, int cor, FONT *fonte)
+void CTela::Escrever(const char * str, int x, int y, int cor, ALFONT_FONT *fonte)
 {
 	if (m_utilizar_escrever_sombra)
 	{
-		textout(RetornarCamada(eCamadaFundo), fonte, str, x + 1, y + 1, COR_PRETA);
+		alfont_textout(RetornarCamada(eCamadaFundo), fonte, str, x + 1, y + 1, COR_PRETA);
 	}
 
-	textout(RetornarCamada(eCamadaFundo), fonte, str, x, y, cor);
+	alfont_textout(RetornarCamada(eCamadaFundo), fonte, str, x, y, cor);
 }
-//------------------------------------------------------------
-void CTela::Escrever(ECamada camada, const char * str, int x, int y, int cor)
-{
-	if (m_utilizar_escrever_sombra)
-	{
-		textout(RetornarCamada(camada), font, str, x + 1, y + 1, COR_PRETA);
-	}
-
-	textout(RetornarCamada(camada), font, str, x, y, cor);
-}
-
 
 //------------------------------------------------------------
 void CTela::PutPixel(ECamada camada, int x, int y, int cor)

@@ -1,6 +1,0 @@
-inicio
-
-bmp veiculo_01
-bmp veiculo_01_s
-
-fim

@@ -5,7 +5,7 @@
 void CChefe::Iniciar()
 {
 	
-	SetarX(100);
+	SetarX(50);
 	SetarY(10);
 
     /*
@@ -27,9 +27,9 @@ void CChefe::Iniciar()
 	m_armas.Obter().SetarX(ObterX() + 350);
 
 
-	m_largura = 300;
-	m_altura = 240;
-	m_energia = 50;
+	m_largura = m_dados.Bitmap(0)->w;
+	m_altura = m_dados.Bitmap(0)->h;
+	m_energia = 250;
 	m_ativo = 1;
 	m_visivel = 1;
 	m_status = eChefeNormal;
@@ -58,8 +58,14 @@ void CChefe::Atualizar(TRect area, CObjetoAvancado * const alvo)
 	
 	if(m_status != eChefeInativo)
 	{
-		if(m_quadro == 50) m_status = eChefeInativo;
-		else if(m_status == eChefeExplosao) m_quadro++;
+		if(m_quadro >= 200)
+		{
+			m_status = eChefeInativo;
+		}
+		else if(m_status == eChefeExplosao)
+		{
+			m_quadro++;
+		}
 	}
 
 	m_armas.MoverPrimeiro();
@@ -75,14 +81,14 @@ void CChefe::Atualizar(TRect area, CObjetoAvancado * const alvo)
 void CChefe::Desenhar(CTela & tela, int x_real, int y_real)
 {
 	if (!m_ativo) return;
-	char buf[128];
+	//char buf[128];
 	
 	switch (m_status)
 	{
 		case eChefeNormal:
-			sprintf(buf, "Energia: %d", m_energia);
+			//sprintf(buf, "Energia: %d", m_energia);
 			tela.MaskedBlit(m_dados.Bitmap(0), eCamadaObjetos, 0, 0, m_x - x_real, m_y - y_real, m_largura, m_altura);
-			tela.Escrever(eCamadaEfeitos, buf, 150, 30, makecol(0,255,0));
+			//tela.Escrever(eCamadaEfeitos, buf, 150, 30, makecol(0,255,0));
 			break;
 
 		case eChefeExplosao:

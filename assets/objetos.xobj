@@ -1,0 +1,24 @@
+<Objetos>
+  <Aliens>
+    <Objeto nome="Doido"    tipo="0" subtipo="0" x="0" y="0" energia="10" velocidade="3" arquivo="dat\aliens\alien_01.bmp"/>
+    <Objeto nome="Caca"     tipo="0" subtipo="1" x="0" y="0" energia="20" velocidade="5" arquivo="dat\aliens\alien_02.bmp"/>
+    <Objeto nome="Triplo"   tipo="0" subtipo="2" x="0" y="0" energia="30" velocidade="4" arquivo="dat\aliens\alien_03.bmp"/>
+    <Objeto nome="Amrelo"   tipo="0" subtipo="3" x="0" y="0" energia="20" velocidade="2" arquivo="dat\aliens\alien_04.bmp"/>
+    <Objeto nome="Verde"    tipo="0" subtipo="4" x="0" y="0" energia="30" velocidade="3" arquivo="dat\aliens\alien_05.bmp"/>
+    <Objeto nome="Preto"    tipo="0" subtipo="5" x="0" y="0" energia="20" velocidade="2" arquivo="dat\aliens\alien_06.bmp"/>
+    <Objeto nome="Padrao"   tipo="0" subtipo="6" x="0" y="0" energia="50" velocidade="1" arquivo="dat\aliens\alien_07.bmp"/>
+  </Aliens>
+  <Veiculos>
+    <Objeto nome="Assalto" tipo="1" subtipo="0" x="0" y="0" energia="30" velocidade="3" arquivo="dat\veiculos\veiculo_01.bmp"/>
+    <Objeto nome="Furador" tipo="1" subtipo="0" x="0" y="0" energia="50" velocidade="2" arquivo="dat\veiculos\veiculo_02.bmp"/>
+  </Veiculos>
+  <Construcoes>
+    <Objeto nome="Torre Nova" tipo="2" subtipo="0" x="0" y="0" energia="40" velocidade="2" arquivo="dat\construcoes\construcao_01.bmp"/>
+    <Objeto nome="Galpao"     tipo="2" subtipo="0" x="0" y="0" energia="40" velocidade="2" arquivo="dat\construcoes\construcao_02.bmp"/>
+    <Objeto nome="Igreja"     tipo="2" subtipo="0" x="0" y="0" energia="40" velocidade="2" arquivo="dat\construcoes\construcao_03.bmp"/>
+    <Objeto nome="Torres"     tipo="2" subtipo="0" x="0" y="0" energia="40" velocidade="2" arquivo="dat\construcoes\construcao_04.bmp"/>
+    <Objeto nome="Castelo"    tipo="2" subtipo="0" x="0" y="0" energia="40" velocidade="2" arquivo="dat\construcoes\construcao_05.bmp"/>
+    <Objeto nome="Mina"       tipo="2" subtipo="0" x="0" y="0" energia="40" velocidade="2" arquivo="dat\construcoes\construcao_06.bmp"/>
+  </Construcoes>
+
+</Objetos>

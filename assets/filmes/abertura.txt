@@ -20,6 +20,7 @@
 ; seg - aguarta n segundos
 ; txt - escreve um texto
 ; wav - toca um som
+; ttf - seleciona uma fonte para o texto
 ;
 ;************************************************************
 
@@ -29,13 +30,15 @@ cls
 
 dat filmes/abertura.dat
 
-bmp BMP_ABERTURA
-wav WAV_ABERTURA
+ttf lucon
+
+bmp bmp_abertura
+wav wav_abertura
 seg 6
 
-mid MID_ABERTURA
+mid mid_abertura
 
-bmp MULHER_01
+bmp mulher_01
 txt ATENA
 seg 3
 txt Desenvolvido por
@@ -45,31 +48,31 @@ seg 3
 
 ;************************************************************
 
-bmp MULHER_02
-txt No ano de 2073, uma grande disputa de poder comeca a pertubar a balanca de poderes da galaxia Afrone.
+bmp mulher_02
+txt No ano de 2073, uma grande disputa de poder começa a pertubar a balança de poderes da galáxia Afrone.
 seg 7
 
-bmp MULHER_01
-txt No planeta chamado Cibele, e realizado uma das mais importantes reunioes ja realizadas.
+bmp mulher_01
+txt No planeta chamado Cibele, acontece uma das mais importantes reunioes ja realizadas.
 seg 6
 
-bmp MULHER_02
+bmp mulher_02
 txt Erebo, lider do imperio Anteros deseja explorar o mineral Vita Tiberium, encontrado em todos os planetas da Galaxia, porem o conselho do planeta, nao se mostrava muito a favor.
 seg 9
 
-bmp MULHER_01
+bmp mulher_01
 txt Vita Tiberium pode ser usado como fonte de energia para fazer armas de poder inigualavel, porem esta energia e a força vital de todos os planetas.
 seg 7
 
-bmp MULHER_02
+bmp mulher_02
 txt Sem este mineral, os planetas simplesmente morreriam.
 seg 4
 
-bmp MULHER_01
+bmp mulher_01
 txt Apos dias de discussao, a ideia de Erebo foi recusada, em vista, a destruicao eminente e lhe foi avisado que qualquer tentativa contraria seria punida.
 seg 8
 
-bmp MULHER_02
+bmp mulher_02
 txt Erebo se calou, e no mais profundo segredo, continuou com suas ideias para a exploracao do Vita Tiberium, organizando a maior frota estrelar jamais vista.
 seg 9
 

@@ -31,23 +31,22 @@ class CMenuH
 public:
 	//Constructor/Destructor
 	CMenuH();
-	CMenuH(FONT * fonte, int cor_texto, int cor_selecao);
-	CMenuH(FONT * fonte, int cor_texto, int cor_selecao, int x, int y);
 	~CMenuH();
 
 	//Propriedades
-	void SetarAlinhamento(EAlinhamentoMenu alinhamento);
-	void SetarFonte(FONT * fonte);
-	void SetarCorTexto(int cor_texto);
-	void SetarCorSelecao(int cor_selecao);
-	void SetarX(int x);
-	void SetarY(int y);
-	void SetarTexto(int indice, const char * texto);
-	void SetarNumeroItens(int numero_itens);
+	CMenuH& SetarAlinhamento(EAlinhamentoMenu alinhamento);
+	CMenuH& SetarFonte(ALFONT_FONT *fonte);
+	CMenuH& SetarTamanhoFonte(int tamanho);
+	CMenuH& SetarCorTexto(int cor_texto);
+	CMenuH& SetarCorSelecao(int cor_selecao);
+	CMenuH& SetarX(int x);
+	CMenuH& SetarY(int y);
+	CMenuH& SetarTexto(int indice, const char *texto);
+	CMenuH& SetarNumeroItens(int numero_itens);
 
 	//Metodos
-	void Adicionar(const char * texto);
-	void Adicionar(const char * texto, int linha, int coluna);
+	CMenuH& Adicionar(const char *texto);
+	CMenuH& Adicionar(const char *texto, int linha, int coluna);
 
 	int Executar();
 
@@ -61,7 +60,7 @@ private:
 	char m_item[NUMERO_ITENS][80];
 	EAlinhamentoMenu m_alinhamento;
 
-	FONT *m_fonte;
+	ALFONT_FONT *m_fonte;
 	BITMAP *m_cp_screen, *m_bmp_menu;
 
 

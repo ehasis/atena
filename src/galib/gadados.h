@@ -23,9 +23,10 @@
 
 enum ETipoArquivo
 {
-	eTipoBMP,
+	eTipoBMP = 0,
 	eTipoWAV,
-	eTipoMID
+	eTipoMID,
+	eTipoTTF
 };
 
 class GADadosAberto
@@ -54,6 +55,10 @@ public:
 			case eTipoMID:
 				destroy_midi(reinterpret_cast<MIDI *>(dat));
 				break;
+			case eTipoTTF:
+				alfont_destroy_font(reinterpret_cast<ALFONT_FONT *>(dat));
+				break;
+
 		}
 		dat = NULL;
 	}
@@ -84,16 +89,19 @@ public:
 				strcat(arquivo, ".mid");
 				dat = reinterpret_cast <void *>(load_midi(arquivo));
 				break;
+			case eTipoTTF:
+				strcat(arquivo, ".ttf");
+				dat = reinterpret_cast <void *>(alfont_load_font(arquivo));
+				break;
 		}
 	}
-
-	//
-	void *dat;
 
 	const char *Nome()
 	{
 		return m_nome;
 	}
+
+	void *dat;
 
 protected:
 	ETipoArquivo m_tipo;
@@ -134,8 +142,8 @@ public:
 	SAMPLE *Sample(int indice);
 	SAMPLE *Sample(const char *nome);
 
-	FONT *Font(int indice);
-	FONT *Font(const char *nome);
+	ALFONT_FONT *Font(int indice);
+	ALFONT_FONT *Font(const char *nome);
 
 #ifdef GADADOS_ABERTO
 	virtual int ExecutarInstrucao(int cmd, const std::string &par);

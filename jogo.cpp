@@ -17,7 +17,7 @@
 #include "nucleo.h"
 #include "entrada.h"
 #include "vglobal.h"
-
+#include "abertura.h"
 
 /*************************************************************/
 
@@ -27,6 +27,8 @@ int final_jogo;
 void IniciarJogo()
 {
 	final_jogo = 0;
+
+	MostrarAbertura();
 
 	IniciarEntrada();
 	IniciarGraficos();

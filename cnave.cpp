@@ -182,7 +182,8 @@ void CAlien::Desenhar(BITMAP *bmp)
 		//draw_sprite(bmp, (BITMAP *)data[ALIEN_ESCUDO].dat, x, y);	
 		//status = eAlienNormal;
 	case eAlienNormal:
-		draw_sprite(bmp, (BITMAP *)data[ALIEN_NORMAL].dat, x, y);
+		draw_trans_sprite(bmp, (BITMAP *)data[ALIEN_SOMBRA].dat, x+50, y+70);
+		draw_sprite(bmp, (BITMAP *)data[ALIEN_2].dat, x, y);
 		break;
 	
 	case eAlienExplosao:

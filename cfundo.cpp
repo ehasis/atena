@@ -12,11 +12,12 @@
 #include <allegro.h>
 #include "cfundo.h"
 //------------------------------------------------------------
-void CFundo::Iniciar()
+void CFundo::Iniciar(char *fase)
 {
 	FILE *f;
 	int x, y;
 	int n = 0;
+	char arq[50];
 
 	n_ladrilhos = 0;
 
@@ -33,11 +34,14 @@ void CFundo::Iniciar()
     tela = create_bitmap(SCREEN_W + (LADRILHO_LARGURA * 2), SCREEN_H + (LADRILHO_ALTURA * 2) );
 	
 	// abertura do bitmap com os ladrilhos
-	data = load_bmp("fases\\fase1.bmp", NULL);
+	sprintf(arq, "fases//%s.bmp", fase);
+	data = load_bmp(arq, NULL);
 	
 	// abertura do arquivo de mapa
-	f = fopen("fases\\fase1.map", "r");
+	sprintf(arq, "fases//%s.map", fase);
+	f = fopen(arq, "r");
 	fscanf(f, "%4d", &n_ladrilhos);
+
 	for (y = 0; y < MAPA_ALTURA_LADRILHOS; y++)
 	{
 		for (x = 0; x < MAPA_LARGURA_LADRILHOS; x++)

@@ -1,0 +1,5 @@
+* text=auto
+*.bmp binary
+*.dat binary
+*.ico binary
+*.tsp binary

@@ -173,7 +173,7 @@ void CriarAlien(int tipo)
 	alien[alien_atual].l = 50;
 	alien[alien_atual].a = 50;
 	alien[alien_atual].tipo = tipo;
-	alien[alien_atual].energia = 5 * tipo;
+	alien[alien_atual].energia = 3 * tipo;
 	alien[alien_atual].vi = 2 + (rand()%2);
 
 	alien_atual++;
@@ -212,10 +212,10 @@ void IniciarObjetos()
 	text_mode(-1);
 	clear_keybuf();
 	
-	play_midi((MIDI *)data[MID_FUNDO1].dat, 1);
+	//play_midi((MIDI *)data[MID_FUNDO1].dat, 1);
 	
 	//Objetos
-	fundo.Iniciar();
+	fundo.Iniciar("fase1");
 	nave1.SetArquivoDat(load_datafile("nave.dat"));
 	for (int i = 0; i < 30; i++)
 	{

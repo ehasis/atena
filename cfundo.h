@@ -23,7 +23,7 @@
 class CFundo
 {
 public:
-	void Iniciar();
+	void Iniciar(char *mapa);
 	void Desenhar(BITMAP *bmp);
 	void Atualizar();
 	void Desligar();

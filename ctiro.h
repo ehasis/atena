@@ -4,11 +4,11 @@
 *  Nome: Diego Giacomelli
 *  Data: terça-feira, 13 de janeiro de 2002
 *
-*  Diego em 13/02/2002
+*  Diego Giacomelli em 13/02/2002
 *   - Alterado os métodos Desenhar e DesenharTodos para aceitar
 *     CTela e posicionamento relativo;
 *
-*  Diego em 24/02/2002
+*  Diego Giacomelli em 24/02/2002
 *   - Incluido membro de dados m_velocidade;
 *
 *  Diego Giacomelli em 05/03/2002
@@ -20,7 +20,9 @@
 *  Diego Giacomelli em 23/06/2002
 *   - Renomeado ETiroTipo para ETiro
 *
-*
+*  Diego Giacomelli em 20/06/2002
+*	- Alterada toda a classe para ser utilizada com CColecaoAvancada;
+*	- Implementado método ObterStatus;
 *------------------------------------------------------------*/
 
 
@@ -30,6 +32,7 @@
 
 #include "cobjeto.h"
 #include "tiros.h"
+#include "cexplosao.h"
 
 
 typedef enum
@@ -46,7 +49,8 @@ typedef enum
 typedef enum
 {
 	eTiroNormal,
-	eTiroExplosao
+	eTiroExplosao,
+	eTiroInativo
 } EStatusTiro;
 
 //------------------------------------------------------------
@@ -58,20 +62,14 @@ public:
 	static void CarregarArquivoDados(DATAFILE * dat_arquivo);
 	static void DescarregarArquivoDados();
 	void Iniciar(ETiro tipo, int x, int y, CObjetoAvancado * const alvo);
-	void Adicionar(ETiro tipo, int x, int y, CObjetoAvancado * const alvo);
-	void AtualizarTodos(TRect area, CObjetoAvancado * const alvo);
-	void Atualizar(CObjetoAvancado * const alvo);
+	void Atualizar(TRect area, CObjetoAvancado * const alvo);
 	void Desenhar(CTela & tela, int x_real, int y_real);
-	void DesenharTodos(CTela & tela, int x_real, int y_fase);
-	int VerificarExisteTiros();
-	int ChecarColisaoTiros(TRect obj);
 	void Sonorizar();
-	void SonorizarTodos();
 	void SetarStatus(EStatusTiro status);
+	EStatusTiro ObterStatus();
 	void Finalizar();
-	CObjetoAvancado *ObterMaisProximo(int x, int y);
-
-	CTiro *m_p_tiro;
+	
+	
 private:
 	ETiro m_tipo;
 	static DATAFILE *m_dat_arquivo;
@@ -84,6 +82,7 @@ private:
 	int m_flag_y;
 	int m_cont;
 	int m_velocidade;
+	CExplosao m_explosoes;
 };
 
 #endif

@@ -25,7 +25,9 @@ void CEditor::Iniciar()
 	ChecarArquivo("aliens.dat");
 	ChecarArquivo("armas.dat");
 	ChecarArquivo("construcoes.dat");
+	ChecarArquivo("veiculos.dat");
 	ChecarArquivo("imagem.dat");
+	ChecarArquivo("bonus.dat");
 	ChecarArquivo("fases\\novo.dft");
 	ChecarArquivo("fases\\novo.bmp");
 
@@ -78,12 +80,14 @@ void CEditor::Iniciar()
 
 	CAlien::CarregarArquivoDados(load_datafile("aliens.dat"));
 	CConstrucao::CarregarArquivoDados(load_datafile("construcoes.dat"));
+	CVeiculo::CarregarArquivoDados("veiculos.dat");
 	CTiro::CarregarArquivoDados(load_datafile("tiros.dat"));
 	CArma::CarregarArquivoDados(load_datafile("armas.dat"));
 
 	m_bmp_fundo		= NULL;
 	m_dat_aliens		= NULL;
 	m_dat_construcoes = NULL;
+	m_dat_veiculos = NULL;
 	m_tam_pincel_ladrilho = 1;
 
 	m_flag_fase		= false;
@@ -153,11 +157,17 @@ void CEditor::Executar()
 			m_tela.Limpar();
 			if(m_flag_fase)
 			{
+				Log("Desenhado fase ....");
 				m_fase.Desenhar(m_tela);
+				Log("Desenhado quadrado ....");
 				DesenharQuadrado();
 			}
+			Log("Desenhando tela...");
 			DesenharTela();
+			Log("Atualizando tela....");
 			m_tela.AtualizarNaTela();
+
+			Log("Tela desenhada....");
 			unscare_mouse();
 			m_flag_desenhar = false;
 		}
@@ -233,6 +243,10 @@ void CEditor::Executar()
 						case eConstrucao:
 							VerificarConstrucao();
 							break;
+
+						case eVeiculo:
+							VerificarVeiculo();
+							break;
 					}
 				}
 				else if(mouse_b & 1
@@ -257,9 +271,9 @@ void CEditor::Finalizar()
 	if(m_flag_fase) m_fase.Finalizar();
 	else
 	{
-		Log("oi nois aqui travez!");
 		CAlien::DescarregarArquivoDados();
 		CConstrucao::DescarregarArquivoDados();
+		CVeiculo::DescarregarArquivoDados();
 		CTiro::DescarregarArquivoDados();
 		CArma::DescarregarArquivoDados();
 	}
@@ -280,6 +294,12 @@ void CEditor::Finalizar()
 	{
 		unload_datafile(m_dat_construcoes);
 		m_dat_construcoes = NULL;
+	}
+
+	if(m_dat_veiculos)
+	{
+		unload_datafile(m_dat_veiculos);
+		m_dat_veiculos = NULL;
 	}
 
 	m_tela.Desligar();
@@ -422,7 +442,7 @@ void CEditor::MontarMenuObj(int modo)
 						lad.h_flip = 0;
 						lad.v_flip = 0;
 						lad.angulo = 0;
-						strcpy(lad.arquivo_bmp, "m_arquivo_aliens");
+						strcpy(lad.arquivo_bmp, "m_arquivo_construcoes");
 						m_menu_obj_ladrilhos[x] [y].Iniciar(lad, LADRILHO_LARGURA, LADRILHO_ALTURA, (BITMAP*)m_dat_construcoes[num_obj].dat);
 						m_menu_obj_ladrilhos[x] [y].Desenhar(m_tela, 0, 0);
 						m_tela.Rect(eCamadaFundo, m_menu_obj_ladrilhos[x][y].ObterX(), m_menu_obj_ladrilhos[x][y].ObterY(), m_menu_obj_ladrilhos[x][y].ObterX() + LADRILHO_LARGURA, m_menu_obj_ladrilhos[x][y].ObterY() + LADRILHO_ALTURA, makecol(100, 100, 100));
@@ -456,6 +476,55 @@ void CEditor::MontarMenuObj(int modo)
 				}
 
 				break;
+
+
+			case eVeiculo:
+				for(x = 0; x < MENU_OBJ_LARGURA_LADRILHO; x++)
+				{
+					for(y = 0; y < MENU_OBJ_ALTURA_LADRILHO; y++)
+					{
+						lad.bmp_x = 0;
+						lad.bmp_y = 0;
+						lad.x = x * LADRILHO_LARGURA;
+						lad.y = y * LADRILHO_ALTURA;
+						lad.h_flip = 0;
+						lad.v_flip = 0;
+						lad.angulo = 0;
+						strcpy(lad.arquivo_bmp, "m_arquivo_veiculos");
+						m_menu_obj_ladrilhos[x] [y].Iniciar(lad, LADRILHO_LARGURA, LADRILHO_ALTURA, (BITMAP*)m_dat_veiculos[num_obj].dat);
+						m_menu_obj_ladrilhos[x] [y].Desenhar(m_tela, 0, 0);
+						m_tela.Rect(eCamadaFundo, m_menu_obj_ladrilhos[x][y].ObterX(), m_menu_obj_ladrilhos[x][y].ObterY(), m_menu_obj_ladrilhos[x][y].ObterX() + LADRILHO_LARGURA, m_menu_obj_ladrilhos[x][y].ObterY() + LADRILHO_ALTURA, makecol(100, 100, 100));
+
+						num_obj++;
+						if(num_obj > 1)
+						{
+							if(modo)
+							{
+								lad.x = LADRILHO_SEL_ESQUERDO_X;
+								lad.y = LADRILHO_SEL_ESQUERDO_Y;
+								// Ladrilho auxiliar
+								m_ladrilho.Finalizar();
+								m_ladrilho.Iniciar(lad, LADRILHO_LARGURA, LADRILHO_ALTURA, (BITMAP *) m_dat_veiculos[0].dat);
+								// Ladrilhos selecionados
+								m_ladrilho_sel_esquerdo.Finalizar();
+								m_ladrilho_sel_esquerdo.Iniciar(lad, LADRILHO_LARGURA, LADRILHO_ALTURA, (BITMAP *) m_dat_veiculos[0].dat);
+								lad.x = LADRILHO_SEL_DIREITO_X;
+								lad.y = LADRILHO_SEL_DIREITO_Y;
+								m_ladrilho_sel_direito.Finalizar();
+								m_ladrilho_sel_direito.Iniciar(lad, LADRILHO_LARGURA, LADRILHO_ALTURA, (BITMAP *) m_dat_veiculos[0].dat);
+								m_veiculo_sel_esquerdo.Iniciar(0, 0, 0);
+								m_veiculo_sel_direito.Iniciar(1, 0, 0);
+							}
+
+							m_ladrilho_sel_esquerdo.Desenhar(m_tela, 0, 0);
+							m_ladrilho_sel_direito.Desenhar(m_tela, 0, 0);
+							return;
+						}
+					}
+				}
+
+				break;
+
 
 		default:
 			for(x = 0; x < MENU_OBJ_LARGURA_LADRILHO; x++)
@@ -698,6 +767,30 @@ bool CEditor::AbrirConstrucoes()
 
 
 //------------------------------------------------------------
+// Abre o m_arquivo dat dos veiculos e mostra no menu obj
+bool CEditor::AbrirVeiculos()
+{
+	m_dat_veiculos = load_datafile("veiculos.dat");
+	if(!m_dat_veiculos)
+	{
+		Erro("ERRO - Arquivo de Veiculos nao foi carregado!", "veiculos.dat");
+		alert("ERRO - Arquivo de Veiculos nao foi carregado!", NULL, NULL, "OK", NULL, NULL, NULL);
+		return false;
+	}
+
+	m_veiculo_sel_esquerdo.Iniciar(0, 0, 0);
+	m_veiculo_sel_direito.Iniciar(1, 0, 0);
+
+	scare_mouse();
+	m_exibir_obj = eVeiculo;
+	MontarMenuObj(1);
+	unscare_mouse();
+	m_flag_obj = 1;
+	m_flag_desenhar = true;
+	return true;
+}
+
+//------------------------------------------------------------
 // Preenche todos os ladrilhos nulos (padrao) pelo m_ladrilho_sel_esquerdo
 bool CEditor::PreencherNulos()
 {
@@ -837,13 +930,14 @@ void CEditor::DesenharTela()
 
 		case eAlien:
 		case eConstrucao:
+		case eVeiculo:
 			m_botao_virar_h.SetarAtivo(0);
 			m_botao_virar_v.SetarAtivo(0);
-				m_botao_rotacionar.SetarAtivo(0);
-				m_botao_apagar.SetarAtivo(1);
-				m_botao_inc_pincel.SetarAtivo(0);
-				m_botao_dec_pincel.SetarAtivo(0);
-				break;
+			m_botao_rotacionar.SetarAtivo(0);
+			m_botao_apagar.SetarAtivo(1);
+			m_botao_inc_pincel.SetarAtivo(0);
+			m_botao_dec_pincel.SetarAtivo(0);
+			break;
 
 		default:
 			m_botao_virar_h.SetarAtivo(0);
@@ -867,10 +961,8 @@ void CEditor::DesenharTela()
 
 	if(m_flag_fase)
 	{
-		sprintf(buf, "     Aliens: %3i", CAlien::ObterNumeroAliens());
-		m_tela.Escrever(eCamadaEfeitos, buf, BOTAO_INC_PINCEL_X + 230, BOTAO_APAGAR_Y + 5, makecol(0, 255, 0));
-		sprintf(buf, "Construcoes: %3i", CConstrucao::ObterNumeroConstrucoes());
-		m_tela.Escrever(eCamadaEfeitos, buf, BOTAO_INC_PINCEL_X + 230, BOTAO_APAGAR_Y + 16, makecol(0, 255, 0));
+		sprintf(buf, "A:%3i | C:%3i | V:%3i", m_fase.ObterAliens().ObterQuantidade(), m_fase.ObterConstrucoes().ObterQuantidade(), m_fase.ObterVeiculos().ObterQuantidade());
+		m_tela.Escrever(eCamadaEfeitos, buf, BOTAO_INC_PINCEL_X + 140, BOTAO_APAGAR_Y + 5, makecol(0, 255, 0));
 	}
 	///m_tela.hline(m_tela, MENU_AUX_X, MENU_AUX_Y, SCREEN_W, LADRILHO_NAO_SELECIONADO_COR);
 }
@@ -1051,6 +1143,45 @@ void CEditor::VerificarConstrucao()
 	}
 }
 
+
+//------------------------------------------------------------
+// Verifica se deve ser inserido um novo veiculo no mapa
+void CEditor::VerificarVeiculo()
+{
+	if(mouse_b & 1)
+	{
+		if(m_veiculo_sel_esquerdo.ObterX() != m_fase.ObterX1Fonte() + (m_zeus_mouse_x - 97 - (m_veiculo_sel_esquerdo.ObterLargura() / 2))
+		|| m_veiculo_sel_esquerdo.ObterY() != m_fase.ObterY1Fonte() + (m_zeus_mouse_y - MAPA_EDITOR_Y1 - (m_veiculo_sel_esquerdo.ObterAltura() / 2)))
+		{
+			m_veiculo_sel_esquerdo.SetarX(m_fase.ObterX1Fonte() + (m_zeus_mouse_x - 97 - (m_veiculo_sel_esquerdo.ObterLargura() / 2)));
+			m_veiculo_sel_esquerdo.SetarY(m_fase.ObterY1Fonte() + (m_zeus_mouse_y - MAPA_EDITOR_Y1 - (m_veiculo_sel_esquerdo.ObterAltura() / 2)));
+			m_fase.ObterVeiculos().Adicionar();
+			m_fase.ObterVeiculos().Obter().Iniciar(m_veiculo_sel_esquerdo.ObterTipo(), m_fase.ObterX1Fonte() + (m_zeus_mouse_x - 97 - (m_veiculo_sel_esquerdo.ObterLargura() / 2)), m_fase.ObterY1Fonte() + (m_zeus_mouse_y - MAPA_EDITOR_Y1 - (m_veiculo_sel_esquerdo.ObterAltura() / 2)));
+			m_flag_alterado = true;
+			m_flag_desenhar = true;
+		}
+	}
+	else
+	if(mouse_b & 2)
+	{
+		// Exclui os veiculos já incluidos no mapa que colidirem
+		// com a novo veiculo adicionado
+
+		if(m_veiculo_sel_direito.ObterX() != m_fase.ObterX1Fonte() + (m_zeus_mouse_x - 97 - (m_veiculo_sel_direito.ObterLargura() / 2))
+		|| m_veiculo_sel_direito.ObterY() != m_fase.ObterY1Fonte() + (m_zeus_mouse_y - MAPA_EDITOR_Y1 - (m_veiculo_sel_direito.ObterAltura() / 2)))
+		{
+			m_veiculo_sel_direito.SetarX(m_fase.ObterX1Fonte() + (m_zeus_mouse_x - 97 - (m_veiculo_sel_direito.ObterLargura() / 2)));
+			m_veiculo_sel_direito.SetarY(m_fase.ObterY1Fonte() + (m_zeus_mouse_y - MAPA_EDITOR_Y1 - (m_veiculo_sel_direito.ObterAltura() / 2)));
+			m_fase.ObterVeiculos().Adicionar();
+			m_fase.ObterVeiculos().Obter().Iniciar(m_veiculo_sel_direito.ObterTipo(), m_fase.ObterX1Fonte() + (m_zeus_mouse_x - 97 - (m_veiculo_sel_direito.ObterLargura() / 2)), m_fase.ObterY1Fonte() + (m_zeus_mouse_y - MAPA_EDITOR_Y1 - (m_veiculo_sel_direito.ObterAltura() / 2)));
+			m_flag_desenhar = true;
+			m_flag_alterado = true;
+		}
+	}
+}
+
+
+
 //------------------------------------------------------------
 // Desenha um quadrado com as diminsões do objeto selecionado
 // esquerdo
@@ -1063,10 +1194,13 @@ void CEditor::DesenharQuadrado()
 	if(m_flag_apagar)
 	{
 		m_tela.RectFill(eCamadaEfeitos, m_zeus_mouse_x - (LADRILHO_LARGURA / 2), m_zeus_mouse_y - (LADRILHO_ALTURA / 2), m_zeus_mouse_x + (LADRILHO_LARGURA / 2), m_zeus_mouse_y + (LADRILHO_ALTURA / 2), makecol(128, 128, 128));
-		if((m_fase.ObterAliens().ChecarColisaoAliens(m_zeus_mouse_x - 97 + m_fase.ObterX1Fonte() - (LADRILHO_LARGURA  / 2), m_zeus_mouse_y - 11 + m_fase.ObterY1Fonte() - (LADRILHO_ALTURA  / 2), m_zeus_mouse_x - 97 + m_fase.ObterX1Fonte() + (LADRILHO_LARGURA / 2), m_zeus_mouse_y - 11 + m_fase.ObterY1Fonte() + (LADRILHO_ALTURA / 2))
+
+		if((m_fase.ObterAliens().ChecarColisao(m_zeus_mouse_x - 97 + m_fase.ObterX1Fonte() - (LADRILHO_LARGURA  / 2), m_zeus_mouse_y - 11 + m_fase.ObterY1Fonte() - (LADRILHO_ALTURA  / 2), m_zeus_mouse_x - 97 + m_fase.ObterX1Fonte() + (LADRILHO_LARGURA / 2), m_zeus_mouse_y - 11 + m_fase.ObterY1Fonte() + (LADRILHO_ALTURA / 2))
 		&& m_exibir_obj == eAlien)
-		|| (m_fase.ChecarColisaoConstrucoes(m_zeus_mouse_x - 97 + m_fase.ObterX1Fonte() - (m_construcao_sel_esquerdo.ObterLargura() / 2), m_zeus_mouse_y - 11 + m_fase.ObterY1Fonte() - (m_construcao_sel_esquerdo.ObterAltura() / 2), m_zeus_mouse_x - 97 + m_fase.ObterX1Fonte() + (m_construcao_sel_esquerdo.ObterLargura() / 2), m_zeus_mouse_y - 11 + m_fase.ObterY1Fonte() + (m_construcao_sel_esquerdo.ObterAltura() / 2))
-		&& m_exibir_obj == eConstrucao))
+		|| (m_fase.ChecarColisaoConstrucoes(m_zeus_mouse_x - 97 + m_fase.ObterX1Fonte() - (LADRILHO_LARGURA  / 2), m_zeus_mouse_y - 11 + m_fase.ObterY1Fonte() - (LADRILHO_ALTURA  / 2), m_zeus_mouse_x - 97 + m_fase.ObterX1Fonte() + (LADRILHO_LARGURA / 2), m_zeus_mouse_y - 11 + m_fase.ObterY1Fonte() + (LADRILHO_ALTURA / 2))
+		&& m_exibir_obj == eConstrucao)
+		|| (m_fase.ObterVeiculos().ChecarColisao(m_zeus_mouse_x - 97 + m_fase.ObterX1Fonte() - (LADRILHO_LARGURA  / 2), m_zeus_mouse_y - 11 + m_fase.ObterY1Fonte() - (LADRILHO_ALTURA  / 2), m_zeus_mouse_x - 97 + m_fase.ObterX1Fonte() + (LADRILHO_LARGURA / 2), m_zeus_mouse_y - 11 + m_fase.ObterY1Fonte() + (LADRILHO_ALTURA / 2))
+		&& m_exibir_obj == eVeiculo))
 		{
 			m_tela.Rect(eCamadaEfeitos, m_zeus_mouse_x - (LADRILHO_LARGURA / 2), m_zeus_mouse_y - (LADRILHO_ALTURA / 2), m_zeus_mouse_x + (LADRILHO_LARGURA / 2), m_zeus_mouse_y + (LADRILHO_ALTURA / 2), makecol(255, 0, 0));
 		}
@@ -1078,7 +1212,7 @@ void CEditor::DesenharQuadrado()
 	else
 	if(m_exibir_obj == eAlien)
 	{
-		if(m_fase.ObterAliens().ChecarColisaoAliens(m_zeus_mouse_x - 97 + m_fase.ObterX1Fonte() - (m_alien_sel_esquerdo.ObterLargura() / 2), m_zeus_mouse_y - 11 + m_fase.ObterY1Fonte() - (m_alien_sel_esquerdo.ObterAltura() / 2), m_zeus_mouse_x - 97 + m_fase.ObterX1Fonte() + (m_alien_sel_esquerdo.ObterLargura() / 2), m_zeus_mouse_y - 11 + m_fase.ObterY1Fonte() + (m_alien_sel_esquerdo.ObterAltura() / 2)))
+		if(m_fase.ObterAliens().ChecarColisao(m_zeus_mouse_x - 97 + m_fase.ObterX1Fonte() - (m_alien_sel_esquerdo.ObterLargura() / 2), m_zeus_mouse_y - 11 + m_fase.ObterY1Fonte() - (m_alien_sel_esquerdo.ObterAltura() / 2), m_zeus_mouse_x - 97 + m_fase.ObterX1Fonte() + (m_alien_sel_esquerdo.ObterLargura() / 2), m_zeus_mouse_y - 11 + m_fase.ObterY1Fonte() + (m_alien_sel_esquerdo.ObterAltura() / 2)))
 		{
 
 			m_tela.Rect(eCamadaEfeitos, m_zeus_mouse_x - (m_alien_sel_esquerdo.ObterLargura() / 2), m_zeus_mouse_y - (m_alien_sel_esquerdo.ObterAltura() / 2), m_zeus_mouse_x + (m_alien_sel_esquerdo.ObterLargura() / 2), m_zeus_mouse_y + (m_alien_sel_esquerdo.ObterAltura() / 2), makecol(255, 0, 0));
@@ -1093,12 +1227,23 @@ void CEditor::DesenharQuadrado()
 	{
 		if(m_fase.ChecarColisaoConstrucoes(m_zeus_mouse_x - 97 + m_fase.ObterX1Fonte() - (m_construcao_sel_esquerdo.ObterLargura() / 2), m_zeus_mouse_y - 11 + m_fase.ObterY1Fonte() - (m_construcao_sel_esquerdo.ObterAltura() / 2), m_zeus_mouse_x - 97 + m_fase.ObterX1Fonte() + (m_construcao_sel_esquerdo.ObterLargura() / 2), m_zeus_mouse_y - 11 + m_fase.ObterY1Fonte() + (m_construcao_sel_esquerdo.ObterAltura() / 2)))
 		{
-
 			m_tela.Rect(eCamadaEfeitos, m_zeus_mouse_x - (m_construcao_sel_esquerdo.ObterLargura() / 2), m_zeus_mouse_y - (m_construcao_sel_esquerdo.ObterAltura() / 2), m_zeus_mouse_x + (m_construcao_sel_esquerdo.ObterLargura() / 2), m_zeus_mouse_y + (m_construcao_sel_esquerdo.ObterAltura() / 2), makecol(255, 0, 0));
 		}
 		else
 		{
 			m_tela.Rect(eCamadaEfeitos, m_zeus_mouse_x - (m_construcao_sel_esquerdo.ObterLargura() / 2), m_zeus_mouse_y - (m_construcao_sel_esquerdo.ObterAltura() / 2), m_zeus_mouse_x + (m_construcao_sel_esquerdo.ObterLargura() / 2), m_zeus_mouse_y + (m_construcao_sel_esquerdo.ObterAltura() / 2), SOBRE_LADRILHO_COR);
+		}
+	}
+	else
+	if(m_exibir_obj == eVeiculo)
+	{
+		if(m_fase.ObterVeiculos().ChecarColisao(m_zeus_mouse_x - 97 + m_fase.ObterX1Fonte() - (m_veiculo_sel_esquerdo.ObterLargura() / 2), m_zeus_mouse_y - 11 + m_fase.ObterY1Fonte() - (m_veiculo_sel_esquerdo.ObterAltura() / 2), m_zeus_mouse_x - 97 + m_fase.ObterX1Fonte() + (m_veiculo_sel_esquerdo.ObterLargura() / 2), m_zeus_mouse_y - 11 + m_fase.ObterY1Fonte() + (m_veiculo_sel_esquerdo.ObterAltura() / 2)))
+		{
+			m_tela.Rect(eCamadaEfeitos, m_zeus_mouse_x - (m_veiculo_sel_esquerdo.ObterLargura() / 2), m_zeus_mouse_y - (m_veiculo_sel_esquerdo.ObterAltura() / 2), m_zeus_mouse_x + (m_veiculo_sel_esquerdo.ObterLargura() / 2), m_zeus_mouse_y + (m_veiculo_sel_esquerdo.ObterAltura() / 2), makecol(255, 0, 0));
+		}
+		else
+		{
+			m_tela.Rect(eCamadaEfeitos, m_zeus_mouse_x - (m_veiculo_sel_esquerdo.ObterLargura() / 2), m_zeus_mouse_y - (m_veiculo_sel_esquerdo.ObterAltura() / 2), m_zeus_mouse_x + (m_veiculo_sel_esquerdo.ObterLargura() / 2), m_zeus_mouse_y + (m_veiculo_sel_esquerdo.ObterAltura() / 2), SOBRE_LADRILHO_COR);
 		}
 	}
 	else
@@ -1316,6 +1461,9 @@ bool CEditor::VerificarMenuObjetos()
 
 			case 4:	AbrirFundo();
 					break;
+
+			case 5:	AbrirVeiculos();
+					break;
 		}
 		return true;
 	}
@@ -1327,6 +1475,7 @@ bool CEditor::VerificarMenuObjetos()
 // Menu Exibir
 bool CEditor::VerificarMenuExibir()
 {
+	Log("bool CEditor::VerificarMenuExibir();");
 	int opcao = -1;
 
 	if(m_zeus_mouse_x > MENU_EXIBIR_X1  && m_zeus_mouse_x < MENU_EXIBIR_X2)
@@ -1350,11 +1499,18 @@ bool CEditor::VerificarMenuExibir()
 						AbrirFundo();
 					}
 					break;
+
+			case 5: if(!m_dat_veiculos)
+					{
+						AbrirVeiculos();
+					}
+					break;
 		}
 
 		if ((  opcao == 1
 			|| opcao == 2
-			|| opcao == 4)
+			|| opcao == 4
+			|| opcao == 5)
 			&& m_exibir_obj > -1
 			&& opcao > -1
 			&& m_exibir_obj != opcao)
@@ -1412,7 +1568,7 @@ void CEditor::VerificarMenuObj()
 		switch(m_exibir_obj)
 		{
 			case eConstrucao:
-				// Este calculo { ((x * 15) + y) } localiza o bitmap do construcao no m_arquivo dat
+				// Este calculo { ((x * 15) + y) } localiza o bitmap da construcao no m_arquivo dat
 				m_ladrilho_sel_esquerdo.Iniciar(m_menu_obj_ladrilhos[x][y].ObterTLadrilho(), LADRILHO_LARGURA, LADRILHO_ALTURA, (BITMAP *) m_dat_construcoes[(x * 15) + y].dat);
 				// Este calculo { ((x * 15) + y) } informa o m_tipo de construcao
 				m_construcao_sel_esquerdo.Iniciar(((x * 15) + y), 0, 0);
@@ -1426,6 +1582,12 @@ void CEditor::VerificarMenuObj()
 				m_alien_sel_esquerdo.Iniciar(((x * 15) + y), 0, 0);
 				break;
 
+			case eVeiculo:
+				// Este calculo { ((x * 15) + y) } localiza o bitmap do veiculo no m_arquivo dat
+				m_ladrilho_sel_esquerdo.Iniciar(m_menu_obj_ladrilhos[x][y].ObterTLadrilho(), LADRILHO_LARGURA, LADRILHO_ALTURA, (BITMAP *) m_dat_veiculos[(x * 15) + y].dat);
+				// Este calculo { ((x * 15) + y) } informa o m_tipo de construcao
+				m_veiculo_sel_esquerdo.Iniciar(((x * 15) + y), 0, 0);
+				break;
 			case eFundo:
 				m_ladrilho_sel_esquerdo.Iniciar(m_menu_obj_ladrilhos[x][y].ObterTLadrilho(), LADRILHO_LARGURA, LADRILHO_ALTURA, m_bmp_fundo);
 				break;
@@ -1461,6 +1623,14 @@ void CEditor::VerificarMenuObj()
 			case eFundo:
 				m_ladrilho_sel_direito.Iniciar(m_menu_obj_ladrilhos[x][y].ObterTLadrilho(), LADRILHO_LARGURA, LADRILHO_ALTURA, m_bmp_fundo);
 				break;
+
+			case eVeiculo:
+				// Este calculo { ((x * 15) + y) * 2 } localiza o bitmap do construcao no m_arquivo dat
+				m_ladrilho_sel_direito.Iniciar(m_menu_obj_ladrilhos[x][y].ObterTLadrilho(), LADRILHO_LARGURA, LADRILHO_ALTURA, (BITMAP *) m_dat_veiculos[((x * 15) + y) * 2].dat);
+				// Este calculo { ((x * 15) + y) } informa o m_tipo de construcao
+				m_veiculo_sel_direito.Iniciar(((x * 15) + y), 0, 0);
+				break;
+
 		}
 		m_ladrilho_sel_direito.SetarX(LADRILHO_SEL_DIREITO_X);
 		m_ladrilho_sel_direito.SetarY(LADRILHO_SEL_DIREITO_Y);
@@ -1508,6 +1678,12 @@ void CEditor::VerificarApagar()
 			break;
 		case eConstrucao:
 			m_fase.ExcluirConstrucoes(m_zeus_mouse_x - 97 + m_fase.ObterX1Fonte() - (LADRILHO_LARGURA  / 2), m_zeus_mouse_y - 11 + m_fase.ObterY1Fonte() - (LADRILHO_ALTURA  / 2), m_zeus_mouse_x - 97 + m_fase.ObterX1Fonte() + (LADRILHO_LARGURA / 2), m_zeus_mouse_y - 11 + m_fase.ObterY1Fonte() + (LADRILHO_ALTURA / 2));
+			m_flag_alterado = true;
+			m_flag_desenhar = true;
+			break;
+
+		case eVeiculo:
+			m_fase.ObterVeiculos().RemoverPorColisao(m_zeus_mouse_x - 97 + m_fase.ObterX1Fonte() - (LADRILHO_LARGURA  / 2), m_zeus_mouse_y - 11 + m_fase.ObterY1Fonte() - (LADRILHO_ALTURA  / 2), m_zeus_mouse_x - 97 + m_fase.ObterX1Fonte() + (LADRILHO_LARGURA / 2), m_zeus_mouse_y - 11 + m_fase.ObterY1Fonte() + (LADRILHO_ALTURA / 2));
 			m_flag_alterado = true;
 			m_flag_desenhar = true;
 			break;

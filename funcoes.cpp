@@ -13,6 +13,7 @@
 static unsigned int cor_mascara = 0xF7DEF7DE;
 static unsigned int pixel_baixo_mascara = 0x08210821;
 
+//macro para interpolar cores
 #define INTERPOLAR(A, B) ((((A & cor_mascara) >> 1) + ((B & cor_mascara) >> 1) + (A & B & pixel_baixo_mascara)))
 
 
@@ -20,13 +21,15 @@ void barra_progresso_atena(CTela & tela, int x, int y, int l, int percent)
 {
 	tela.Rect(eCamadaEfeitos, x,   y,   x + l,                   y + 8, makecol(255,255,255));
 	tela.RectFill(eCamadaEfeitos, x,   y,   x + l - 1,               y + 7, makecol(0,0,0));
-	tela.RectFill(eCamadaEfeitos, x+1, y+1, x + ((percent*l)/100)-1, y + 7, makecol(255,(percent*255)/100,0));
+	if (percent > 0)
+		tela.RectFill(eCamadaEfeitos, x+1, y+1, x + ((percent*l)/100)-1, y + 7, makecol(255,(percent*255)/100,0));
 }
 
 void barra_progresso_atena2(CTela & tela, int x, int y, int l, int percent)
 {
 	tela.RectFill(eCamadaEfeitos, x, y, x + l,                 y + 4, makecol(0,0,0));
-	tela.RectFill(eCamadaEfeitos, x, y, x + ((percent*l)/100), y + 4, makecol(255,(percent*255)/100,0));
+	if (percent > 0)
+		tela.RectFill(eCamadaEfeitos, x, y, x + ((percent*l)/100), y + 4, makecol(255,(percent*255)/100,0));
 }
 
 void barra_progresso_zeus(CTela & tela, int x1, int y1, int x2, int y2, int maximo, int valor_anterior, int valor_atual, int cor)
@@ -61,22 +64,23 @@ void SuavizarBitmap(BITMAP *bmp)
 	char *linha;
 	unsigned short *slinha;
 
-
+	//por enquanto a rotina só funciona no modo 16-bit
 	if (bitmap_color_depth(bmp) != 16)
 	{
 		return;
 	}
 
+	//aloca o espaço para caber uma linha
 	linha = (char *)malloc(sizeof(short) * (bmp->w + 2));
-
 	if (!linha)
 	{
 		return;
 	}
 
+	//tranca o bitmap para poder trabalhar com ele
 	acquire_bitmap(bmp);
 
-
+	//laço para todas as linhas
 	for (y = 0; y < bmp->h; y++)
 	{
         unsigned int cor1, cor2, cor3, d;
@@ -85,6 +89,7 @@ void SuavizarBitmap(BITMAP *bmp)
 		bmp_select(bmp);
 		endereco_linha = bmp_read_line(bmp, y);
 
+		//preenche a linha temporaria com os pixeis da linha corrente
 		for (x = 0; x < (int)(bmp->w * sizeof(short)); x += sizeof(long))
 		{
 			*((unsigned long *) &linha[x]) = bmp_read32(endereco_linha + x);
@@ -96,21 +101,26 @@ void SuavizarBitmap(BITMAP *bmp)
 
 		d = bmp_write_line(bmp, y);
 
+		//laço para os pixeis da linha
 		for (x = 0; x < bmp->w - 2; x += 2)
 		{
 			unsigned int produto;
 			cor1 = slinha[x];
 			cor2 = slinha[x + 1];
 			cor3 = slinha[x + 2];
+			
+			//interpola os pixeis
 			produto = (INTERPOLAR(cor2, cor3) << 16 | INTERPOLAR(cor2, cor1));
 
+			//escreve o pixel interpolado
 			bmp_write32(d, produto);
 			d += sizeof(int);
 		}
 	}
+	
+	//libera o bitmap e desaloca a memoria
 	bmp_unwrite_line(bmp);
 	release_bitmap(bmp);
-
 	free(linha);
 
 	return;

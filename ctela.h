@@ -20,6 +20,13 @@
 *   - Modificado nome das constantes de cores para feminino
 *   - Modificado alguns tipos de variaveis de int para bool
 *   - Retirada a variavel bitmap m_bmp_aux
+*
+*  Henrique Andreassy em 23/07/2002
+*	- Adicionado mais uma sobrecarga para o método Escrever
+*	  para aceitar escrever com uma determinada fonte
+*
+*  Henrique Andreassy em 27/07/2002
+*	- Adicionado método para salvar captura de tela
 *------------------------------------------------------------*/
 
 #ifndef ctela_h_incluido
@@ -81,10 +88,13 @@ public:
 
 	//Metodos Extras
 	void Escrever(const char * str, int x, int y, int cor);
+	void Escrever(const char * str, int x, int y, int cor, FONT *fonte);
 	void Escrever(ECamada camada, const char * str, int x, int y, int cor);
 
 	//Metodo auxiliar que retorna o bitmap associado a camada
 	BITMAP *RetornarCamada(ECamada camada);
+protected:
+	void Salvar(BITMAP *bmp);
 
 protected:
 	bool m_utilizar_vsync;
@@ -94,6 +104,8 @@ protected:
 	BITMAP *m_bmp_fundo;
 	BITMAP *m_bmp_objetos;
 	BITMAP *m_bmp_efeitos;
+
+	
 };
 
 #endif

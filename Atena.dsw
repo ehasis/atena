@@ -3,7 +3,22 @@ Microsoft Developer Studio Workspace File, Format Version 6.00
 
 ###############################################################################
 
-Project: "Atena"=.\Atena.dsp - Package Owner=<4>
+Project: "Atena"=".\Atena.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name GALib
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "GALib"=".\GALib\GALib.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -15,19 +30,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "GALib"=.\GALib\GALib.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-}}}
-
-###############################################################################
-
-Project: "Zeus"=.\Zeus\Zeus.dsp - Package Owner=<4>
+Project: "Zeus"=".\Zeus\Zeus.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{

@@ -25,19 +25,43 @@
 *  Diego Giacomelli em 01/05/2002
 *	- Inserido o método ObterNave();
 *
+*  Diego Giacomelli em 10/07/2002
+*	- Inserido o membro de dados m_veiculos;
+*	- Inserido o método SalvarVeiculos();
+*   - Renomeado o método ChecarColisaoNosAliens para ChecarColisaoTirosDaNave;
+*
+*  Diego Giacomelli em 15/07/2002
+*	- Inserido controle de CNave por CColecaoAvancada para permitir mais de uma nave (jogador)
+*	  por fase;
+*
+*  Diego Giacomelli em 18/07/2002
+*	- Inserido controle de m_alien por CColecaoAvancada;
+*
+*  Diego Giacomelli em 20/07/2002
+*	- Inserido controle de m_construcoes por CColecaoAvancada;
+*	- Substituídos os métodos SalvarAliens, SalvarVeiculos, SalvarConstrucoes pelo template
+*	  de função SalvarObjetos;
+*
+*  Henrique Andreassy em 04/08/2002
+*	- Inserido o objeto CChefe
 *------------------------------------------------------------*/
 
 
 #ifndef cfase_h_incluido
 #define cfase_h_incluido
 
+#include <math.h>
 #include "cobjeto.h"
 #include "cladrilho.h"
 #include "cfundo.h"
 #include "cnave.h"
 #include "calien.h"
-#include "carma.h"
 #include "cconstrucao.h"
+#include "cveiculo.h"
+#include "cbonus.h"
+#include "cfilme.h"
+#include "cexplosao.h"
+#include "cchefe.h"
 
 //------------------------------------------------------------
 // Classe para as fases
@@ -60,22 +84,31 @@ public:
 	void ExcluirConstrucoes(int x1, int y1, int x2, int y2);
 	bool Atualizar(int fundo_pixels);
 	void Sonorizar();
-	CAlien ObterAliens();
-	CConstrucao ObterConstrucoes();
+	CColecaoAvancada< CAlien > & ObterAliens();
+	CColecaoAvancada< CConstrucao > & ObterConstrucoes();
 	int ChecarColisaoAliens(int x1, int y1, int x2, int y2);
 	int ChecarColisaoConstrucoes(int x1, int y1, int x2, int y2);
 	CNave & ObterNave();
-
+	CColecaoAvancada <CVeiculo> & ObterVeiculos();
+	void SalvarAliens(char * fase);
+	void SalvarVeiculos(char * fase);
+	template< class cls >
+	void SalvarObjetos(CColecaoAvancada< cls > cls_obj, char * fase);
 
 private:
-	void ChecarColisaoTiroNosAliens();
+	void ChecarColisaoTirosDaNave();
+	void ChecarColisaoNoChefe();
 	void ChecarColisaoNaNave();
 
 	char m_arquivo_fase[50];  	// Nome do m_arquivo da m_fase
 	CFundo m_fundo;			// Fundo atual da m_fase
-	CAlien m_aliens;
-	CConstrucao m_construcoes;
-	CNave m_nave;
+	CColecaoAvancada< CAlien > m_aliens;
+	CColecaoAvancada< CConstrucao > m_construcoes;
+	CColecaoAvancada< CVeiculo > m_veiculos;
+	CColecaoAvancada< CNave > m_naves;
+	CBonus< CNave > m_bonus;
+	CExplosao m_explosoes;
+	CChefe		m_chefe;
 	int m_x1_fonte;
 	int m_y1_fonte;
 	int m_x1_destino;			// Coordenada x onde a m_fase deve ser pintada no bmp_destino

@@ -15,6 +15,16 @@
 #include "atena.h"
 #include "cmenu.h"
 #include "cfilme.h"
+#include "cexplosao.h"
+
+//----- EM TESTE
+volatile int contador;
+void Temporizador()
+{
+	contador++;
+
+} END_OF_FUNCTION(Temporizador);
+/**/
 
 //------------------------------------------------------------
 void CJogo::ChecarArquivo(const char * arquivo)
@@ -90,6 +100,13 @@ void CJogo::Iniciar()
 
 	m_final_jogo = false;
 	m_final_partida = false;
+
+	// ----- EM TESTE
+	LOCK_VARIABLE(contador);
+	LOCK_FUNCTION(Temporizador);
+	install_int_ex(Temporizador, SECS_TO_TIMER(1));
+	/**/
+
 }
 
 //------------------------------------------------------------
@@ -113,7 +130,7 @@ void CJogo::IniciarPartida()
 		strcat(m_caminho, get_filename(arquivo_selecionado));
 		show_mouse(NULL);
 		textout_centre(screen, font, "aguarde, carregando mapa...", SCREEN_W/2, SCREEN_H/2, makecol(255,255,0));
-		m_fase.Iniciar(m_caminho, 0, 0, 640, 480);
+		m_fase.Iniciar(m_caminho, 96, 0, 544, 480);
 	}
 	else
 	{
@@ -129,39 +146,64 @@ void CJogo::IniciarPartida()
 //------------------------------------------------------------
 void CJogo::ExecutarPartida()
 {
-	char bff[101];
+    char bff[101];
+	int linha = 270;
 	DATAFILE *m_data = load_datafile("atena.dat");
+	FONT *fonte = (FONT *)m_data[TAHOMA7].dat;
 
-	while (m_fase.Atualizar(2))
+	//m_tela.SetarEscreverSombra(true);
+	while (m_fase.Atualizar(1))
 	{
 		m_tela.Limpar();
 		m_fase.Desenhar(m_tela);
 		m_fase.Sonorizar();
 						
+		m_tela.MaskedBlit((BITMAP *)m_data[PAINEL].dat, eCamadaEfeitos);
+
+		m_tela.Escrever("[Informacoes]",    10, linha - 220, makecol16(0, 255, 0), fonte);
+		m_tela.Escrever("Isto e um teste",  10, linha - 200, makecol16(0, 255, 0), fonte);
+		m_tela.Escrever("para saber se",    10, linha - 190, makecol16(0, 255, 0), fonte);
+		m_tela.Escrever("o texto fica bom", 10, linha - 180, makecol16(0, 255, 0), fonte);
+		m_tela.Escrever("nesta posicao",    10, linha - 170, makecol16(0, 255, 0), fonte);
+
+		
+		sprintf(bff, "Pontos: %d", m_fase.ObterNave().ObterPontos());
+		m_tela.Escrever(bff,    10, linha - 150, makecol16(0, 255, 0), fonte);
 		// Display 
 		// Nave
-		m_tela.Escrever("[Nave]", 10, 10, makecol(0, 255, 0));
-		sprintf(bff, "Energia:%3i", m_fase.ObterNave().ObterEnergia());
-		m_tela.Escrever(bff, 20, 20, makecol(0, 255, 0));
-		sprintf(bff, "Casco  :%3i", m_fase.ObterNave().ObterCasco());
-		m_tela.Escrever(bff, 20, 30, makecol(0, 255, 0));
+		m_tela.Escrever("[Nave]", 10, linha + 10, makecol(0, 255, 0), fonte);
+		
+		//sprintf(bff, "Energia:%3i", m_fase.ObterNave().ObterEnergia());
+		//m_tela.Escrever(bff, 20, linha + 20, makecol(0, 255, 0), fonte);
+		barra_progresso_atena2(m_tela, 10, linha + 23, 76, m_fase.ObterNave().ObterEnergia());
+		
+		//sprintf(bff, "Casco  :%3i", m_fase.ObterNave().ObterCasco());
+		//m_tela.Escrever(bff, 20, linha + 30, makecol(0, 255, 0), fonte);
+		barra_progresso_atena2(m_tela, 10, linha + 33, 76, m_fase.ObterNave().ObterCasco());
 
 		// Arma esquerda
-		m_tela.Escrever("[Arma Esquerda]", 10, 50, makecol(0, 255, 0));
+		m_tela.Escrever("[Arma Esquerda]", 10, linha + 50, makecol(0, 255, 0), fonte);
+		
 		sprintf(bff, "Energia:%3i", m_fase.ObterNave().ObterArmas().Obter(1).ObterEnergia());
-		m_tela.Escrever(bff, 20, 60, makecol(0, 255, 0));
+		m_tela.Escrever(bff, 20, linha + 60, makecol(0, 255, 0), fonte);
 
 		// Arma centro
-		m_tela.Escrever("[Arma Centro]", 10, 80, makecol(0, 255, 0));
+		m_tela.Escrever("[Arma Centro]", 10, linha + 80, makecol(0, 255, 0), fonte);
 		sprintf(bff, "Energia:%3i", m_fase.ObterNave().ObterArmas().Obter(2).ObterEnergia());
-		m_tela.Escrever(bff, 20, 90, makecol(0, 255, 0));
+		m_tela.Escrever(bff, 20, linha + 90, makecol(0, 255, 0), fonte);
 
-		m_tela.Escrever("[Arma Direita]", 10, 110, makecol(0, 255, 0));
+		m_tela.Escrever("[Arma Direita]", 10, linha + 110, makecol(0, 255, 0), fonte);
 		sprintf(bff, "Energia:%3i", m_fase.ObterNave().ObterArmas().Obter(3).ObterEnergia());
-		m_tela.Escrever(bff, 20, 120, makecol(0, 255, 0));
+		m_tela.Escrever(bff, 20, linha + 120, makecol(0, 255, 0), fonte);
 		/**/
 
+		// Calculo de FPS
+		sprintf(bff, "FPS:%i", CalcularFPS());
+		m_tela.Escrever(bff, 580, 472, makecol(0, 255, 0));
+
 		m_tela.AtualizarNaTela();
+
+		
 		if (m_cfg_velocidade > 0) rest(m_cfg_velocidade);
 	}
 	unload_datafile(m_data);
@@ -179,11 +221,37 @@ void CJogo::DesligarPartida()
 void CJogo::Executar()
 {
 	CFilme filme;
-	filme.Executar("filmes//abertura.txt");
 
+	/* 
+	// TESTE
+	CExplosao explosao;
+
+	DATAFILE *m_data = load_datafile("atena.dat");
+
+	CExplosao::Iniciar(640, 480);
+	explosao.IniciarExplosao(320, 240, 200, 1000);
+	for(register int i = 0; i < 150; i++)
+	{
+		explosao.IniciarExplosao(320, 240, 200 + i, 1000);
+		//explosao.IniciarExplosaoRadial(320, 240, 25 + i);
+		//explosao.IniciarExplosaoRadial(320, 240, 50 + i);
+		explosao.IniciarExplosaoRadial(320, 240, 75 + i);
+		//if (!(i % 10))
+		//	explosao.InserirSprite((BITMAP *)m_data[LOGO_GA].dat, 0, 240); 
+		
+		
+		explosao.Desenhar(m_tela);
+		m_tela.AtualizarNaTela();
+	}
+
+    /**/
+	filme.Executar("filmes//abertura.txt");
+	
+	
 	while (!m_final_jogo)
 	{
 		ExibirMenuPrincipal();
+
 		while (!m_final_partida & !m_final_jogo)
 		{
 			IniciarPartida();
@@ -218,6 +286,8 @@ void CJogo::ExibirMenuPrincipal()
 	m.Adicionar("Configurar");
 	m.Adicionar("Creditos");
 	m.Adicionar("Sair");
+
+	
 
 	while (!sair)
 	{
@@ -256,7 +326,6 @@ void CJogo::ExibirMenuPrincipal()
 			break;
 		}
 	}
-
 
 	unload_datafile(m_data);
 
@@ -362,3 +431,23 @@ void CJogo::Desligar()
 	m_tela.Desligar();
 	unload_datafile(m_data);
 }
+
+//------------------------------------------------------------
+int CJogo::CalcularFPS()
+{
+	static int tempo_anterior = 0;
+	static int FPS_anterior = 0;
+	static int FPS = 0;
+	
+	FPS++;
+
+	if((contador - tempo_anterior) > 0)
+	{
+		tempo_anterior = contador;
+		FPS_anterior = FPS;
+		FPS = 0;
+	}
+	return FPS_anterior;
+}
+	
+

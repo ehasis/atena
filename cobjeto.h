@@ -21,7 +21,7 @@
 *   - Alteração do nome do método Colisão para ChecarColisao
 *     para adaptar-se aos padrões de nomenclatura;
 *
-*  Diego em 13/02/2002
+*  Diego Giacomelli em 13/02/2002
 *   - Alterado o método DesenharExplosao para aceitar CTela e
 *     posicionamento relativo;
 *
@@ -48,7 +48,11 @@
 *
 *  Diego Giacomelli em 07/07/2002
 *	- Inseridos os métodos ObterEnergia, IncEnergia e DecEnergia;
-		
+*
+*  Diego Giacomelli em 20/07/2002
+*	- Inseridos os métodos SetatTipoObjeto e ObterTipoObjeto;
+*	- Renomeado o membro de dado m_objeto para m_tipo_objeto;
+*	- Inserido método SetarXY;
 *------------------------------------------------------------*/
 
 
@@ -56,6 +60,9 @@
 #define cobjeto_h_incluido
 
 #include "ctela.h"
+#include "erro.h"
+#include "cexplosao.h"
+
 //-----------------------------------------------
 // Enumeracoes
 typedef enum
@@ -71,7 +78,7 @@ typedef enum
 
 typedef struct
 {
-	EObjeto m_tipo;
+	EObjeto tipo;
 	int subtipo;
 	int x;
 	int y;
@@ -121,17 +128,20 @@ class CObjetoBasico
 		void IncY(int incremento);
 		void DecY(int decremento);
 
+		void SetarXY(int x, int y);
 		void SetarLargura(int largura);
 		int ObterLargura();
 		void SetarAltura(int altura);
 		int ObterAltura();
 
+		void SetarTipoObjeto(EObjeto tipo_objeto);
+		EObjeto ObterTipoObjeto();
 		CObjetoBasico *RetornarObjetoBasico();
 
 	protected:
 		int m_x, m_y;
 		int m_largura, m_altura;
-		EObjeto m_objeto;
+		EObjeto m_tipo_objeto;
 };
 
 
@@ -159,6 +169,7 @@ class CObjetoAvancado : public CObjeto
 		int ObterVisivel();
 		void SetarVisivel(int visivel);
 		void DesenharExplosao(CTela &m_tela, int x_real, int y_real, int x, int y, int raio, int num_particulas);
+		void DesenharExplosaoRadial(int x_real, int y_real, int x, int y, int raio);
 		CObjetoAvancado *RetornarObjetoAvancado();
 		int ObterEnergia();
 		void IncEnergia(int incremento);
@@ -170,7 +181,20 @@ class CObjetoAvancado : public CObjeto
 		int m_energia;
 		int m_quadro;		// Frame de animação atual
 		int m_tempo;		// Contador do n. de iterações que o objeto já passou
+		CExplosao m_explosao;
+
+};
 
 
+//------------------------------------------------------------
+// Classe para manipulação de objetos animados
+class CObjetoAnimado : public CObjetoAvancado
+{
+	public:
+		virtual bool Adicionar(int tipo, int x, int y);
+		virtual void Atualizar(TRect area, CObjetoAvancado * const alvo);
+		virtual void Desenhar(CTela & tela, int x_real, int y_real);
+		virtual void Sonorizar();
+		virtual void Finalizar();	
 };
 #endif

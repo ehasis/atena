@@ -68,7 +68,6 @@ int CFundo::Iniciar(TLadrilho mapa_ladrilhos[MAPA_LARGURA_LADRILHOS][MAPA_ALTURA
 //------------------------------------------------------------
 void CFundo::Desenhar(CTela & tela, int x_real, int y_real)
 {
-	Log("[INICIO]:CFundo::Desenhar();");
 	register int x, y;
 	int lim_x1, lim_y1, lim_x2, lim_y2;
 
@@ -79,14 +78,13 @@ void CFundo::Desenhar(CTela & tela, int x_real, int y_real)
 	lim_y1  = m_y_fonte / LADRILHO_ALTURA;
 	lim_y2  = (m_y_fonte + m_altura_destino) / LADRILHO_ALTURA + 1;
 
-	for (x = lim_x1; x < lim_x2 && x < MAPA_LARGURA_LADRILHOS; x++)
+	for (x = lim_x1; x < lim_x2 && x < m_mapa_largura_ladrilhos; x++)
 	{
-		for (y = lim_y1; y < lim_y2 && y < MAPA_ALTURA_LADRILHOS; y++)
+		for (y = lim_y1; y < lim_y2 && y < m_mapa_altura_ladrilhos; y++)
 		{
 			m_mapa_ladrilho[x][y].Desenhar(tela, x_real - m_x_destino, y_real - m_y_destino);
 		}
 	}
-	Log("[FIM]:CFundo::Desenhar();");
 }
 
 

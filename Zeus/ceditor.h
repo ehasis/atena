@@ -153,11 +153,13 @@ protected:
 	BITMAP *m_bmp_fundo;			// BITMAP para o fundo atualmente aberto
 	DATAFILE *m_dat_aliens;		// DATAFILE para os aliens atualmente abertos
 	DATAFILE *m_dat_construcoes;  // DATAFILE para as construcoes atualmente abertas
+	DATAFILE *m_dat_veiculos;  // DATAFILE para os veiculos atualmente abertos
 	DATAFILE *m_dat_imagem;		// DATAFILE para as imagens da interface do Zeus - NAO SAO OBJETOS DAS FASES
 	CLadrilho m_menu_obj_ladrilhos[MENU_OBJ_LARGURA_LADRILHO][MENU_OBJ_ALTURA_LADRILHO];	// CLadrilho's para o menu dos objetos
 	CLadrilho m_ladrilho, m_ladrilho_sel_esquerdo, m_ladrilho_sel_direito;
 	CAlien m_alien_sel_esquerdo, m_alien_sel_direito;
 	CConstrucao m_construcao_sel_esquerdo, m_construcao_sel_direito;
+	CVeiculo m_veiculo_sel_esquerdo, m_veiculo_sel_direito;
 	char m_arquivo_fundo[ARQUIVO_NOME_COMPRIMENTO];
 	char m_arquivo_fase[ARQUIVO_NOME_COMPRIMENTO];
 	char m_arquivo_aliens[ARQUIVO_NOME_COMPRIMENTO];
@@ -180,6 +182,7 @@ protected:
 	bool AbrirFundo();
 	bool AbrirAliens();
 	bool AbrirConstrucoes();
+	bool AbrirVeiculos();
 	bool PreencherNulos();
 	bool TrocarLadrilhos();
 	bool Sair();
@@ -187,6 +190,7 @@ protected:
 	void VerificarLadrilho();
 	void VerificarAlien();
 	void VerificarConstrucao();
+	void VerificarVeiculo();
 	void DesenharQuadrado();
 	bool VerificarRolaTecla();
 	bool VerificarRolaMouse();

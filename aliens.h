@@ -1,6 +1,6 @@
-/* Allegro datafile object indexes, produced by grabber v3.9.37 (CVS), djgpp */
-/* Datafile: c:\Informatica\Desenvolvimento de jogos\Pessoais\Projeto Atena\Fonte\Zeus\aliens.dat */
-/* Date: Fri Jan 18 00:24:30 2002 */
+/* Allegro datafile object indexes, produced by grabber v4.0.2, MSVC */
+/* Datafile: d:\DEV\Atena\aliens.dat */
+/* Date: Wed Nov 13 16:23:26 2002 */
 /* Do not hand edit! */
 
 #define ALIEN_01                         0        /* BMP  */
@@ -17,6 +17,5 @@
 #define ALIEN_06_S                       11       /* BMP  */
 #define ALIEN_07                         12       /* BMP  */
 #define ALIEN_07_S                       13       /* BMP  */
-#define ALIEN_EXPLOSAO                   14       /* BMP  */
-#define WAV_ALIEN_EXPLOSAO               15       /* SAMP */
+#define WAV_ALIEN_EXPLOSAO               14       /* SAMP */
 

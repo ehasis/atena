@@ -196,6 +196,13 @@ void CObjetoBasico::DecY(int decremento)
 }
 
 
+void CObjetoBasico::SetarXY(int x, int y)
+{
+	m_x = x;
+	m_y = y;
+}
+
+
 //------------------------------------------------------------
 void CObjetoBasico::SetarLargura(int largura)
 {
@@ -223,6 +230,21 @@ int CObjetoBasico::ObterAltura()
 	return m_altura;
 }
 
+
+//------------------------------------------------------------
+void CObjetoBasico::SetarTipoObjeto(EObjeto tipo_objeto)
+{
+	m_tipo_objeto = tipo_objeto;
+}
+
+
+//------------------------------------------------------------
+EObjeto CObjetoBasico::ObterTipoObjeto()
+{
+	return m_tipo_objeto;
+}
+
+
 //------------------------------------------------------------
 CObjetoBasico *CObjetoBasico::RetornarObjetoBasico()
 {
@@ -249,6 +271,7 @@ void CObjeto::SetarAngulo(int angulo)
 //------------------------------------------------------------
 void CObjetoAvancado::DesenharExplosao(CTela &m_tela, int x_real, int y_real, int x, int y, int raio, int num_particulas)
 {
+	/*
 	int ex, ey, ei;
 
 	for (ei = 0; ei < num_particulas; ei++)
@@ -257,12 +280,19 @@ void CObjetoAvancado::DesenharExplosao(CTela &m_tela, int x_real, int y_real, in
 		ey = (rand() % (raio * 2)) - raio;
 
 		if ((ex * ex) + (ey * ey) <= raio * raio)
-		{
 			m_tela.PutPixel(eCamadaEfeitos, ex + x - x_real, ey + y - y_real, makecol(255,rand()%255,0));
-		}
 	}
+	*/
+	m_explosao.IniciarExplosao(x - x_real, y - y_real, raio, num_particulas);
+	//m_explosao.IniciarExplosao(m_x - x_real + (m_raio / 2), m_y - y_real + (raio / 2), raio, num_particulas);
 }
 
+
+//------------------------------------------------------------
+void CObjetoAvancado::DesenharExplosaoRadial(int x_real, int y_real, int x, int y, int raio)
+{
+	m_explosao.IniciarExplosaoRadial (x - x_real, y - y_real, raio);
+}
 
 //------------------------------------------------------------
 void CObjetoAvancado::SetarAtivo(int ativo)

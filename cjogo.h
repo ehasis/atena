@@ -11,6 +11,12 @@
 *  Diego Giacomelli em 01/05/2002
 *   - Incluída a opçãod de menu Demo;
 *
+*  Henrique Andreassy em 23/07/2002
+*	- Incluido painel de informações
+*
+*  Diego Giacomelli em 13/09/2002
+*   - Implementado o cálculo de FPS (Frames-Per-Second);
+
 *------------------------------------------------------------*/
 
 #ifndef cjogo_h_incluido
@@ -40,6 +46,7 @@ protected:
 	CConfig		m_cfg;
 	CTela		m_tela;
 	CFase		m_fase;
+	int g_FPS;
 
 	void ChecarArquivo(const char * arquivo);
 	void CarregarConfiguracao();
@@ -50,6 +57,8 @@ protected:
 
 	void ExibirMenuPrincipal();
 	void ExibirMenuConfiguracao();
+
+	int CalcularFPS();
 };
 
 #endif

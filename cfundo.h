@@ -47,7 +47,7 @@
 #include "cladrilho.h"
 #include "cobjeto.h"
 
-#define MAPA_LARGURA_LADRILHOS   20 											// Largura do mapa em numero de ladrilhos
+#define MAPA_LARGURA_LADRILHOS   17 											// Largura do mapa em numero de ladrilhos
 #define MAPA_ALTURA_LADRILHOS   200												// Altura do mapa em numero de ladrilhos
 #define MAPA_TOTAL_LADRILHOS    MAPA_LARGURA_LADRILHOS * MAPA_ALTURA_LADRILHOS  // Quantidade total de ladrilhos do mapa
 #define MAPA_LARGURA			MAPA_LARGURA_LADRILHOS * LADRILHO_LARGURA		// Largura do mapa em pixels

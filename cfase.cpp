@@ -14,15 +14,24 @@
 #include "time.h"
 #include "erro.h"
 #include "funcoes.h"
-
 #include "cfase.h"
-
+	
 
 //------------------------------------------------------------
 void CFase::Iniciar(char arquivo_fase[], int x1_destino, int y1_destino, int largura_destino, int altura_destino)
 {
+	CFilme filme;
+	//char copia_arquivo_fase[128], * nome_arquivo, * ext_arquivo, arquivo_filme[128];
 	Log("");
 	Log("[INICIO]:CFase::Iniciar();");
+
+	CAlien::CarregarArquivoDados(load_datafile("aliens.dat"));
+	CConstrucao::CarregarArquivoDados(load_datafile("construcoes.dat"));
+	CVeiculo::CarregarArquivoDados("veiculos.dat");
+	CTiro::CarregarArquivoDados(load_datafile("tiros.dat"));
+	CArma::CarregarArquivoDados(load_datafile("armas.dat"));
+	CBonus< CNave >::CarregarArquivoDados(load_datafile("bonus.dat"));
+
 
 	FILE *arquivo_map;
 	TObjeto objeto;
@@ -40,7 +49,6 @@ void CFase::Iniciar(char arquivo_fase[], int x1_destino, int y1_destino, int lar
 	para a variavel local ladrilhos */
 	if((arquivo_map = fopen(m_arquivo_fase, "rb")) != NULL)
 	{
-
 		fseek(arquivo_map, 0 * sizeof(TLadrilho), SEEK_SET);
 		fread(&ladrilhos, sizeof(TLadrilho), MAPA_TOTAL_LADRILHOS, arquivo_map);
 	}
@@ -51,16 +59,23 @@ void CFase::Iniciar(char arquivo_fase[], int x1_destino, int y1_destino, int lar
 	{
 		if(fread(&objeto, sizeof(TObjeto), 1, arquivo_map) == 1)
 		{
-			if(objeto.m_tipo == eAlien)
+			if(objeto.tipo == eAlien)
 			{
-				m_aliens.Adicionar(objeto.subtipo, objeto.x, objeto.y);
+				m_aliens.Adicionar();
+				m_aliens.Obter().Iniciar(objeto.subtipo, objeto.x, objeto.y);
 			}
 			else
-			if(objeto.m_tipo == eConstrucao)
+			if(objeto.tipo == eConstrucao)
 			{
-				m_construcoes.Adicionar(objeto.subtipo, objeto.x, objeto.y);
+				m_construcoes.Adicionar();
+				m_construcoes.Obter().Iniciar(objeto.subtipo, objeto.x, objeto.y);
 			}
-
+			else
+			if(objeto.tipo == eVeiculo)
+			{
+				m_veiculos.Adicionar();
+				m_veiculos.Obter().Iniciar(objeto.subtipo, objeto.x, objeto.y);
+			}
 		}
 		else
 		{
@@ -70,16 +85,39 @@ void CFase::Iniciar(char arquivo_fase[], int x1_destino, int y1_destino, int lar
 
 	fclose(arquivo_map);
 
-
-	CAlien::CarregarArquivoDados(load_datafile("aliens.dat"));
-	CConstrucao::CarregarArquivoDados(load_datafile("construcoes.dat"));
-	CTiro::CarregarArquivoDados(load_datafile("tiros.dat"));
-	CArma::CarregarArquivoDados(load_datafile("armas.dat"));
-
 	// Inicia o fundo com os dados lidos do m_arquivo
 	m_fundo.Iniciar(ladrilhos, 0, 0, MAPA_LARGURA_LADRILHOS, MAPA_ALTURA_LADRILHOS, LADRILHO_LARGURA, LADRILHO_ALTURA, m_x1_destino, m_y1_destino, m_largura_destino, m_altura_destino);
-	m_nave.Iniciar();
+	
+	Log("Adicionando nave");
+	m_naves.AdicionarFim();
+	Log("Nave adicionada");
+	m_naves.Obter().Iniciar(eAtena_01, 284, 6300);
+	Log("Nave iniciada");
 
+	m_chefe.Iniciar();
+
+	/* TESTE
+	m_naves.AdicionarFim();
+	m_naves.Obter().Iniciar(eAtena_01, 540, 6300);
+	m_naves.Obter().SetarTeclas(KEY_8_PAD, KEY_2_PAD, KEY_4_PAD, KEY_6_PAD, KEY_1_PAD, KEY_2_PAD, KEY_3_PAD, KEY_0_PAD);
+	/**/
+	m_bonus.Iniciar(eBonusEnergiaTotal, 284, 5900, &m_naves);
+
+	/*
+	// TESTE
+	Log("Filme");
+	strcpy(copia_arquivo_fase, m_arquivo_fase);
+	nome_arquivo = strrchr(copia_arquivo_fase, '/');
+	ext_arquivo  = strrchr(nome_arquivo, '.');
+	strcpy(ext_arquivo, ".txt");
+	strcpy(arquivo_filme, "filmes");
+	strcat(arquivo_filme, nome_arquivo);
+	Log(arquivo_filme);
+	if (exists(arquivo_filme))
+		filme.Executar(arquivo_filme);
+    /**/
+
+	CExplosao::Iniciar(640, 480);
 	Log("[FIM]:CFase::Iniciar();");
 }
 
@@ -87,17 +125,29 @@ void CFase::Iniciar(char arquivo_fase[], int x1_destino, int y1_destino, int lar
 //------------------------------------------------------------
 void CFase::Desenhar(CTela & tela)
 {
-	Log("");
-	Log("[INICIO]:CFase::Desenhar();");
-
+	Log("m_fundo.Desenhar(tela, m_x1_fonte, m_y1_fonte);");
 	m_fundo.Desenhar(tela, m_x1_fonte, m_y1_fonte);
+	
+	Log("m_veiculos.Desenhar(tela, m_x1_fonte - m_x1_destino, m_y1_fonte - m_y1_destino);");
+	m_veiculos.Desenhar(tela, m_x1_fonte - m_x1_destino, m_y1_fonte - m_y1_destino);
 
-	m_construcoes.DesenharTodos(tela, m_x1_fonte - m_x1_destino, m_y1_fonte - m_y1_destino);
+	Log("m_construcoes.Desenhar(tela, m_x1_fonte - m_x1_destino, m_y1_fonte - m_y1_destino);");
+	m_construcoes.Desenhar(tela, m_x1_fonte - m_x1_destino, m_y1_fonte - m_y1_destino);
 
-	m_aliens.DesenharTodos(tela, m_x1_fonte - m_x1_destino, m_y1_fonte - m_y1_destino);
+	Log("m_chefe.Desenhar(tela, m_x1_fonte - m_x1_destino, m_y1_fonte - m_y1_destino);");
+	m_chefe.Desenhar(tela, m_x1_fonte - m_x1_destino, m_y1_fonte - m_y1_destino);
 
-	m_nave.Desenhar(tela, m_x1_fonte - m_x1_destino, m_y1_fonte - m_y1_destino);
-	Log("[FIM]:CFase::Desenhar();");
+	Log("m_aliens.Desenhar(tela, m_x1_fonte - m_x1_destino, m_y1_fonte - m_y1_destino);");
+	m_aliens.Desenhar(tela, m_x1_fonte - m_x1_destino, m_y1_fonte - m_y1_destino);
+
+	Log("m_naves.Desenhar(tela, m_x1_fonte - m_x1_destino, m_y1_fonte - m_y1_destino);");
+	m_naves.Desenhar(tela, m_x1_fonte - m_x1_destino, m_y1_fonte - m_y1_destino);
+
+	Log("m_bonus.Desenhar(tela, m_x1_fonte - m_x1_destino, m_y1_fonte - m_y1_destino);");
+
+	m_bonus.Desenhar(tela, m_x1_fonte - m_x1_destino, m_y1_fonte - m_y1_destino);
+
+	CExplosao::Desenhar(tela);
 }
 
 
@@ -169,8 +219,9 @@ int CFase::ObterY1Fonte()
 void CFase::SalvarFase()
 {
 	m_fundo.SalvarFundo(m_arquivo_fase);
-	m_aliens.SalvarAlien(m_arquivo_fase);
-	m_construcoes.SalvarConstrucao(m_arquivo_fase);
+	SalvarObjetos(m_aliens, m_arquivo_fase);
+	SalvarObjetos(m_construcoes, m_arquivo_fase);
+	SalvarObjetos(m_veiculos, m_arquivo_fase);
 }
 
 
@@ -180,6 +231,7 @@ void CFase::Finalizar()
 	Log("");
 	Log("[INICIO]:CFase::Finalizar();");
 
+
 	m_fundo.Finalizar();
 
 	m_aliens.Finalizar();
@@ -188,11 +240,19 @@ void CFase::Finalizar()
 	m_construcoes.Finalizar();
 	CConstrucao::DescarregarArquivoDados();
 
-	m_nave.Finalizar();
+	m_veiculos.Finalizar();
+	CVeiculo::DescarregarArquivoDados();
+
+	m_naves.Finalizar();
+
+	m_chefe.Finalizar();
 
 	CArma::DescarregarArquivoDados();
 	CTiro::DescarregarArquivoDados();
 
+	CBonus< CNave >::DescarregarArquivoDados();
+
+	CExplosao::Desligar();
 	Log("[FIM]:CFase::Finalizar();");
 }
 
@@ -220,28 +280,30 @@ void CFase::SetarArquivoFase(char arquivo_fase[])
 //------------------------------------------------------------
 void CFase::AdicionarAlien(int tipo, int x, int y)
 {
-	m_aliens.Adicionar(tipo, x, y);
+	m_aliens.AdicionarFim();
+	m_aliens.Obter().Iniciar(tipo, x, y);
 }
 
 
 //------------------------------------------------------------
 void CFase::AdicionarConstrucao(int tipo, int x, int y)
 {
-	m_construcoes.Adicionar(tipo, x, y);
+	m_construcoes.AdicionarFim();
+	m_construcoes.Obter().Iniciar(tipo, x, y);
 }
 
 
 //------------------------------------------------------------
 void CFase::ExcluirAliens(int x1, int y1, int x2, int y2)
 {
-	m_aliens.Excluir(x1, y1, x2, y2);
+	m_aliens.RemoverPorColisao(x1, y1, x2, y2);
 }
 
 
 //------------------------------------------------------------
 void CFase::ExcluirConstrucoes(int x1, int y1, int x2, int y2)
 {
-	m_construcoes.Excluir(x1, y1, x2, y2);
+	m_construcoes.RemoverPorColisao(x1, y1, x2, y2);
 }
 
 
@@ -256,10 +318,12 @@ bool CFase::Atualizar(int fundo_pixels)
 		return false;
 	}
 
-	if(m_nave.ObterStatus() == eNaveExplosao)
+	if(m_naves.Obter(1).ObterStatus() == eNaveExplosao
+	&& m_naves.Obter(2).ObterStatus() == eNaveExplosao)
 	{
 		return false;
 	}
+
 
 	area.x1 = m_x1_fonte;
 	area.y1 = m_y1_fonte;
@@ -269,21 +333,29 @@ bool CFase::Atualizar(int fundo_pixels)
 
 	Rolar(eCima, fundo_pixels);
 
-	obj_aliens = m_aliens.ObterMaisProximo(m_nave.ObterX(), m_nave.ObterY());
-	//obj_tiros_aliens = aliens.ObterTiros()->ObterMaisProximo(nave.ObterX(), nave.ObterY());
+	//if(m_chefe.ObterAtivo) m_chefe.DecY(fundo_pixels);
+	m_naves.MoverPrimeiro();
+	do
+	{
+		m_naves.Obter().DecY(fundo_pixels);
+		obj_aliens = m_aliens.ObterMaisProximo(m_naves.Obter().ObterX(), m_naves.Obter().ObterY()).RetornarObjetoAvancado();
+		m_naves.Obter().Atualizar(area, obj_aliens);
+	} while(m_naves.MoverProximo());
 
-	m_nave.DecY(fundo_pixels);
-	m_nave.Atualizar(area, obj_aliens);
+	m_chefe.Atualizar(area, m_naves.Obter().RetornarObjetoAvancado());
 
+	m_aliens.Atualizar(area, m_naves.Obter().RetornarObjetoAvancado());
 
+	m_construcoes.Atualizar(area, m_naves.Obter().RetornarObjetoAvancado());
 
-	m_aliens.AtualizarTodos(area, m_nave.RetornarObjetoAvancado());
+	m_veiculos.Atualizar(area, m_naves.Obter().RetornarObjetoAvancado());
 
-	m_construcoes.AtualizarTodos(area, m_nave.RetornarObjetoAvancado());
+	m_bonus.Atualizar(area);
 
-	ChecarColisaoTiroNosAliens();
+	ChecarColisaoTirosDaNave();
 
 	ChecarColisaoNaNave();
+
 
 	return true;
 }
@@ -292,177 +364,161 @@ bool CFase::Atualizar(int fundo_pixels)
 //------------------------------------------------------------
 int CFase::ChecarColisaoAliens(int x1, int y1, int x2, int y2)
 {
-	return m_aliens.ChecarColisaoAliens(x1, y1, x2, y2);
+	return m_aliens.ChecarColisao(x1, y1, x2, y2);
 }
 
 
 //------------------------------------------------------------
 int CFase::ChecarColisaoConstrucoes(int x1, int y1, int x2, int y2)
 {
-	return m_construcoes.ChecarColisaoConstrucoes(x1, y1, x2, y2);
+	return m_construcoes.ChecarColisao(x1, y1, x2, y2);
 }
 
 
 //------------------------------------------------------------
 void CFase::Sonorizar()
 {
-	m_aliens.SonorizarTodos();
-	m_construcoes.SonorizarTodos();
-	m_nave.Sonorizar();
+	m_aliens.Sonorizar();
+	m_construcoes.Sonorizar();
+	m_veiculos.Sonorizar();
+	m_naves.Sonorizar();
 }
 
 
 //------------------------------------------------------------
-void CFase::ChecarColisaoTiroNosAliens()
+void CFase::ChecarColisaoTirosDaNave()
 {
-	CTiro *aux_tiro;
-	CAlien *aux_alien;
-	int ind;
-
-	ind = m_nave.ObterArmas().ObterIndice();
-	m_nave.ObterArmas().MoverPrimeiro();
-	
-	do
+	if(m_naves.MoverPrimeiro())
 	{
-		for(aux_tiro = m_nave.ObterArmas().Obter().ObterTiros().m_p_tiro; aux_tiro; aux_tiro = aux_tiro->m_p_tiro)
-		{	
-			for(aux_alien = m_aliens.m_p_alien; aux_alien; aux_alien = aux_alien->m_p_alien)
+		do
+		{
+			if(m_naves.Obter().ObterArmas().MoverPrimeiro())
 			{
-				if(aux_alien->ObterStatus() != eAlienInativo
-				&& aux_alien->ObterStatus() != eAlienExplosao
-				&& aux_tiro->ChecarColisao(aux_alien->ObterRect()))
+				do
 				{
-					aux_tiro->SetarStatus(eTiroExplosao);
-					aux_alien->SetarStatus(eAlienAtingido);
-					aux_alien->DecEnergia(1);
-					m_nave.IncPontos(1);
-				}
-			}
-		}
-	
-	} while(m_nave.ObterArmas().MoverProximo());
+					if(m_naves.Obter().ObterArmas().Obter().ObterTiros().MoverPrimeiro())
+					{
+						do
+						{
+							if(m_naves.Obter().ObterArmas().Obter().ObterTiros().Obter().ObterStatus() == eTiroNormal)
+							{
+								// Nos Aliens
+								if(m_aliens.Colidir(m_naves.Obter().ObterArmas().Obter().ObterTiros().Obter().ObterRect(), 1))
+								{
+									m_naves.Obter().ObterArmas().Obter().ObterTiros().Obter().SetarStatus(eTiroExplosao);
+									m_naves.Obter().IncPontos(1);
+								}
 
-	m_nave.ObterArmas().Mover(ind);
+								// Nos veiculos
+								if(m_veiculos.Colidir(m_naves.Obter().ObterArmas().Obter().ObterTiros().Obter().ObterRect(), 1))
+								{
+									m_naves.Obter().ObterArmas().Obter().ObterTiros().Obter().SetarStatus(eTiroExplosao);
+									m_naves.Obter().IncPontos(1);
+								}
+
+								// No chefe
+								if(m_chefe.Colidir(m_naves.Obter().ObterArmas().Obter().ObterTiros().Obter().ObterRect(), 1))
+								{
+									m_naves.Obter().ObterArmas().Obter().ObterTiros().Obter().SetarStatus(eTiroExplosao);
+									m_naves.Obter().IncPontos(1);
+								}
+							}
+						} while(m_naves.Obter().ObterArmas().Obter().ObterTiros().MoverProximo());
+					}
+				} while(m_naves.Obter().ObterArmas().MoverProximo());
+			}
+		} while(m_naves.MoverProximo());
+	}
 }
+
 
 
 //------------------------------------------------------------
 void CFase::ChecarColisaoNaNave()
 {
-	CTiro *aux_tiro;
-	CAlien *aux_alien;
-	CConstrucao *aux_construcao;
-
-	// Aliens
-	for(aux_alien = m_aliens.m_p_alien; aux_alien; aux_alien = aux_alien->m_p_alien)
+	if(m_aliens.MoverPrimeiro())
 	{
-		if(aux_alien->ObterStatus() != eAlienInativo
-		&& aux_alien->ObterStatus() != eAlienExplosao)
+		do
 		{
-			// Aliens colidem na nave
-			if(aux_alien->ChecarColisao(m_nave.ObterRect()))
+			if(m_aliens.Obter().ObterStatus() != eAlienInativo
+			&& m_aliens.Obter().ObterStatus() != eAlienExplosao
+			&& m_naves.Colidir(m_aliens.Obter().ObterRect(), 1))
+				m_aliens.Obter().SetarStatus(eAlienExplosao);
+
+			if(m_aliens.Obter().ObterArmas().Obter().ObterTiros().MoverPrimeiro())
 			{
-				aux_alien->SetarStatus(eAlienExplosao);
-				m_nave.DecEnergia(aux_alien->ObterEnergia());
-			}
-			else 
-			{
-				// Aliens colidem nas armas
-				m_nave.ObterArmas().MoverPrimeiro();
-				do 
+				do
 				{
-					if(m_nave.ObterArmas().Obter().ObterStatus() != eArmaInativa
-					&& m_nave.ObterArmas().Obter().ObterStatus() != eArmaExplosao
-					&& aux_alien->ChecarColisao(m_nave.ObterArmas().Obter().ObterRect()))
+					if(m_aliens.Obter().ObterArmas().Obter().ObterTiros().Obter().ObterStatus() == eTiroNormal)
 					{
-						aux_alien->SetarStatus(eAlienExplosao);
-						m_nave.ObterArmas().Obter().DecEnergia(aux_alien->ObterEnergia());
+						// Tiros aliens colidem na nave
+						if(m_naves.Obter().Colidir(m_aliens.Obter().ObterArmas().Obter().ObterTiros().Obter().ObterRect(), 1))
+							m_aliens.Obter().ObterArmas().Obter().ObterTiros().Obter().SetarStatus(eTiroExplosao);
 					}
-				} while(m_nave.ObterArmas().MoverProximo());
+
+				} while(m_aliens.Obter().ObterArmas().Obter().ObterTiros().MoverProximo());
 			}
-		}
-
-		// Aliens colidem nas armas
-		if(aux_alien->ObterStatus() != eAlienInativo
-		&& aux_alien->ObterStatus() != eAlienExplosao
-		&& aux_alien->ChecarColisao(m_nave.ObterRect()))
-		{
-			aux_alien->SetarStatus(eAlienExplosao);
-			m_nave.DecEnergia(aux_alien->ObterEnergia());
-		}
-
-		for(aux_tiro = aux_alien->ObterTiros()->m_p_tiro; aux_tiro; aux_tiro = aux_tiro->m_p_tiro)
-		{
-			// Tiros aliens colidem na nave
-			if(aux_tiro->ChecarColisao(m_nave.ObterRect()))
-			{
-				aux_tiro->SetarStatus(eTiroExplosao);
-				m_nave.DecEnergia(1);
-			}
-
-			// Tiros aliens colidem nas armas
-			m_nave.ObterArmas().MoverPrimeiro();
-			do 
-			{
-				if(m_nave.ObterArmas().Obter().ObterStatus() != eArmaInativa
-				&& m_nave.ObterArmas().Obter().ObterStatus() != eArmaExplosao
-				&& aux_tiro->ChecarColisao(m_nave.ObterArmas().Obter().ObterRect()))
-				{
-					aux_tiro->SetarStatus(eTiroExplosao);
-					m_nave.ObterArmas().Obter().DecEnergia(1);
-				}
-			} while(m_nave.ObterArmas().MoverProximo());
-		}
+		} while(m_aliens.MoverProximo());
 	}
 
 	// Construções
-	for(aux_construcao = m_construcoes.m_p_construcao; aux_construcao; aux_construcao = aux_construcao->m_p_construcao)
+	if(m_construcoes.MoverPrimeiro())
 	{
-		/*
-		if(aux_construcao->ObterStatus() != eAlienInativo
-		&& aux_construcao->ObterStatus() != eAlienExplosao
-		&& aux_construcao->ChecarColisao(nave.Rect()))
-		{
-			aux_construcao->SetarStatus(eAlienExplosao);
-			nave.DecEnergia(aux_construcao->ObterEnergia() * 5);
-		}
-		*/
-		
-		for(aux_tiro = aux_construcao->ObterTiros()->m_p_tiro; aux_tiro; aux_tiro = aux_tiro->m_p_tiro)
-		{
-			// Tiros construções colidem na nave
-			if(aux_tiro->ChecarColisao(m_nave.ObterRect()))
+		do
+		{	if(m_construcoes.Obter().ObterArmas().Obter().ObterTiros().MoverPrimeiro())
 			{
-				aux_tiro->SetarStatus(eTiroExplosao);
-				m_nave.DecEnergia(1);
-			}
-
-			// Tiros  construções colidem nas armas
-			m_nave.ObterArmas().MoverPrimeiro();
-			do 
-			{
-				if(m_nave.ObterArmas().Obter().ObterStatus() != eArmaInativa
-				&& m_nave.ObterArmas().Obter().ObterStatus() != eArmaExplosao
-				&& aux_tiro->ChecarColisao(m_nave.ObterArmas().Obter().ObterRect()))
+				do
 				{
-					aux_tiro->SetarStatus(eTiroExplosao);
-					m_nave.ObterArmas().Obter().DecEnergia(1);
-				}
-			} while(m_nave.ObterArmas().MoverProximo());
-		}
+					if(m_construcoes.Obter().ObterArmas().Obter().ObterTiros().Obter().ObterStatus() == eTiroNormal)
+					{
+						// Tiros construções colidem na nave
+						if(m_naves.Obter().Colidir(m_construcoes.Obter().ObterArmas().Obter().ObterTiros().Obter().ObterRect(), 1))
+							m_construcoes.Obter().ObterArmas().Obter().ObterTiros().Obter().SetarStatus(eTiroExplosao);
+					}
+				} while(m_construcoes.Obter().ObterArmas().Obter().ObterTiros().MoverProximo());
+			}
+		} while(m_construcoes.MoverProximo());
+	}
+
+
+	// Veículos
+	if(m_veiculos.MoverPrimeiro())
+	{
+		do
+		{
+			// Veiculos colidem com a nave
+			if(m_veiculos.Obter().ObterStatus() != eVeiculoExplosao
+			&& m_veiculos.Obter().ObterStatus() != eVeiculoInativo
+			&& m_naves.Obter().Colidir(m_veiculos.Obter().ObterRect(), 1))
+				m_veiculos.Obter().SetarStatus(eVeiculoExplosao);
+
+  
+			if(m_veiculos.Obter().ObterArmas().Obter().ObterTiros().MoverPrimeiro())
+			{
+				do
+				{
+					if(m_veiculos.Obter().ObterArmas().Obter().ObterTiros().Obter().ObterStatus() == eTiroNormal)
+					{
+						// Tiros veiculos colidem na nave
+						if(m_naves.Obter().Colidir(m_veiculos.Obter().ObterArmas().Obter().ObterTiros().Obter().ObterRect(), 1))
+							m_veiculos.Obter().ObterArmas().Obter().ObterTiros().Obter().SetarStatus(eTiroExplosao);
+					}
+				} while(m_veiculos.Obter().ObterArmas().Obter().ObterTiros().MoverProximo());
+			}
+		} while(m_veiculos.MoverProximo());
 	}
 }
 
 
 //------------------------------------------------------------
-CAlien CFase::ObterAliens()
+CColecaoAvancada< CAlien > & CFase::ObterAliens()
 {
 	return m_aliens;
 }
 
 
 //------------------------------------------------------------
-CConstrucao CFase::ObterConstrucoes()
+CColecaoAvancada< CConstrucao > & CFase::ObterConstrucoes()
 {
 	return m_construcoes;
 }
@@ -471,5 +527,38 @@ CConstrucao CFase::ObterConstrucoes()
 //------------------------------------------------------------
 CNave & CFase::ObterNave()
 {
-	return m_nave;
+	return m_naves.Obter();
 }
+
+//------------------------------------------------------------
+CColecaoAvancada <CVeiculo> & CFase::ObterVeiculos()
+{
+	return m_veiculos;
+}
+
+
+//------------------------------------------------------------
+template< class cls >
+void CFase::SalvarObjetos(CColecaoAvancada< cls > cls_obj, char * fase)
+{
+	TObjeto obj;
+	FILE *m_arquivo;
+
+	if((m_arquivo = fopen(fase, "rb+")) != NULL)
+	{
+		if(cls_obj.MoverPrimeiro())
+		{
+			obj.tipo = cls_obj.Obter().ObterTipoObjeto();
+			fseek(m_arquivo, 0, SEEK_END);
+			do
+			{
+				obj.subtipo = cls_obj.Obter().ObterTipo();
+				obj.x = cls_obj.Obter().ObterX();
+				obj.y = cls_obj.Obter().ObterY();
+				fwrite(&obj, sizeof(TObjeto), 1, m_arquivo);
+			} while(cls_obj.MoverProximo());
+		}
+	}
+    fclose(m_arquivo);
+}
+

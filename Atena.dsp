@@ -103,7 +103,15 @@ SOURCE=.\carma.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ccolecaoarma.cpp
+SOURCE=.\cbonus.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\cchefe.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ccolecao.cpp
 # End Source File
 # Begin Source File
 
@@ -112,6 +120,10 @@ SOURCE=.\cconfig.cpp
 # Begin Source File
 
 SOURCE=.\cconstrucao.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\cexplosao.cpp
 # End Source File
 # Begin Source File
 
@@ -159,6 +171,10 @@ SOURCE=.\ctiro.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\cveiculo.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\erro.cpp
 # End Source File
 # Begin Source File
@@ -183,11 +199,19 @@ SOURCE=.\carma.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\cbonus.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\cchefe.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\ccolecao.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\ccolecaoarma.h
+SOURCE=.\ccolecaoavancada.h
 # End Source File
 # Begin Source File
 
@@ -196,6 +220,10 @@ SOURCE=.\cconfig.h
 # Begin Source File
 
 SOURCE=.\cconstrucao.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\cexplosao.h
 # End Source File
 # Begin Source File
 
@@ -235,15 +263,15 @@ SOURCE=.\cobjeto.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\construcoes.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\ctela.h
 # End Source File
 # Begin Source File
 
 SOURCE=.\ctiro.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\cveiculo.h
 # End Source File
 # Begin Source File
 
@@ -295,7 +323,19 @@ SOURCE=.\atena.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\bonus.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\construcoes.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\tiros.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\veiculos.h
 # End Source File
 # End Group
 # End Target

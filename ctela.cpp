@@ -85,6 +85,8 @@ void CTela::Atualizar(BITMAP * bmp_destino)
 	{
 		stretch_blit(m_bmp_fundo, bmp_destino, 0, 0, TELA_L, TELA_A, 0, 0, SCREEN_W, SCREEN_H);
 	}
+	if (key[KEY_F12])
+		Salvar(m_bmp_fundo);
 }
 
 //------------------------------------------------------------
@@ -134,6 +136,25 @@ void CTela::SetarSuavizar(bool valor)
 void CTela::SetarEscreverSombra(bool valor)
 {
 	m_utilizar_escrever_sombra = valor;
+}
+
+void CTela::Salvar(BITMAP *bmp)
+{
+	bool sair = false;
+	int i = 0;
+	char arquivo[512];
+
+	do {
+		sprintf(arquivo, "captura_%d.bmp", i);
+		if (!exists(arquivo))
+		{
+			textout_centre(screen, font, "SALVANDO CAPTURA DE TELA...", SCREEN_W / 2, SCREEN_H / 2, makecol(255,255,0));
+			sair = true;
+			save_bmp(arquivo, bmp, NULL);
+		}
+		i++;
+	} while (!sair);
+	rest(1000);
 }
 
 //////////////////////////////////////////////////////////////
@@ -194,6 +215,15 @@ void CTela::Escrever(const char * str, int x, int y, int cor)
 	Escrever(eCamadaEfeitos, str, x, y, cor);
 }
 
+void CTela::Escrever(const char * str, int x, int y, int cor, FONT *fonte)
+{
+	if (m_utilizar_escrever_sombra)
+	{
+		textout(RetornarCamada(eCamadaEfeitos), fonte, str, x + 1, y + 1, COR_PRETA);
+	}
+
+	textout(RetornarCamada(eCamadaEfeitos), fonte, str, x, y, cor);
+}
 //------------------------------------------------------------
 void CTela::Escrever(ECamada camada, const char * str, int x, int y, int cor)
 {

@@ -1,18 +1,24 @@
- /*------------------------------------------------------------*
+	 /*------------------------------------------------------------*
  *  ccolecao.h - Classe CColecao
 *------------------------------------------------------------*
-*  Nome: cls Giacomelli
+*  Nome: Diego Giacomelli
 *  Data: sexta-feira, 28 de junho de 2002
 *
+*  Alterações:
 *
+*  Diego Giacomelli em 16/07/2002
+*	- Retirados o qualificado const do parâmetro valor 
+*	  dos métodos;
+*	- Inseridos os métodos Adicionar, AdicionarFim,  sem parâmetros;
+*
+*  Diego Giacomelli em 19/07/2002
+*	- Corrigida falha em Adicionar(cls valor) quando se insiria
+*	  um valor no meio da lista;
 *------------------------------------------------------------*/
 
 
 #ifndef ccolecao_h_incluido
 #define ccolecao_h_incluido
-
-
-#include "erro.h"
 
 
 template< class cls >
@@ -38,10 +44,12 @@ class CColecao
 public:
 	CColecao();
 	~CColecao();
-	bool Adicionar(const cls valor);
-	bool Adicionar(const cls valor, int indice);
-	bool AdicionarInicio(const cls valor);
-	bool AdicionarFim(const cls valor);
+	bool Adicionar();
+	bool Adicionar(cls valor);
+	bool Adicionar(cls valor, int indice);
+	bool AdicionarInicio(cls valor);
+	bool AdicionarFim();
+	bool AdicionarFim(cls valor);
 	bool Remover();
 	bool Remover(int indice);
 	bool RemoverInicio();
@@ -89,9 +97,18 @@ CColecao< cls >::~CColecao()
 
 //------------------------------------------------------------
 template< class cls > 
-bool CColecao< cls >::Adicionar(const cls valor)
+bool CColecao< cls >::Adicionar()
 {
-	char buf[80];
+	cls valor;
+
+	return Adicionar(valor);
+}
+
+
+//------------------------------------------------------------
+template< class cls > 
+bool CColecao< cls >::Adicionar(cls valor)
+{
 	CNodo< cls > *novo;
 
     novo = new CNodo< cls >;
@@ -103,10 +120,16 @@ bool CColecao< cls >::Adicionar(const cls valor)
 	if(m_p_itm_atual)
 	{
 		if(m_p_itm_atual->m_p_itm_ant)
+		{
 			m_p_itm_atual->m_p_itm_ant->m_p_prx_itm = novo;
+			novo->m_p_itm_ant = m_p_itm_atual->m_p_itm_ant;
+		}
 		else
+		{
 			m_p_pri_itm = novo;
+		}
 
+		
 		m_p_itm_atual->m_p_itm_ant = novo;
 		novo->m_p_prx_itm = m_p_itm_atual;
 		m_p_itm_atual = novo;
@@ -125,7 +148,7 @@ bool CColecao< cls >::Adicionar(const cls valor)
 
 //------------------------------------------------------------
 template< class cls > 
-bool CColecao< cls >::Adicionar(const cls valor, int indice)
+bool CColecao< cls >::Adicionar(cls valor, int indice)
 {
 	int ind;
 	char buf[80];
@@ -143,7 +166,7 @@ bool CColecao< cls >::Adicionar(const cls valor, int indice)
 
 //------------------------------------------------------------
 template< class cls > 
-bool CColecao< cls >::AdicionarInicio(const cls valor)
+bool CColecao< cls >::AdicionarInicio(cls valor)
 {
 	m_p_itm_atual = m_p_pri_itm;
 	m_ind_itm_atual = 1;
@@ -153,10 +176,19 @@ bool CColecao< cls >::AdicionarInicio(const cls valor)
 
 //------------------------------------------------------------
 template< class cls > 
-bool CColecao< cls >::AdicionarFim(const cls valor)
+bool CColecao< cls >::AdicionarFim()
+{
+	cls valor;
+
+	return AdicionarFim(valor);
+}
+
+
+//------------------------------------------------------------
+template< class cls > 
+bool CColecao< cls >::AdicionarFim(cls valor)
 {
 	CNodo< cls > *novo;
-	char buf[80];
 
 	if(!m_p_pri_itm) 
 		return Adicionar(valor);
@@ -182,7 +214,6 @@ template< class cls >
 bool CColecao< cls >::Remover()
 {
 	CNodo< cls > *aux;
-	char buf[80];
 
 	if(!m_p_itm_atual) return false;
 
@@ -335,7 +366,7 @@ bool CColecao< cls >::MoverUltimo()
 template< class cls > 
 bool CColecao< cls >::MoverAnterior()
 {
-	if(m_p_itm_atual->m_p_itm_ant)
+	if(m_p_itm_atual && m_p_itm_atual->m_p_itm_ant)
 	{
 		m_p_itm_atual = m_p_itm_atual->m_p_itm_ant;
 		m_ind_itm_atual--;
@@ -349,7 +380,7 @@ bool CColecao< cls >::MoverAnterior()
 template< class cls > 
 bool CColecao< cls >::MoverProximo()
 {
-	if(m_p_itm_atual->m_p_prx_itm)
+	if(m_p_itm_atual && m_p_itm_atual->m_p_prx_itm)
 	{
 		m_p_itm_atual = m_p_itm_atual->m_p_prx_itm;
 		m_ind_itm_atual++;

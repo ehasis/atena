@@ -35,7 +35,8 @@ void ErroX(char *arquivo, int linha, char *s1, char *s2)
 
 void LogX(char *arquivo, int linha, char *texto)
 {
-/*	FILE *f;
+/*
+ 	FILE *f;
 
 	f = fopen("log.txt", "a");
 

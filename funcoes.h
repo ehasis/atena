@@ -10,12 +10,17 @@
 *     barra_progresso_atena;
 *   - Implementação da procedure barra_progresso_zeus;
 *
-*  Henrique em 02/02/2002
+*  Henrique Andreassy em 02/02/2002
 *   - Implementação da função SuavizarBitmap()
 *
-*  Diego em 13/02/2002
+*  Diego Giacomelli em 13/02/2002
 *   - Alterados as procedures de barras de progresso para
 *     aceitar CTela;
+*
+*  Henrique Andreassy em 23/07/2002
+*	- Modificado barra_status_* para pintar somente quando 
+*	  a porcentagem for maior que zero
+*
 *------------------------------------------------------------*/
 
 #ifndef funcoes_h_incluido

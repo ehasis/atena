@@ -15,16 +15,31 @@
 
 
 //------------------------------------------------------------
-void CNave::Iniciar()
+CNave::CNave()
 {
-	m_armas.Adicionar(eArmaCanhao, m_x, m_y);
-	m_armas.Adicionar(eArmaCanhao, m_x, m_y);
-	m_armas.Adicionar(eArmaCanhao, m_x, m_y);
+}
+
+
+//------------------------------------------------------------
+void CNave::Iniciar(int tipo, int x, int y)
+{
+	Log("[INICIO]:CNave::Iniciar()");
+
+	m_armas.Adicionar();
+	m_armas.Obter().Iniciar(eArmaCanhao, x, y);
+
+	m_armas.Adicionar();
+	m_armas.Obter().Iniciar(eArmaCanhao, x, y);
+
+	m_armas.Adicionar();
+	m_armas.Obter().Iniciar(eArmaCanhao, x, y);
+
 	m_largura = 72;
 	m_altura = 100;
-	SetarX(284);
-	SetarY(6300);
-	m_vi = 15;
+	SetarX(x);
+	SetarY(y);
+	m_tipo = tipo;
+	m_vi = 5;
 	m_vx = 0;
 	m_vy = 0;
 	m_dx = 0;
@@ -40,7 +55,9 @@ void CNave::Iniciar()
 	m_quadro = 2;
 	m_tipo_tiro = 3;
 	m_dat_arquivo = load_datafile("nave.dat");
-	
+	SetarTeclas();
+	Log("[FIM]:CNave::Iniciar()");
+
 }
 
 
@@ -57,7 +74,6 @@ void CNave::Finalizar()
 // metodo para desenhar o objeto
 void CNave::Desenhar(CTela & tela, int x_real, int y_real)
 {
-	Log("[INICIO]:CNave::Desenhar();");
 	switch(m_status)
 	{
 		case eNaveEscudo:
@@ -65,19 +81,33 @@ void CNave::Desenhar(CTela & tela, int x_real, int y_real)
 			m_status = eNaveNormal;
 
 		case eNaveNormal:
-			tela.MaskedBlit((BITMAP *)m_dat_arquivo[SOMBRA].dat, eCamadaObjetos, (m_quadro + (5 * m_turbina)) * (m_largura / 1.5), 0, m_x + 50 - x_real, m_y + 50 - y_real, (m_largura / 1.5), (m_altura / 1.5));
-			tela.MaskedBlit((BITMAP *)m_dat_arquivo[NORMAL].dat, eCamadaObjetos, (m_quadro + (5 * m_turbina)) * m_largura , 0, m_x - x_real, m_y - y_real, m_largura, m_altura);
+             tela.MaskedBlit((BITMAP *)m_dat_arquivo[NAVE_13_S].dat, eCamadaObjetos, m_quadro * (m_largura / 1.5), 0, m_x + 50 - x_real, m_y + 50 - y_real, (m_largura / 1.5), (m_altura / 1.5));
+			 tela.MaskedBlit((BITMAP *)m_dat_arquivo[NAVE_13].dat, eCamadaObjetos, m_quadro * m_largura , 0, m_x - x_real, m_y - y_real, m_largura, m_altura);
+			 if(m_turbina)
+			 {
+				DesenharExplosao(tela, x_real, y_real, m_x + (m_largura/2) - 13, m_y + m_altura - 20, 5, 10);
+				DesenharExplosao(tela, x_real, y_real, m_x + (m_largura/2) + 10, m_y + m_altura - 20, 5, 10);
+			 }
+			 else
+			 {
+				 DesenharExplosao(tela, x_real, y_real, m_x + (m_largura/2) - 13, m_y + m_altura - 20, 3, 10);
+				 DesenharExplosao(tela, x_real, y_real, m_x + (m_largura/2) + 10, m_y + m_altura - 20, 3, 10);
+			 }
 			break;
 
 		case eNaveExplosao:
+			DesenharExplosao(tela, x_real, y_real, m_x + (m_largura/2), m_y + (m_altura/2), (m_quadro * 3) + (m_largura / 2), m_largura);
+			break;
+
+		case eNaveAtingida:
+			break;
 
 		case eNaveRenacer:
 			tela.DrawSprite(eCamadaObjetos, (BITMAP *)m_dat_arquivo[EXPLOSAO].dat, m_x - x_real, m_y - x_real);
 			break;
 	}
+	
 	m_armas.Desenhar(tela, x_real, y_real);
-	m_tiros.DesenharTodos(tela, x_real, y_real);
-	Log("[INICIO]:CNave::Desenhar();");
 }
 
 //------------------------------------------------------------
@@ -89,24 +119,22 @@ void CNave::Atualizar(TRect area, CObjetoAvancado * const alvo)
 	valor.a = valor.b = valor.c = valor.x = valor.y = 0;
 	valor.arma_esquerda = valor.arma_centro = valor.arma_direita = false;
 
-	char bff[80];
-
 	m_atirar = 0;
 
 	// Leitura das Teclas
-	if (key[KEY_UP])		valor.y--;
-	if (key[KEY_DOWN])		valor.y++;
-	if (key[KEY_LEFT])		valor.x--;
-	if (key[KEY_RIGHT])		valor.x++;
-	if (key[KEY_MINUS_PAD]) valor.b = 1;
-	if (key[KEY_PLUS_PAD])  valor.c = 1;
-	if (key[KEY_Z])			valor.arma_esquerda = true;
-	if (key[KEY_X])			valor.arma_centro = true;
-	if (key[KEY_C])			valor.arma_direita = true;
-	if (key[KEY_SPACE])		valor.arma_esquerda = valor.arma_centro = valor.arma_direita = true;
-	
-	if (m_status == eNaveRenacer) m_status = eNaveNormal;
+	if (key[m_tecla_cima])		valor.y--;
+	if (key[m_tecla_baixo])		valor.y++;
+	if (key[m_tecla_esquerda])		valor.x--;
+	if (key[m_tecla_direita])		valor.x++;
+	//if (key[]) valor.b = 1;
+	//if (key[])  valor.c = 1;
+	if (key[m_tecla_arma_esquerda])			valor.arma_esquerda = true;
+	if (key[m_tecla_arma_centro])			valor.arma_centro = true;
+	if (key[m_tecla_arma_direita])			valor.arma_direita = true;
+	if (key[m_tecla_todas_armas])		valor.arma_esquerda = valor.arma_centro = valor.arma_direita = true;
 
+	if (m_status == eNaveRenacer) m_status = eNaveNormal;
+	
 	/* Teste de HFSM
 	if(alvo)
 	{
@@ -152,10 +180,12 @@ void CNave::Atualizar(TRect area, CObjetoAvancado * const alvo)
 	if (m_status == eNaveNormal)
 	{
 
+		m_turbina = 0;
 		// com inercia
 		switch (valor.x)
 		{
 		case -1:
+		//	m_turbina++;
 			m_vx = -m_vi;
 			IncX(m_vx);
 			m_quadro = m_quadro > 0 ?m_quadro - 1 :0;
@@ -170,6 +200,7 @@ void CNave::Atualizar(TRect area, CObjetoAvancado * const alvo)
 			}
 			break;
 		case 1:
+		//	m_turbina++;
 			m_vx =  m_vi;
 			IncX(m_vx);
 			m_quadro = m_quadro = m_quadro < 4 ?m_quadro + 1 : 4;
@@ -179,18 +210,17 @@ void CNave::Atualizar(TRect area, CObjetoAvancado * const alvo)
 		switch (valor.y)
 		{
 		case -1:
-			m_turbina = 1;
+			m_turbina++; 
 			m_vy = -m_vi;
 			IncY(m_vy);
 			break;
 		case 0:
-			m_turbina = 0;
 			m_vy /= 2;
 			if (m_vy < 0) DecY(abs(m_vy));
 			else        IncY(m_vy);
 			break;
 		case 1:
-			m_turbina = 0;
+		//	m_turbina++;
 			m_vy =  m_vi;
 			IncY(m_vy);
 			break;
@@ -236,13 +266,8 @@ void CNave::Atualizar(TRect area, CObjetoAvancado * const alvo)
 
 		if(valor.a)
 		{
-			//Log("Adicionando tiro nave...");
-			m_tiros.Adicionar((ETiro)m_tipo_tiro , m_x + (m_largura / 2), m_y, alvo);
-			//Log("Tiro nave adicionado...");
+			//m_tiros.Adicionar((ETiro)m_tipo_tiro , m_x + (m_largura / 2), m_y, alvo);
 		}
-		//Log("Atualizando m_tiros nave...");
-		m_tiros.AtualizarTodos(area, alvo);
-		//Log("Ttiros nave atualizados...");
 		if (m_casco <= 0)
 		{
 			m_status = eNaveExplosao;
@@ -279,16 +304,6 @@ void CNave::Atualizar(TRect area, CObjetoAvancado * const alvo)
 
 	m_armas.Atualizar(area, alvo);
 
-	/*
-	quadro++;
-	if (quadro == 15)
-	{
-		quadro = 0;
-
-		if (energia < 100)
-			energia++;
-	}
-	*/
 }
 
 //------------------------------------------------------------
@@ -325,13 +340,6 @@ void CNave::Sonorizar()
 
 
 //------------------------------------------------------------
-CTiro *CNave::ObterTiros()
-{
-	return &m_tiros;
-}
-
-
-//------------------------------------------------------------
 int CNave::ObterPontos()
 {
 	return m_pontos;
@@ -359,7 +367,7 @@ int CNave::ObterStatus()
 }
 
 //------------------------------------------------------------
-CColecaoArma & CNave::ObterArmas()
+CColecaoAvancada< CArma > & CNave::ObterArmas()
 {
 	return m_armas;
 }
@@ -371,10 +379,10 @@ void CNave::SetarX(int x)
 	m_x = x;
 	m_armas.MoverPrimeiro();
 	m_armas.Obter().SetarX(x - 50);
-	
+
 	m_armas.MoverProximo();
 	m_armas.Obter().SetarX(ObterPMX() - m_armas.Obter().ObterLargura() / 2);
-	
+
 	m_armas.MoverProximo();
 	m_armas.Obter().SetarX(x + m_largura + 25);
 }
@@ -453,4 +461,49 @@ void CNave::DecY(int decremento)
 
 	m_armas.MoverProximo();
 	m_armas.Obter().DecY(decremento);
+}
+
+
+//------------------------------------------------------------
+bool CNave::Colidir(TRect area, int energia)
+{
+	bool colidiu = false;
+
+	if(ChecarColisao(area)
+	&& m_status != eNaveExplosao)
+	{
+		DecEnergia(energia);
+		colidiu = true;
+	}
+
+	if(m_armas.Colidir(area, energia)) colidiu = true;
+
+	return colidiu;
+}
+
+
+//------------------------------------------------------------
+void CNave::SetarBonus(int bonus)
+{
+	m_bonus = bonus;
+	switch(m_bonus)
+	{
+		case eBonusEnergiaTotal:
+			m_energia = 100;
+			break;
+	}
+}
+
+
+//------------------------------------------------------------
+void CNave::SetarTeclas(int tecla_cima, int tecla_baixo, int tecla_esquerda, int tecla_direita, int tecla_arma_esquerda, int tecla_arma_centro, int tecla_arma_direita, int tecla_todas_armas)
+{
+	m_tecla_cima = tecla_cima;
+	m_tecla_baixo = tecla_baixo;
+	m_tecla_esquerda = tecla_esquerda;
+	m_tecla_direita = tecla_direita;
+	m_tecla_arma_esquerda = tecla_arma_esquerda;
+	m_tecla_arma_centro = tecla_arma_centro;
+	m_tecla_arma_direita = tecla_arma_direita;
+	m_tecla_todas_armas = tecla_todas_armas;
 }

@@ -52,7 +52,7 @@ TBala		balaalien[30];
 void MostrarPerdeu()
 {
 	char str[40];
-	clear(screen);
+	//clear(screen);
 	textout_centre(screen, font, "Voce morreu!", 320, 200, makecol(255,255,0));
 	sprintf(str,"Sua Pontuacao: %d",nave1.pontos);
 	textout_centre(screen, font, str, 320, 220, makecol(255,255,0));
@@ -213,7 +213,7 @@ void IniciarObjetos()
 	play_midi((MIDI *)data[MID_FUNDO1].dat, 1);
 	
 	//Objetos
-	fundo.SetArquivoDat(load_datafile("atena.dat"));
+	fundo.Iniciar();
 	nave1.SetArquivoDat(load_datafile("nave.dat"));
 	for (int i = 0; i < 30; i++)
 	{
@@ -226,7 +226,7 @@ void IniciarObjetos()
 //montagem da barra de status
 void AtualizarStatus(BITMAP *bmp)
 {
-	masked_blit((BITMAP *)data[PAINEL].dat, bmp, 0, 0, 0, 0, 200, 50);
+	draw_trans_sprite(bmp, (BITMAP *)data[PAINEL].dat, 0, 0);
 
 	sprintf(str,"Mortes : %d     ", nave1.pontos);
 
@@ -360,9 +360,11 @@ void AtualizarObjetos()
 // desenha os objetos no bitmap da tela
 void DesenharObjetos(BITMAP *bmp)
 {
+	register int i;
+
 	fundo.Desenhar(bmp);
 	masked_blit(buffer, bmp, 0, 0, 0, 0, 640, 480);
-	for (register int i = 0; i < 30; i++)
+	for (i = 0; i < 30; i++)
 	{
 		alien[i].Desenhar(bmp);
 	}

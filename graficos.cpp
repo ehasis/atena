@@ -31,6 +31,7 @@ void IniciarGraficos()
 	if (set_gfx_mode(modo_tela, 640, 480, 0, 0) < 0)
 		Erro("Nao foi possivel definir o modo grafico", allegro_error);
 
+	set_trans_blender(0, 0, 0, 128);
 	bmp_buffer = create_bitmap(640, 480);
 	clear(screen);
 }

@@ -1,0 +1,43 @@
+body {
+   	scrollbar-3dlight-color : #ffcc00;
+	scrollbar-arrow-color : #000000;
+	scrollbar-base-color : #ffaa00;
+	scrollbar-darkshadow-color : #ffcc22;
+	scrollbar-face-color : #ffcc22;
+	scrollbar-highlight-color : #ffdd22;
+	scrollbar-shadow-color : #ffcb11;
+	scrollbar-track-color : #ffe080;
+	font-family : Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size : 12px;
+	margin-left : 10px;
+	margin-right : 10px;
+	text-align : justify;
+}
+a:link, a:visited {
+	color : Blue;
+	text-decoration : none;
+}
+a:hover, a:active {
+	color : Gold;
+	text-decoration : none;
+}
+
+.Titulo {
+	font-family : Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-weight : bold;
+	font-size : 20px;
+	text-align : center;
+}
+.Noticia {
+	font-family : Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-weight : bold;
+	font-size : 13px;
+	text-align : left;
+	border-bottom : 1px solid Olive;
+}
+.Rodape {
+	font-family : Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size : 11px;
+	color : Gray;
+	border-top : 1px solid;
+}

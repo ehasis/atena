@@ -1,0 +1,22 @@
+Criar o Diagrama do Desenvolvimento
+Criar o Diagrama do Programa
+Criar a biblioteca de imagens
+Criar o Editor de Mapas
+--------------- SUGESTAO RENATO -------------
+- Dar menos tiros para matar as naves
+- Possibilidade de trocar de armas (bonus e tal)
+- Ultima fase tem que ser dificil
+
+
+---------------------------------------------
+Quais são os passos para desenvolver um jogo completo?
+
+* Criar uma história e o Documento de Design
+* Definir o tipo do jogo
+* Montar um roteiro bom e coerente
+* Criar uma biblioteca de imagens
+* Criar uma bibliote de sons
+* Fazer a modelagem do programa
+
+----------------------------------------------
+Sugestões para resolver o problema de gráficos

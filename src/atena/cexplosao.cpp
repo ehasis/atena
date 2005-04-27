@@ -18,7 +18,6 @@ void CExplosao::Iniciar(int largura, int altura, bool ativo)
 	m_bmp = create_bitmap(largura + 2, altura + 2);
 	clear_to_color(m_bmp, makecol16(0,0,0));
 	
-
 	num_bytes = 2;
 
 	palette[0].r = 255;
@@ -51,7 +50,8 @@ void CExplosao::Iniciar(int largura, int altura, bool ativo)
 
 void CExplosao::Desenhar(BITMAP *bmp)
 {
-	if (!m_ativo) return;
+	if (!m_ativo)
+		return;
 
 	register int x, y;
 	register int data;
@@ -72,92 +72,15 @@ void CExplosao::Desenhar(BITMAP *bmp)
 			data >>= 2;	
 			data -= 7;
 
-            /**/
-
-	
-			/*
-			// FX1
-			int data  = m_bmp->line[y][x];
-				data -= 4;
-			/**/
-
-			/*
-			// FX2
-			int data  = m_bmp->line[y-1][x-1];
-				data += m_bmp->line[y-1][x7+1];
-				data += m_bmp->line[y+1][x-1];
-				data += m_bmp->line[y+1][x+1];
-				data >>= 2;
-				data -= 1;
-			/**/
-
-			/*
-			// FX3
-			int data  = m_bmp->line[y][x];
-				data += m_bmp->line[y+1][x];
-				data >>= 1;
-				data--;
-			/**/			
-
-			/*
-			// FX4 
-			int data  = m_bmp->line[y][x];
-				data += m_bmp->line[y+1][x];
-				data += m_bmp->line[y][x+1];
-				data += m_bmp->line[y][x-1];
-				data >>= 2;
-				data -= 1;
-			/**/
-			
-			/*
-			// FX5 
-			int data  = m_bmp->line[y][x];
-				data += m_bmp->line[y+1][x];
-				data += m_bmp->line[y][x+1];
-				data += m_bmp->line[y+1][x-1];
-				data >>= 2;
-				data -= 1;
-			/**/
-
-			/*
-			// FX6
-			int data = m_bmp->line[y][x];
-            data-=2;
-			/**/
-
-			/*
-			// FX7
-			int data = m_bmp->line[y][x];
-			data += m_bmp->line[y+1][x];
-			data >>= 1;
-			data -= 2;
-			/**/
-
-			/*
-			// FX8 *
-        	int data = m_bmp->line[y][x];
-            data += m_bmp->line[y+1][x];
-            data += m_bmp->line[y][x+1];
-            data += m_bmp->line[y][x-1];
-            data += m_bmp->line[y+1][x+1];
-            data += m_bmp->line[y+1][x-1];
-            data /= 6;
-            data -= 1;
-  			/**/
-
-
 			if (data < 20 || data > 230)
 				m_bmp->line[y-1][x] = 0;
 			else
 			{
 				m_bmp->line[y-1][x] = data;
 				
-				//vou usar XOR, é mais rápido
-				//if (((x % 2 ) && !(y % 2)) || (!(x % 2) && (y % 2)))
 				if ((x % 2) ^ (y % 2))
 					_putpixel16(bmp, x, y, makecol16(palette[m_bmp->line[y][x]].r, palette[m_bmp->line[y][x]].g, palette[m_bmp->line[y][x]].b));
 			}
-/**/
         }
     }
 }
@@ -174,7 +97,8 @@ void CExplosao::Ativo(bool ativo)
 
 void CExplosao::IniciarExplosao(int x, int y, int raio, int num_particulas)
 {
-	if (!m_ativo) return;
+	if (!m_ativo)
+		return;
 
 	register int i;
 	float dist, lx, ly, len;
@@ -204,8 +128,6 @@ void CExplosao::IniciarExplosao(int x, int y, int raio, int num_particulas)
 
 		if ((int)particulas[i].x > 0 && (int)particulas[i].x < 640 && (int)particulas[i].y > 0 && (int)particulas[i].y < 480)
 		{
-			//putpixel(m_bmp, (int)particulas[i].x/2, (int)particulas[i].y, particulas[i].cor);
-			//circle(m_bmp, (int)particulas[i].x/2, (int)particulas[i].y, 5, particulas[i].cor);
 			m_bmp->line[(int)particulas[i].y] [(int)particulas[i].x] = 0;
 			m_bmp->line[(int)particulas[i].y] [(int)particulas[i].x + 1] = particulas[i].cor;
 		}
@@ -215,7 +137,8 @@ void CExplosao::IniciarExplosao(int x, int y, int raio, int num_particulas)
 
 void CExplosao::IniciarExplosaoRadial(int x, int y, int raio)
 {
-	if (!m_ativo) return;
+	if (!m_ativo)
+		return;
 
 	circlefill(m_bmp, x/2, y, raio >> 2, 65535);
 	circle(m_bmp, x/2, y, raio / 1.5, 65535);
@@ -224,6 +147,8 @@ void CExplosao::IniciarExplosaoRadial(int x, int y, int raio)
 
 void CExplosao::InserirSprite(BITMAP *bmp, int x, int y)
 {
-	if (!m_ativo) return;
+	if (!m_ativo)
+		return;
+
 	draw_sprite(m_bmp, bmp, x, y);
 }

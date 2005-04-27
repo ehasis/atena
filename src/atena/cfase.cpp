@@ -54,18 +54,6 @@ void CFase::Iniciar(char arquivo_fase[], int x1_destino, int y1_destino, int lar
       return;
 	}
 
-	//faz a leitura da assinatura do mapa
-	/*
-	TMapa		mapa;
-	fseek(arquivo_map, 0 * sizeof(TMapa), SEEK_SET);
-	fread(&mapa, sizeof(TMapa), 1, arquivo_map);
-	if (strcmp(mapa.assinatura, ASSINATURA) != 0
-	|| mapa.versao != VERSAO)
-	{
-		Erro("Mapa invalido.", 0);
-	}
-	/**/
-
 	//faz a leitura dos ladrilhos
 	fseek(arquivo_map, 0 * sizeof(TLadrilho), SEEK_SET);
 	fread(&ladrilhos, sizeof(TLadrilho), MAPA_TOTAL_LADRILHOS, arquivo_map);
@@ -98,7 +86,6 @@ void CFase::Iniciar(char arquivo_fase[], int x1_destino, int y1_destino, int lar
 				m_veiculos.Adicionar();
 				m_veiculos.Obter().Iniciar(objeto);
 			}
-
 		}
 		else
 		{
@@ -146,43 +133,51 @@ int CFase::Rolar(EDirecao direcao, int pixels)
 	switch(direcao)
 	{
 		case eCima:
-		if((m_y1_fonte - pixels) > 0)
-			m_y1_fonte -= pixels;
-        else
-        if(m_y1_fonte == 0)
-			return FALSE;
-        else
-            m_y1_fonte = 0;
-        break;
+			if((m_y1_fonte - pixels) > 0)
+				m_y1_fonte -= pixels;
+
+			else if(m_y1_fonte == 0)
+				return FALSE;
+
+			else
+				m_y1_fonte = 0;
+
+			break;
 
 		case eDireita:
 			if((m_x1_fonte + m_largura_destino + pixels) < MAPA_LARGURA)
 				m_x1_fonte += pixels;
-            else
-            if(m_x1_fonte + m_largura_destino == MAPA_LARGURA)
+
+            else if(m_x1_fonte + m_largura_destino == MAPA_LARGURA)
 				return FALSE;
+
             else
 				m_x1_fonte = MAPA_LARGURA - m_largura_destino;
+
             break;
 
 		case eBaixo:
 			if((m_y1_fonte + m_altura_destino + pixels) < MAPA_ALTURA)
 				m_y1_fonte += pixels;
-			else
-			if(m_y1_fonte + m_altura_destino == MAPA_ALTURA)
+
+			else if(m_y1_fonte + m_altura_destino == MAPA_ALTURA)
 				return FALSE;
+
             else
 				m_y1_fonte = MAPA_ALTURA - m_altura_destino;
+
             break;
 
 		case eEsquerda:
 			if((m_x1_fonte - pixels) > 0)
 				m_x1_fonte -= pixels;
-            else
-			if(m_x1_fonte == 0)
+
+            else if(m_x1_fonte == 0)
 				return FALSE;
+
             else
 				m_x1_fonte = 0;
+
             break;
    }
 
@@ -245,14 +240,10 @@ bool CFase::Atualizar(int fundo_pixels)
 	CObjetoAvancado *obj_aliens = NULL; //, *obj_tiros_aliens;
 
 	if (key[KEY_ESC])
-	{
 		return false;
-	}
 
 	if (m_chefe.ObterStatus() == eChefeInativo)
-	{
 		return false;
-	}
 
 	if(m_naves.Obter(1).ObterStatus() == eNaveExplosao
 	&& m_naves.Obter(2).ObterStatus() == eNaveExplosao)
@@ -271,7 +262,6 @@ bool CFase::Atualizar(int fundo_pixels)
 
 	Rolar(eCima, fundo_pixels);
 
-	//if(m_chefe.ObterAtivo) m_chefe.DecY(fundo_pixels);
 	m_naves.MoverPrimeiro();
 	do
 	{
@@ -281,19 +271,13 @@ bool CFase::Atualizar(int fundo_pixels)
 	} while(m_naves.MoverProximo());
 
 	m_chefe.Atualizar(area, m_naves.Obter().ObterObjetoAvancado());
-
 	m_aliens.Atualizar(area, m_naves.Obter().ObterObjetoAvancado());
-
 	m_construcoes.Atualizar(area, m_naves.Obter().ObterObjetoAvancado());
-
 	m_veiculos.Atualizar(area, m_naves.Obter().ObterObjetoAvancado());
-
 	m_bonus.Atualizar(area);
 
 	ChecarColisaoTirosDaNave();
-
 	ChecarColisaoNaNave();
-
 
 	return true;
 }

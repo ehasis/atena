@@ -1,0 +1,41 @@
+<html>
+<head>
+<title>Roteiro do Projeto Atena</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<script language="JavaScript">
+<!--
+function MM_jumpMenu(targ,selObj,restore){ //v3.0
+  eval(targ+".location='"+selObj.options[selObj.selectedIndex].value+"'");
+  if (restore) selObj.selectedIndex=0;
+}
+
+function MM_findObj(n, d) { //v4.0
+  var p,i,x;  if(!d) d=document; if((p=n.indexOf("?"))>0&&parent.frames.length) {
+    d=parent.frames[n.substring(p+1)].document; n=n.substring(0,p);}
+  if(!(x=d[n])&&d.all) x=d.all[n]; for (i=0;!x&&i<d.forms.length;i++) x=d.forms[i][n];
+  for(i=0;!x&&d.layers&&i<d.layers.length;i++) x=MM_findObj(n,d.layers[i].document);
+  if(!x && document.getElementById) x=document.getElementById(n); return x;
+}
+
+function MM_jumpMenuGo(selName,targ,restore){ //v3.0
+  var selObj = MM_findObj(selName); if (selObj) MM_jumpMenu(targ,selObj,restore);
+}
+//-->
+</script>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<form name="form1">
+  <select name="menu1" onChange="MM_jumpMenu('parent.frames[\'mainFrame\']',this,0)">
+    <option value="sobre_o_roteiro.htm" selected>Sobre o Roteiro</option>
+    <option value="ambientacao.htm">Ambienta&ccedil;&atilde;o</option>
+    <option value="o_grupo.htm">O Grupo e Personagens</option>
+    <option value="veiculos/veiculos.htm">Veiculos</option>
+    <option value="fases/fase1.htm">A 1&ordf; Fase</option>
+    <option value="politica.htm">A Politica</option>
+    <option value="planetas/os_planetas.htm">Os Planetas</option>
+  </select>
+  <input type="button" name="Button1" value="Ir" onClick="MM_jumpMenuGo('menu1','parent.frames[\'mainFrame\']',0)">
+</form>
+</body>
+</html>

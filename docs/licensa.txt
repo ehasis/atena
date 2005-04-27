@@ -1,0 +1,13 @@
+Licensa do Jogo Atena versão 0.15-alpha
+=======================================
+
+Copyright (C) 2001-2002 GA Entretenimentos. Todos os direitos reservados.
+
+Este programa é totalmente livre para para utilização e distribuição. Não possui qualquer tipo de garantia para seu funcionamento.
+
+O autor não se responsabiliza por qualquer dano que ocorra durante a utilização deste programa.
+
+
+GA Entrentenimentos
+atena@grupos.com.br
+http://www.grupoatena.hpg.com.br/

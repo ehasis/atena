@@ -41,11 +41,13 @@ int main(int argc, char *argv[])
 
 	remove("log.txt");
 
-	CJogo atena;
+	CJogo* atena = new CJogo();
 
-	atena.Iniciar();
-	atena.Executar();
-	atena.Finalizar();
+	atena->Iniciar();
+	atena->Executar();
+	atena->Finalizar();
+
+	delete atena;
 
 	alfont_exit();
 	allegro_exit();

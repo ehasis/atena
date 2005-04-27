@@ -1,0 +1,54 @@
+1. Criar os ladrilhos baseados nos terrenos, sendo:
+   - Terra vermelha
+   - Vejetação parecida com a caatinga
+   - Tijolos vermelhos para um calçamento
+   - Pedras avermelhadas
+
+
+2. Criar os ladrilhos com objetos
+   - Estatuas
+   - Pedras
+   - 
+
+Descrição da primeira Fase
+
+
+------------------------------------------------------------
+O jogo começa com a nave do jogador já voando, todavia como
+se estivesse acabado de decolar, o cenário no fundo, seria
+algum tipo de aeroporto, com alguns modelos da nave do
+jogador em situação de pouso, com o bicos virados para a
+pista. Em um lado haveria uma torre de controle e do outro
+galpões. Nos limites do aeropo poderia ter algumas radares
+girando (como em um aeroporto de guerra, muito parecido com
+o jogo F22 Lighting, mas visto de cima). Isto tudo seguindo
+um estilo gráfico moderno, mas com formas Maias.
+
+------------------------------------------------------------
+Num primeiro instante, não há inimigos, apenas sair do
+algance do aeroporto e passar por um terreno montanhoso, com
+pedras e vegetação parecida com a caatinga, alguns objetos
+no chão, como destroços de veículos. Enquanto isto mensagens
+na tela vão aparecendo mostrando uma converça dos pilotos e
+algumas instruções de vôo, balões explicando cada área da
+tela (claro, estilizados).
+
+------------------------------------------------------------
+Logo após passar as montanhas alguns inimigos vão aparecendo
+e no fundo um tipo de terreno desertico mas ainda assim com vegetação parecida com a caatinga. Irá aparecer os primeiros
+inimigos utilizando veículos terrestes como se eles tivessem
+sido deixados alí propositalmente para oferecer resistência
+e impedir que alguém avançasse, há também marcas no chão mostrando que por ali passou um grande comboio de veículos,
+um tipo de caminho montado na hora. (lembrando do filme mad-max)
+
+------------------------------------------------------------
+Chegando mais ao final da fase, aparecem instalações
+provisórias e um número maior de veículos e naves para
+proteção de alguma coisa. Há também algumas torres
+improvisadas formando um tipo de barreira para delimitar um
+ambiente de escavações abstração de mineirais, daí então o
+cenário fica cheio de máquinas, mangueiras e tubulações.
+
+O Chefe é um tanque que está perfurando a superfície, com
+mangueiras espalhadas por todas as partes. Ele contém 
+baterias anti aéreas e naves dando suporte.
